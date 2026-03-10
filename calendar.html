@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OHAKS_Desk — 이벤트 캘린더</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F7F4EE;--cream2:#F0ECE3;--cream3:#E8E2D6;
+  --white:#FDFCFA;--rule:#DDD8CC;--rule2:#C8C2B4;
+  --muted:#9E9585;--body:#3D3830;--head:#1A1610;
+  --navy:#0B2B52;--navy2:#163D72;--gold:#8C6D2F;--gold2:#B8922E;
+  --green:#1A6640;--red:#B83232;--blue:#1B5EA0;--purple:#6B3FA0;
+  --c-earn:#B8922E;--c-fomc:#0B2B52;--c-eco:#1A6640;--c-kr:#B83232;--c-div:#6B3FA0;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'DM Sans',sans-serif;
+  --mono:'DM Mono','Courier New',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--body);font-family:var(--sans);font-size:13px;line-height:1.6;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--cream2)}::-webkit-scrollbar-thumb{background:var(--rule2)}
+.up{color:var(--green)}.dn{color:var(--red)}.neu{color:var(--muted)}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:300;height:44px;background:var(--navy);display:flex;align-items:center;padding:0 24px;gap:14px}
+.logo{font-family:var(--serif);font-size:15px;font-weight:600;letter-spacing:.06em;color:#E8DFC8;display:flex;align-items:center;gap:10px;white-space:nowrap;flex-shrink:0}
+.logo-sep{width:1px;height:16px;background:rgba(255,255,255,.2)}
+.logo-sub{font-family:var(--mono);font-size:8px;letter-spacing:.14em;color:rgba(232,223,200,.4);text-transform:uppercase}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+#clk{font-family:var(--mono);font-size:10.5px;color:rgba(232,223,200,.7);line-height:1.3;text-align:right}
+#clkd{font-size:9px;color:rgba(232,223,200,.32)}
+
+/* NAVBAR */
+.nav{background:var(--white);border-bottom:2px solid var(--navy);display:flex;align-items:stretch;height:36px;padding:0 24px;position:sticky;top:44px;z-index:200}
+.nl{font-family:var(--sans);font-size:11px;font-weight:500;letter-spacing:.05em;color:var(--muted);padding:0 14px;display:flex;align-items:center;border-bottom:2px solid transparent;margin-bottom:-2px;cursor:pointer;transition:all .15s;text-transform:uppercase;white-space:nowrap}
+.nl:hover{color:var(--navy)}.nl.act{color:var(--navy);border-bottom-color:var(--gold2)}
+.nav-r{margin-left:auto;display:flex;align-items:center;gap:8px}
+.nav-ts{font-family:var(--mono);font-size:9px;color:var(--muted)}
+
+/* PAGE */
+.page{max-width:1440px;margin:0 auto;padding:24px 24px 80px}
+
+/* PAGE HEADER */
+.page-hd{margin-bottom:24px;display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid var(--rule);padding-bottom:16px}
+.page-title{font-family:var(--serif);font-size:38px;font-weight:400;color:var(--head);line-height:1}
+.page-title em{font-style:italic;color:var(--navy)}
+.page-sub{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.hd-right{display:flex;align-items:center;gap:8px}
+
+/* LEGEND */
+.legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;align-items:center}
+.leg-item{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9.5px;color:var(--muted)}
+.leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.leg-sep{width:1px;height:14px;background:var(--rule2)}
+
+/* FILTER TABS */
+.filter-row{display:flex;gap:4px;margin-bottom:20px;flex-wrap:wrap}
+.f-btn{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;cursor:pointer;border:1px solid var(--rule2);background:none;color:var(--muted);transition:all .15s}
+.f-btn:hover{color:var(--navy);border-color:var(--navy)}
+.f-btn.on{background:var(--navy);color:#E8DFC8;border-color:var(--navy)}
+
+/* LAYOUT */
+.main-layout{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start}
+
+/* ── CALENDAR GRID ── */
+.cal-wrap{background:var(--white);border:1px solid var(--rule)}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--rule)}
+.cal-nav-btn{font-family:var(--mono);font-size:14px;cursor:pointer;color:var(--muted);background:none;border:none;padding:2px 8px;transition:color .15s}
+.cal-nav-btn:hover{color:var(--navy)}
+.cal-month{font-family:var(--serif);font-size:22px;font-weight:400;color:var(--head)}
+.cal-month em{font-style:italic;color:var(--navy)}
+.cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);background:var(--cream2);border-bottom:1px solid var(--rule)}
+.cal-wday{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:center;padding:7px 0}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr)}
+.cal-day{min-height:90px;padding:6px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);position:relative;transition:background .1s;vertical-align:top}
+.cal-day:nth-child(7n){border-right:none}
+.cal-day:hover{background:var(--cream2)}
+.cal-day.other-month .cal-dn{color:var(--cream3)}
+.cal-day.today{background:rgba(11,43,82,.04)}
+.cal-day.today .cal-dn{color:var(--navy);font-weight:700}
+.cal-dn{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:3px;display:flex;align-items:center;justify-content:space-between}
+.cal-dn .today-dot{width:18px;height:18px;border-radius:50%;background:var(--navy);color:#E8DFC8;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+.cal-events{display:flex;flex-direction:column;gap:2px}
+.cal-ev{font-family:var(--mono);font-size:9px;padding:2px 5px;border-radius:2px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .1s;line-height:1.4}
+.cal-ev:hover{opacity:.8}
+.cal-ev.earn{background:rgba(184,146,46,.18);color:var(--c-earn);border-left:2px solid var(--c-earn)}
+.cal-ev.fomc{background:rgba(11,43,82,.12);color:var(--c-fomc);border-left:2px solid var(--c-fomc)}
+.cal-ev.eco{background:rgba(26,102,64,.12);color:var(--c-eco);border-left:2px solid var(--c-eco)}
+.cal-ev.kr{background:rgba(184,50,50,.1);color:var(--c-kr);border-left:2px solid var(--c-kr)}
+.cal-ev.div{background:rgba(107,63,160,.1);color:var(--c-div);border-left:2px solid var(--c-div)}
+.cal-ev.high{font-weight:600}
+.cal-more{font-family:var(--mono);font-size:8px;color:var(--muted);margin-top:2px;cursor:pointer}
+
+/* ── SIDEBAR ── */
+.sidebar{display:flex;flex-direction:column;gap:16px}
+
+/* EVENT DETAIL */
+.ev-detail{background:var(--white);border:1px solid var(--rule)}
+.ev-d-hd{padding:10px 14px 8px;border-bottom:1px solid var(--rule)}
+.ev-d-title{font-family:var(--serif);font-size:16px;color:var(--head)}
+.ev-d-title em{font-style:italic;color:var(--navy)}
+.ev-d-body{padding:12px 14px}
+.ev-empty{font-family:var(--mono);font-size:10.5px;color:var(--muted);padding:16px 14px;text-align:center;line-height:1.6}
+
+/* EVENT DETAIL CARD */
+.edc{background:var(--cream2);padding:10px 12px;margin-bottom:8px;border-left:3px solid var(--rule2)}
+.edc.earn{border-left-color:var(--c-earn)}
+.edc.fomc{border-left-color:var(--c-fomc)}
+.edc.eco{border-left-color:var(--c-eco)}
+.edc.kr{border-left-color:var(--c-kr)}
+.edc-type{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.edc-name{font-family:var(--sans);font-size:12.5px;font-weight:500;color:var(--head);margin-bottom:4px}
+.edc-row{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:3px}
+.edc-row span{color:var(--body)}
+.edc-impact{display:inline-block;font-family:var(--mono);font-size:8px;padding:1px 6px;border-radius:1px;margin-top:5px}
+.edc-impact.high{background:rgba(184,50,50,.1);color:var(--red)}
+.edc-impact.med{background:rgba(184,146,46,.12);color:var(--gold2)}
+.edc-impact.low{background:var(--cream3);color:var(--muted)}
+
+/* UPCOMING LIST */
+.card{background:var(--white);border:1px solid var(--rule)}
+.card-hd{padding:10px 14px 8px;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center}
+.card-t{font-family:var(--serif);font-size:15px;color:var(--head)}
+.card-t em{font-style:italic;color:var(--navy)}
+.card-s{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+
+.upcoming-list{display:flex;flex-direction:column;gap:0}
+.ul-item{display:flex;align-items:flex-start;padding:9px 14px;border-bottom:1px solid rgba(221,216,204,.4);gap:10px;cursor:pointer;transition:background .1s}
+.ul-item:last-child{border-bottom:none}
+.ul-item:hover{background:var(--cream2)}
+.ul-date{font-family:var(--mono);font-size:9.5px;color:var(--muted);width:50px;flex-shrink:0;padding-top:1px}
+.ul-date.today{color:var(--navy);font-weight:600}
+.ul-date.soon{color:var(--gold2)}
+.ul-content{flex:1;min-width:0}
+.ul-name{font-family:var(--sans);font-size:12px;font-weight:500;color:var(--head)}
+.ul-meta{font-family:var(--mono);font-size:9.5px;color:var(--muted);margin-top:1px}
+.ul-tag{font-family:var(--mono);font-size:8px;padding:1px 6px;border-radius:1px;flex-shrink:0;align-self:flex-start;margin-top:2px}
+.ul-tag.earn{background:rgba(184,146,46,.15);color:var(--c-earn)}
+.ul-tag.fomc{background:rgba(11,43,82,.1);color:var(--c-fomc)}
+.ul-tag.eco{background:rgba(26,102,64,.1);color:var(--c-eco)}
+.ul-tag.kr{background:rgba(184,50,50,.08);color:var(--c-kr)}
+
+/* COUNTDOWN */
+.countdown-card{background:var(--navy);padding:14px 16px}
+.cc-eyebrow{font-family:var(--mono);font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:rgba(232,223,200,.4);margin-bottom:6px}
+.cc-event{font-family:var(--serif);font-size:18px;color:#E8DFC8;margin-bottom:8px}
+.cc-event em{font-style:italic}
+.cc-timer{display:flex;gap:14px}
+.cc-unit{text-align:center}
+.cc-num{font-family:var(--mono);font-size:24px;font-weight:500;color:#E8DFC8;line-height:1}
+.cc-lbl{font-family:var(--mono);font-size:8px;letter-spacing:.1em;color:rgba(232,223,200,.4);margin-top:2px}
+
+/* ANNO */
+.anno{font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:8px;line-height:1.6;padding-top:8px;border-top:1px solid var(--rule)}
+
+/* notes input */
+.note-ta{width:100%;padding:7px 9px;border:1px solid var(--rule);background:var(--cream);font-family:var(--sans);font-size:11.5px;color:var(--body);resize:none;height:64px;outline:none;line-height:1.5;margin-top:6px}
+.note-ta:focus{border-color:var(--navy)}
+.note-save-btn{margin-top:4px;font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;background:var(--navy);color:#E8DFC8;border:none;cursor:pointer}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">OHAKS_Desk<div class="logo-sep"></div><div class="logo-sub">이벤트 캘린더</div></div>
+  <div class="topbar-right">
+    <div id="clk"><div id="ct">—</div><div id="clkd">—</div></div>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="nav">
+  <div class="nl" onclick="location.href='chart.html'">차트</div>
+  <div class="nl" onclick="location.href='macro.html'">매크로</div>
+  <div class="nl" onclick="location.href='research.html'">리서치</div>
+  <div class="nl" onclick="location.href='quant.html'">퀀트</div>
+  <div class="nl">포트폴리오</div>
+  <div class="nl act">캘린더</div>
+  <div class="nav-r">
+    <span id="fmp-badge" onclick="toggleKeyPanel()" style="cursor:pointer;font-family:var(--mono);font-size:10px;letter-spacing:.06em;padding:4px 12px;border:1px solid var(--gold2);color:var(--gold2);background:rgba(184,146,46,.08);animation:fmpblink 1.5s ease-in-out infinite;font-weight:500;white-space:nowrap">⚙ Finnhub 키</span>
+    <span class="nav-ts" id="nav-ts">—</span>
+  </div>
+</nav>
+
+<style>
+@keyframes fmpblink{0%,100%{opacity:1}50%{opacity:.4}}
+#fmp-badge.active{animation:none!important;border-color:var(--green)!important;color:var(--green)!important;background:rgba(26,102,64,.06)!important}
+</style>
+
+<!-- FINNHUB KEY PANEL -->
+<div id="key-panel" style="display:none;position:fixed;top:88px;right:16px;z-index:9999;background:var(--white);border:1px solid var(--rule2);padding:18px 20px;width:340px;box-shadow:0 8px 32px rgba(0,0,0,.18)">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+    <div style="font-family:var(--serif);font-size:17px;color:var(--head)">Finnhub <em style="font-style:italic;color:var(--navy)">API 키</em></div>
+    <div onclick="toggleKeyPanel()" style="font-family:var(--mono);font-size:14px;color:var(--muted);cursor:pointer;padding:2px 6px">✕</div>
+  </div>
+  <input id="fmp-key-i" type="text" placeholder="Finnhub API Key" spellcheck="false"
+    style="width:100%;padding:8px 10px;border:1px solid var(--rule);background:var(--cream);font-family:var(--mono);font-size:11px;outline:none;margin-bottom:6px">
+  <div onclick="saveFmpKey()" style="font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;padding:8px;background:var(--navy);color:#E8DFC8;cursor:pointer;text-align:center;margin-bottom:8px">저장 + 로드</div>
+  <div id="fmp-panel-status" style="font-family:var(--mono);font-size:9px;color:var(--muted);min-height:14px"></div>
+  <div style="font-family:var(--sans);font-size:10px;color:var(--muted);margin-top:8px;line-height:1.6;border-top:1px solid var(--rule);padding-top:8px">
+    무료 · <a href="https://finnhub.io" target="_blank" style="color:var(--navy)">finnhub.io</a> → Sign Up → Dashboard → API Key
+  </div>
+
+  <!-- FRED KEY -->
+  <div style="border-top:1px solid var(--rule);margin-top:14px;padding-top:14px">
+    <div style="font-family:var(--mono);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:5px">🏦 FRED API Key — 경제지표 (St. Louis Fed)</div>
+    <input id="fred-key-i" type="text" placeholder="FRED API Key" spellcheck="false"
+      style="width:100%;padding:8px 10px;border:1px solid var(--rule);background:var(--cream);font-family:var(--mono);font-size:11px;outline:none;margin-bottom:6px">
+    <div onclick="saveFredKey()" style="font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;padding:7px;background:var(--navy);color:#E8DFC8;cursor:pointer;text-align:center;margin-bottom:4px">FRED 저장 + 로드</div>
+    <div id="fred-panel-status" style="font-family:var(--mono);font-size:9px;color:var(--muted);min-height:14px"></div>
+    <div style="font-family:var(--sans);font-size:10px;color:var(--muted);margin-top:8px;line-height:1.6">
+      무료 · <a href="https://fred.stlouisfed.org/docs/api/api_key.html" target="_blank" style="color:var(--navy)">fred.stlouisfed.org</a> → My Account → API Keys → Request Key<br>
+      CPI · NFP · GDP · PCE · 실업률 · PPI · 소매판매 등 12개 지표
+    </div>
+  </div>
+</div>
+<!-- FMP BANNER -->
+<div id="fmp-banner" style="background:#FFF8E8;border-bottom:1px solid #E8D88A;padding:9px 24px;display:flex;align-items:center;gap:12px;font-family:var(--sans);font-size:12.5px;color:#5C4A00">
+  <span style="font-size:15px">⚡</span>
+  <span><strong>API 키 설정:</strong> Finnhub(어닝) + FRED(경제지표) — 둘 다 무료 · 1분 발급. 우측 상단 ⚙ 버튼에서 입력하세요.</span>
+  <button onclick="toggleKeyPanel();document.getElementById('fmp-banner').style.display='none'"
+    style="margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:6px 14px;background:#0B2B52;color:#E8DFC8;border:none;cursor:pointer;white-space:nowrap">
+    키 입력 →
+  </button>
+  <button onclick="document.getElementById('fmp-banner').style.display='none'"
+    style="font-family:var(--mono);font-size:10px;color:#9E9585;background:none;border:none;cursor:pointer">✕</button>
+</div>
+
+<div class="page">
+
+  <!-- PAGE HEADER -->
+  <div class="page-hd">
+    <div>
+      <div class="page-title">이벤트 <em>캘린더</em></div>
+      <div class="page-sub">Earnings · FOMC · 경제지표 · 한국 이벤트</div>
+    </div>
+    <div class="hd-right">
+      <button onclick="addCustomEvent()" style="font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:7px 14px;background:none;border:1px solid var(--rule2);color:var(--muted);cursor:pointer">+ 이벤트 추가</button>
+    </div>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="leg-item"><div class="leg-dot" style="background:var(--c-earn)"></div>어닝 발표</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--c-fomc)"></div>FOMC / 중앙은행</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--c-eco)"></div>경제지표</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--c-kr)"></div>한국 이벤트</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--c-div)"></div>배당 / 기타</div>
+    <div class="leg-sep"></div>
+    <div class="leg-item" style="cursor:pointer" onclick="toggleFilter('all')">전체</div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filter-row">
+    <button class="f-btn on" data-filter="all"    onclick="toggleFilter('all')">전체</button>
+    <button class="f-btn"    data-filter="earn"   onclick="toggleFilter('earn')">어닝</button>
+    <button class="f-btn"    data-filter="fomc"   onclick="toggleFilter('fomc')">FOMC</button>
+    <button class="f-btn"    data-filter="eco"    onclick="toggleFilter('eco')">경제지표</button>
+    <button class="f-btn"    data-filter="kr"     onclick="toggleFilter('kr')">한국</button>
+    <button class="f-btn"    data-filter="high"   onclick="toggleFilter('high')">⚡ 하이임팩트</button>
+  </div>
+
+  <!-- FMP STATUS -->
+  <div id="fmp-load-status" style="font-family:var(--mono);font-size:9.5px;color:var(--muted);margin-bottom:14px;min-height:16px;display:flex;align-items:center;gap:8px">
+    <div id="fmp-load-dot" style="width:6px;height:6px;border-radius:50%;background:var(--muted);flex-shrink:0"></div>
+    <span id="fmp-load-msg">FMP 키 입력 시 실시간 데이터 로드</span>
+  </div>
+
+  <div class="main-layout">
+
+    <!-- LEFT: CALENDAR -->
+    <div>
+      <!-- COUNTDOWN -->
+      <div class="countdown-card" id="countdown-card" style="margin-bottom:16px">
+        <div class="cc-eyebrow">다음 주요 이벤트까지</div>
+        <div class="cc-event" id="cc-event">로딩 중...</div>
+        <div class="cc-timer">
+          <div class="cc-unit"><div class="cc-num" id="cc-d">—</div><div class="cc-lbl">DAYS</div></div>
+          <div class="cc-unit"><div class="cc-num" id="cc-h">—</div><div class="cc-lbl">HRS</div></div>
+          <div class="cc-unit"><div class="cc-num" id="cc-m">—</div><div class="cc-lbl">MIN</div></div>
+          <div class="cc-unit"><div class="cc-num" id="cc-s">—</div><div class="cc-lbl">SEC</div></div>
+        </div>
+      </div>
+
+      <!-- CALENDAR -->
+      <div class="cal-wrap">
+        <div class="cal-nav">
+          <button class="cal-nav-btn" onclick="prevMonth()">←</button>
+          <div class="cal-month" id="cal-month">—</div>
+          <button class="cal-nav-btn" onclick="nextMonth()">→</button>
+        </div>
+        <div class="cal-weekdays">
+          <div class="cal-wday">SUN</div><div class="cal-wday">MON</div>
+          <div class="cal-wday">TUE</div><div class="cal-wday">WED</div>
+          <div class="cal-wday">THU</div><div class="cal-wday">FRI</div>
+          <div class="cal-wday">SAT</div>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+
+      <!-- ANNO -->
+      <div class="anno" style="margin-top:10px">
+        이벤트 데이터는 2025년 공식 일정 기반. 날짜는 미국 ET 기준 (한국은 다음날 새벽). 어닝 발표일은 회사 발표 전 변경될 수 있음.
+      </div>
+    </div>
+
+    <!-- RIGHT: SIDEBAR -->
+    <div class="sidebar">
+
+      <!-- SELECTED DAY DETAIL -->
+      <div class="ev-detail" id="ev-detail">
+        <div class="ev-d-hd"><div class="ev-d-title"><em>날짜</em> 선택</div></div>
+        <div class="ev-empty">캘린더에서 날짜를 클릭하면<br>이벤트 상세 정보가 표시됩니다.</div>
+      </div>
+
+      <!-- UPCOMING THIS WEEK -->
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-t">이번 주 <em>주요</em> 일정</div>
+          <div class="card-s" id="week-range">—</div>
+        </div>
+        <div class="upcoming-list" id="this-week"></div>
+      </div>
+
+      <!-- NEXT MONTH PREVIEW -->
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-t"><em>향후</em> 30일 하이임팩트</div>
+          <div class="card-s">High Impact Only</div>
+        </div>
+        <div class="upcoming-list" id="next30"></div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<!-- ADD EVENT MODAL -->
+<div id="add-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:500;display:flex;align-items:center;justify-content:center">
+  <div style="background:var(--white);border:1px solid var(--rule);padding:24px;width:400px;max-width:90vw">
+    <div style="font-family:var(--serif);font-size:22px;color:var(--head);margin-bottom:16px">이벤트 <em style="font-style:italic;color:var(--navy)">추가</em></div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <input id="add-date" type="date" style="padding:7px 9px;border:1px solid var(--rule);background:var(--cream);font-family:var(--mono);font-size:11px;outline:none">
+      <input id="add-name" type="text" placeholder="이벤트명" style="padding:7px 9px;border:1px solid var(--rule);background:var(--cream);font-family:var(--sans);font-size:12px;outline:none">
+      <select id="add-type" style="padding:7px 9px;border:1px solid var(--rule);background:var(--cream);font-family:var(--mono);font-size:11px;outline:none">
+        <option value="earn">어닝 발표</option>
+        <option value="fomc">FOMC/중앙은행</option>
+        <option value="eco">경제지표</option>
+        <option value="kr">한국 이벤트</option>
+        <option value="div">배당/기타</option>
+      </select>
+      <select id="add-impact" style="padding:7px 9px;border:1px solid var(--rule);background:var(--cream);font-family:var(--mono);font-size:11px;outline:none">
+        <option value="high">⚡ High Impact</option>
+        <option value="med">Medium</option>
+        <option value="low">Low</option>
+      </select>
+      <input id="add-note" type="text" placeholder="메모 (선택)" style="padding:7px 9px;border:1px solid var(--rule);background:var(--cream);font-family:var(--sans);font-size:12px;outline:none">
+    </div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <div onclick="saveCustomEvent()" style="flex:1;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:8px;background:var(--navy);color:#E8DFC8;cursor:pointer;text-align:center">저장</div>
+      <div onclick="closeModal()" style="flex:1;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:8px;border:1px solid var(--rule2);color:var(--muted);cursor:pointer;text-align:center">취소</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// CLOCK
+// ═══════════════════════════════════════
+(function tick(){
+  const kst=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Seoul'}));
+  const p=n=>String(n).padStart(2,'0');
+  const days=['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  document.getElementById('ct').textContent=`${p(kst.getHours())}:${p(kst.getMinutes())}:${p(kst.getSeconds())} KST`;
+  document.getElementById('clkd').textContent=`${kst.getFullYear()}.${p(kst.getMonth()+1)}.${p(kst.getDate())} ${days[kst.getDay()]}`;
+  setTimeout(tick,1000);
+})();
+
+// ═══════════════════════════════════════
+// EVENT DATABASE
+// ═══════════════════════════════════════
+// date format: YYYY-MM-DD
+// type: earn / fomc / eco / kr / div
+// impact: high / med / low
+// time: EST time string
+
+const EVENTS_2025 = [
+  // ── FOMC ──
+  {date:'2025-01-29',type:'fomc',impact:'high',name:'FOMC 회의 결과',detail:'연방공개시장위원회 금리 결정',time:'14:00 ET',sym:'FED',est:'동결 4.25–4.50%',act:'동결'},
+  {date:'2025-03-19',type:'fomc',impact:'high',name:'FOMC 회의 결과 + SEP',detail:'금리 결정 + 점도표(SEP) 발표',time:'14:00 ET',sym:'FED',est:'동결 92%'},
+  {date:'2025-05-07',type:'fomc',impact:'high',name:'FOMC 회의 결과',detail:'연방공개시장위원회 금리 결정',time:'14:00 ET',sym:'FED',est:'동결 전망'},
+  {date:'2025-06-18',type:'fomc',impact:'high',name:'FOMC 회의 결과 + SEP',detail:'금리 결정 + 점도표 발표. 인하 가능성',time:'14:00 ET',sym:'FED'},
+  {date:'2025-07-30',type:'fomc',impact:'high',name:'FOMC 회의 결과',detail:'연방공개시장위원회 금리 결정',time:'14:00 ET',sym:'FED'},
+  {date:'2025-09-17',type:'fomc',impact:'high',name:'FOMC 회의 결과 + SEP',detail:'금리 결정 + 점도표',time:'14:00 ET',sym:'FED'},
+  {date:'2025-10-29',type:'fomc',impact:'high',name:'FOMC 회의 결과',detail:'연방공개시장위원회 금리 결정',time:'14:00 ET',sym:'FED'},
+  {date:'2025-12-10',type:'fomc',impact:'high',name:'FOMC 회의 결과 + SEP',detail:'연내 마지막 FOMC. 점도표 발표',time:'14:00 ET',sym:'FED'},
+
+  // ── BOK (한국은행) ──
+  {date:'2025-02-25',type:'kr',impact:'high',name:'한국은행 기준금리',detail:'금통위 통화정책방향 결정',time:'10:00 KST',sym:'BOK',act:'2.75% 인하'},
+  {date:'2025-04-17',type:'kr',impact:'high',name:'한국은행 기준금리',detail:'금통위 통화정책방향 결정',time:'10:00 KST',sym:'BOK',est:'인하 가능성 60%'},
+  {date:'2025-05-29',type:'kr',impact:'high',name:'한국은행 기준금리',detail:'금통위 통화정책방향 결정',time:'10:00 KST',sym:'BOK'},
+  {date:'2025-07-10',type:'kr',impact:'high',name:'한국은행 기준금리',detail:'금통위 통화정책방향 결정',time:'10:00 KST',sym:'BOK'},
+  {date:'2025-08-28',type:'kr',impact:'high',name:'한국은행 기준금리',detail:'금통위 통화정책방향 결정',time:'10:00 KST',sym:'BOK'},
+  {date:'2025-10-16',type:'kr',impact:'high',name:'한국은행 기준금리',detail:'금통위 통화정책방향 결정',time:'10:00 KST',sym:'BOK'},
+  {date:'2025-11-27',type:'kr',impact:'high',name:'한국은행 기준금리',detail:'금통위 통화정책방향 결정',time:'10:00 KST',sym:'BOK'},
+
+  // ── 경제지표 (US) ──
+  // CPI
+  {date:'2025-02-12',type:'eco',impact:'high',name:'미국 CPI (1월)',detail:'소비자물가지수 YoY',time:'08:30 ET',sym:'CPI',est:'2.9%',act:'3.0%'},
+  {date:'2025-03-12',type:'eco',impact:'high',name:'미국 CPI (2월)',detail:'소비자물가지수 YoY',time:'08:30 ET',sym:'CPI',est:'2.9%',act:'2.8%'},
+  {date:'2025-04-10',type:'eco',impact:'high',name:'미국 CPI (3월)',detail:'소비자물가지수 YoY',time:'08:30 ET',sym:'CPI',est:'2.6%'},
+  {date:'2025-05-13',type:'eco',impact:'high',name:'미국 CPI (4월)',detail:'소비자물가지수 YoY',time:'08:30 ET',sym:'CPI'},
+  {date:'2025-06-11',type:'eco',impact:'high',name:'미국 CPI (5월)',detail:'소비자물가지수 YoY',time:'08:30 ET',sym:'CPI'},
+  {date:'2025-07-15',type:'eco',impact:'high',name:'미국 CPI (6월)',detail:'소비자물가지수 YoY',time:'08:30 ET',sym:'CPI'},
+  {date:'2025-08-12',type:'eco',impact:'high',name:'미국 CPI (7월)',detail:'소비자물가지수 YoY',time:'08:30 ET',sym:'CPI'},
+  {date:'2025-09-10',type:'eco',impact:'high',name:'미국 CPI (8월)',detail:'소비자물가지수 YoY',time:'08:30 ET',sym:'CPI'},
+  {date:'2025-10-14',type:'eco',impact:'high',name:'미국 CPI (9월)',detail:'소비자물가지수 YoY',time:'08:30 ET',sym:'CPI'},
+  {date:'2025-11-12',type:'eco',impact:'high',name:'미국 CPI (10월)',detail:'소비자물가지수 YoY',time:'08:30 ET',sym:'CPI'},
+  {date:'2025-12-10',type:'eco',impact:'high',name:'미국 CPI (11월)',detail:'소비자물가지수 YoY',time:'08:30 ET',sym:'CPI'},
+  // NFP
+  {date:'2025-02-07',type:'eco',impact:'high',name:'비농업 고용 (1월)',detail:'Nonfarm Payrolls',time:'08:30 ET',sym:'NFP',act:'+151K'},
+  {date:'2025-03-07',type:'eco',impact:'high',name:'비농업 고용 (2월)',detail:'Nonfarm Payrolls',time:'08:30 ET',sym:'NFP'},
+  {date:'2025-04-04',type:'eco',impact:'high',name:'비농업 고용 (3월)',detail:'Nonfarm Payrolls',time:'08:30 ET',sym:'NFP'},
+  {date:'2025-05-02',type:'eco',impact:'high',name:'비농업 고용 (4월)',detail:'Nonfarm Payrolls',time:'08:30 ET',sym:'NFP'},
+  {date:'2025-06-06',type:'eco',impact:'high',name:'비농업 고용 (5월)',detail:'Nonfarm Payrolls',time:'08:30 ET',sym:'NFP'},
+  {date:'2025-07-03',type:'eco',impact:'high',name:'비농업 고용 (6월)',detail:'Nonfarm Payrolls',time:'08:30 ET',sym:'NFP'},
+  {date:'2025-08-01',type:'eco',impact:'high',name:'비농업 고용 (7월)',detail:'Nonfarm Payrolls',time:'08:30 ET',sym:'NFP'},
+  {date:'2025-09-05',type:'eco',impact:'high',name:'비농업 고용 (8월)',detail:'Nonfarm Payrolls',time:'08:30 ET',sym:'NFP'},
+  {date:'2025-10-03',type:'eco',impact:'high',name:'비농업 고용 (9월)',detail:'Nonfarm Payrolls',time:'08:30 ET',sym:'NFP'},
+  {date:'2025-11-07',type:'eco',impact:'high',name:'비농업 고용 (10월)',detail:'Nonfarm Payrolls',time:'08:30 ET',sym:'NFP'},
+  {date:'2025-12-05',type:'eco',impact:'high',name:'비농업 고용 (11월)',detail:'Nonfarm Payrolls',time:'08:30 ET',sym:'NFP'},
+  // PCE
+  {date:'2025-02-28',type:'eco',impact:'high',name:'Core PCE (1월)',detail:'연준 선호 인플레 지표',time:'08:30 ET',sym:'PCE',est:'2.6%'},
+  {date:'2025-03-28',type:'eco',impact:'high',name:'Core PCE (2월)',detail:'연준 선호 인플레 지표',time:'08:30 ET',sym:'PCE'},
+  {date:'2025-04-30',type:'eco',impact:'high',name:'Core PCE (3월)',detail:'연준 선호 인플레 지표',time:'08:30 ET',sym:'PCE'},
+  // GDP
+  {date:'2025-01-30',type:'eco',impact:'high',name:'GDP Q4 2024 (속보)',detail:'실질GDP 성장률 연율',time:'08:30 ET',sym:'GDP',act:'+2.3%'},
+  {date:'2025-04-30',type:'eco',impact:'high',name:'GDP Q1 2025 (속보)',detail:'실질GDP 성장률 연율',time:'08:30 ET',sym:'GDP'},
+  {date:'2025-07-30',type:'eco',impact:'high',name:'GDP Q2 2025 (속보)',detail:'실질GDP 성장률 연율',time:'08:30 ET',sym:'GDP'},
+  {date:'2025-10-30',type:'eco',impact:'high',name:'GDP Q3 2025 (속보)',detail:'실질GDP 성장률 연율',time:'08:30 ET',sym:'GDP'},
+  // ISM PMI
+  {date:'2025-03-03',type:'eco',impact:'med',name:'ISM 제조업 PMI (2월)',detail:'구매관리자지수',time:'10:00 ET',sym:'ISM'},
+  {date:'2025-04-01',type:'eco',impact:'med',name:'ISM 제조업 PMI (3월)',detail:'구매관리자지수',time:'10:00 ET',sym:'ISM'},
+  {date:'2025-05-01',type:'eco',impact:'med',name:'ISM 제조업 PMI (4월)',detail:'구매관리자지수',time:'10:00 ET',sym:'ISM'},
+  // PPI
+  {date:'2025-03-13',type:'eco',impact:'med',name:'미국 PPI (2월)',detail:'생산자물가지수',time:'08:30 ET',sym:'PPI'},
+  {date:'2025-04-11',type:'eco',impact:'med',name:'미국 PPI (3월)',detail:'생산자물가지수',time:'08:30 ET',sym:'PPI'},
+  // Retail Sales
+  {date:'2025-03-17',type:'eco',impact:'med',name:'소매판매 (2월)',detail:'Retail Sales MoM',time:'08:30 ET',sym:'RETAIL'},
+  {date:'2025-04-16',type:'eco',impact:'med',name:'소매판매 (3월)',detail:'Retail Sales MoM',time:'08:30 ET',sym:'RETAIL'},
+
+  // ── 어닝 (US) Q1 2025 시즌 ──
+  {date:'2025-04-22',type:'earn',impact:'high',name:'TSLA 어닝 (Q1)',detail:'Tesla Inc. 분기 실적 발표',time:'AS 장마감',sym:'TSLA',est:'EPS $0.47 · Rev $21.3B'},
+  {date:'2025-04-23',type:'earn',impact:'high',name:'GOOGL 어닝 (Q1)',detail:'Alphabet Inc. 분기 실적',time:'AS 장마감',sym:'GOOGL',est:'EPS $2.01 · Rev $89.1B'},
+  {date:'2025-04-24',type:'earn',impact:'high',name:'META 어닝 (Q1)',detail:'Meta Platforms 분기 실적',time:'AS 장마감',sym:'META',est:'EPS $5.26 · Rev $41.4B'},
+  {date:'2025-04-25',type:'earn',impact:'high',name:'MSFT 어닝 (Q3 FY)',detail:'Microsoft 분기 실적 발표',time:'AS 장마감',sym:'MSFT',est:'EPS $3.22 · Rev $68.4B'},
+  {date:'2025-04-25',type:'earn',impact:'high',name:'AAPL 어닝 (Q2 FY)',detail:'Apple Inc. 분기 실적 발표',time:'AS 장마감',sym:'AAPL',est:'EPS $1.60 · Rev $94.2B'},
+  {date:'2025-04-29',type:'earn',impact:'high',name:'AMD 어닝 (Q1)',detail:'Advanced Micro Devices',time:'AS 장마감',sym:'AMD',est:'EPS $0.94 · Rev $7.1B'},
+  {date:'2025-04-30',type:'earn',impact:'high',name:'AMZN 어닝 (Q1)',detail:'Amazon.com 분기 실적',time:'AS 장마감',sym:'AMZN',est:'EPS $1.36 · Rev $155.0B'},
+  {date:'2025-05-21',type:'earn',impact:'high',name:'NVDA 어닝 (Q1 FY26)',detail:'NVIDIA Corporation — 최대 주목 실적',time:'AS 장마감',sym:'NVDA',est:'EPS $0.89 · Rev $43.0B'},
+  {date:'2025-05-22',type:'earn',impact:'high',name:'AVGO 어닝 (Q2 FY)',detail:'Broadcom Inc. 분기 실적',time:'AS 장마감',sym:'AVGO'},
+
+  // ── Q4 2024 어닝 (이미 발표) ──
+  {date:'2025-01-22',type:'earn',impact:'high',name:'NFLX 어닝 (Q4)',detail:'Netflix 분기 실적',time:'AS 장마감',sym:'NFLX',act:'Beat'},
+  {date:'2025-01-29',type:'earn',impact:'high',name:'META 어닝 (Q4)',detail:'Meta Platforms',time:'AS 장마감',sym:'META',act:'Beat'},
+  {date:'2025-01-29',type:'earn',impact:'high',name:'MSFT 어닝 (Q2 FY)',detail:'Microsoft',time:'AS 장마감',sym:'MSFT',act:'Beat'},
+  {date:'2025-01-30',type:'earn',impact:'high',name:'AAPL 어닝 (Q1 FY)',detail:'Apple',time:'AS 장마감',sym:'AAPL',act:'Beat'},
+  {date:'2025-01-30',type:'earn',impact:'high',name:'TSLA 어닝 (Q4)',detail:'Tesla — 어닝미스',time:'AS 장마감',sym:'TSLA',act:'Miss'},
+  {date:'2025-02-05',type:'earn',impact:'high',name:'AMZN 어닝 (Q4)',detail:'Amazon',time:'AS 장마감',sym:'AMZN',act:'Beat'},
+  {date:'2025-02-19',type:'earn',impact:'high',name:'NVDA 어닝 (Q4 FY25)',detail:'NVIDIA',time:'AS 장마감',sym:'NVDA',act:'Beat'},
+  {date:'2025-02-05',type:'earn',impact:'high',name:'GOOGL 어닝 (Q4)',detail:'Alphabet',time:'AS 장마감',sym:'GOOGL',act:'Beat'},
+
+  // ── 한국 어닝 ──
+  {date:'2025-01-31',type:'kr',impact:'high',name:'삼성전자 Q4 실적',detail:'연결 잠정 실적 발표',time:'08:00 KST',sym:'005930.KS',act:'영업이익 6.5조'},
+  {date:'2025-02-05',type:'kr',impact:'high',name:'SK하이닉스 Q4 실적',detail:'분기 실적 컨퍼런스콜',time:'10:00 KST',sym:'000660.KS',act:'영업이익 8.1조'},
+  {date:'2025-04-25',type:'kr',impact:'high',name:'삼성전자 Q1 실적',detail:'연결 잠정 실적 발표',time:'08:00 KST',sym:'005930.KS',est:'영업이익 7~8조'},
+  {date:'2025-04-24',type:'kr',impact:'high',name:'SK하이닉스 Q1 실적',detail:'분기 실적 발표',time:'10:00 KST',sym:'000660.KS',est:'영업이익 7조+'},
+  {date:'2025-05-08',type:'kr',impact:'med',name:'NAVER Q1 실적',detail:'분기 실적 발표',time:'16:00 KST',sym:'035420.KS'},
+  {date:'2025-07-25',type:'kr',impact:'high',name:'삼성전자 Q2 실적',detail:'연결 잠정 실적',time:'08:00 KST',sym:'005930.KS'},
+  {date:'2025-07-24',type:'kr',impact:'high',name:'SK하이닉스 Q2 실적',detail:'분기 실적',time:'10:00 KST',sym:'000660.KS'},
+
+  // ── 기타 주요 이벤트 ──
+  {date:'2025-03-18',type:'eco',impact:'med',name:'Jackson Hole 심포지엄',detail:'연준 의장 연설 포함',time:'09:00 MT',sym:'FED'},
+  {date:'2025-05-01',type:'eco',impact:'high',name:'미국 실업률 (3월)',detail:'Unemployment Rate',time:'08:30 ET',sym:'UNEMP'},
+  {date:'2025-03-10',type:'kr',impact:'med',name:'한국 GDP Q4 2024',detail:'한국 GDP 성장률 잠정치',time:'08:00 KST',sym:'KR-GDP',act:'+2.0%'},
+  {date:'2025-04-01',type:'kr',impact:'med',name:'한국 수출입 (3월)',detail:'무역수지 발표',time:'08:00 KST',sym:'KR-TRADE'},
+  {date:'2025-04-02',type:'kr',impact:'med',name:'한국 소비자물가 (3월)',detail:'CPI YoY',time:'08:00 KST',sym:'KR-CPI'},
+];
+
+// Custom events from localStorage
+let customEvents = JSON.parse(localStorage.getItem('cal_custom') || '[]');
+
+// getAllEvents defined in FMP section above
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+const today = new Date();
+let viewYear  = today.getFullYear();
+let viewMonth = today.getMonth(); // 0-indexed
+let activeFilter = 'all';
+let selectedDate = null;
+
+// ═══════════════════════════════════════
+// FILTER
+// ═══════════════════════════════════════
+function toggleFilter(f){
+  activeFilter = f;
+  document.querySelectorAll('.f-btn').forEach(b=>{
+    b.classList.toggle('on', b.dataset.filter===f);
+  });
+  renderCalendar();
+}
+
+function filterEvent(ev){
+  if(activeFilter==='all') return true;
+  if(activeFilter==='high') return ev.impact==='high';
+  return ev.type===activeFilter;
+}
+
+// ═══════════════════════════════════════
+// CALENDAR RENDER
+// ═══════════════════════════════════════
+const MONTHS = ['January','February','March','April','May','June',
+                'July','August','September','October','November','December'];
+const MONTHS_KO = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+
+function renderCalendar(){
+  // Month title
+  const m = MONTHS_KO[viewMonth];
+  document.getElementById('cal-month').innerHTML = `${viewYear}년 <em>${m}</em>`;
+
+  const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+  const daysInMonth = new Date(viewYear, viewMonth+1, 0).getDate();
+  const daysInPrev  = new Date(viewYear, viewMonth, 0).getDate();
+  const allEvs = getAllEvents().filter(filterEvent);
+  // Group by date
+  const byDate = {};
+  allEvs.forEach(ev=>{ if(!byDate[ev.date]) byDate[ev.date]=[]; byDate[ev.date].push(ev); });
+
+  const grid = document.getElementById('cal-grid');
+  let html = '';
+
+  // Prev month days
+  for(let i=0;i<firstDay;i++){
+    const d = daysInPrev - firstDay + 1 + i;
+    const dateStr = `${viewYear}-${String(viewMonth).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    html += dayCell(d, dateStr, byDate[dateStr]||[], true);
+  }
+  // Current month
+  for(let d=1;d<=daysInMonth;d++){
+    const dateStr = `${viewYear}-${String(viewMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday = d===today.getDate()&&viewMonth===today.getMonth()&&viewYear===today.getFullYear();
+    html += dayCell(d, dateStr, byDate[dateStr]||[], false, isToday);
+  }
+  // Next month filler
+  const total = firstDay + daysInMonth;
+  const remaining = total%7===0?0:7-(total%7);
+  for(let i=1;i<=remaining;i++){
+    const dateStr = `${viewYear}-${String(viewMonth+2).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
+    html += dayCell(i, dateStr, byDate[dateStr]||[], true);
+  }
+  grid.innerHTML = html;
+
+  renderWeekList();
+  renderNext30();
+}
+
+function dayCell(d, dateStr, evs, otherMonth, isToday=false){
+  const sel = selectedDate===dateStr;
+  const cls = ['cal-day', otherMonth?'other-month':'', isToday?'today':'', sel?'selected':''].filter(Boolean).join(' ');
+  const maxShow = 3;
+  const visible = evs.slice(0,maxShow);
+  const more = evs.length - maxShow;
+  const dnHTML = isToday
+    ? `<div class="cal-dn"><div class="today-dot">${d}</div></div>`
+    : `<div class="cal-dn">${d}</div>`;
+  const evHTML = visible.map(ev=>`
+    <div class="cal-ev ${ev.type} ${ev.impact==='high'?'high':''}" title="${ev.name}" onclick="event.stopPropagation();selectDay('${dateStr}')">
+      ${ev.sym?`<strong>${ev.sym}</strong> `:''}${ev.name.slice(0,18)}
+    </div>`).join('');
+  const moreHTML = more>0 ? `<div class="cal-more" onclick="event.stopPropagation();selectDay('${dateStr}')">+${more}개</div>` : '';
+  return `<div class="${cls}" onclick="selectDay('${dateStr}')" style="${sel?'background:rgba(11,43,82,.06);outline:2px solid var(--navy);outline-offset:-1px':''}">
+    ${dnHTML}<div class="cal-events">${evHTML}${moreHTML}</div>
+  </div>`;
+}
+
+function selectDay(dateStr){
+  selectedDate = dateStr;
+  renderCalendar();
+  renderDayDetail(dateStr);
+}
+
+function renderDayDetail(dateStr){
+  const evs = getAllEvents().filter(e=>e.date===dateStr&&filterEvent(e));
+  const el = document.getElementById('ev-detail');
+  const parts = dateStr.split('-');
+  const label = `${parts[0]}년 ${parseInt(parts[1])}월 ${parseInt(parts[2])}일`;
+
+  if(!evs.length){
+    el.innerHTML = `<div class="ev-d-hd"><div class="ev-d-title"><em>${label}</em></div></div>
+      <div class="ev-empty">이 날짜에 등록된 이벤트가 없습니다.</div>`;
+    return;
+  }
+
+  const cards = evs.map(ev=>{
+    const typeLabel = {earn:'어닝 발표',fomc:'FOMC/중앙은행',eco:'경제지표',kr:'한국 이벤트',div:'배당/기타'}[ev.type]||ev.type;
+    const impactLabel = {high:'⚡ High Impact',med:'Medium',low:'Low'}[ev.impact]||'';
+    const resultRow = ev.act ? `<div class="edc-row"><span>실제</span><span style="font-weight:600">${ev.act}</span></div>` : '';
+    const estRow = ev.est ? `<div class="edc-row"><span>컨센서스</span><span>${ev.est}</span></div>` : '';
+    return `<div class="edc ${ev.type}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div class="edc-type">${typeLabel}</div>
+        ${ev.custom ? `<span onclick="deleteCustomEvent('${ev.date}','${ev.name.replace(/'/g,"\\'")}');" style="font-family:var(--mono);font-size:11px;color:var(--muted);cursor:pointer;padding:1px 4px" title="삭제">✕</span>` : ''}
+      </div>
+      <div class="edc-name">${ev.name}</div>
+      <div class="edc-row"><span>시간</span><span>${ev.time||'—'}</span></div>
+      <div class="edc-row"><span>상세</span><span>${ev.detail||'—'}</span></div>
+      ${estRow}${resultRow}
+      ${ev.prev ? `<div class="edc-row"><span>이전값</span><span>${ev.prev}</span></div>` : ''}
+      <span class="edc-impact ${ev.impact}">${impactLabel}</span>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = `<div class="ev-d-hd"><div class="ev-d-title"><em>${label}</em> 이벤트</div></div>
+    <div class="ev-d-body">${cards}</div>`;
+}
+
+// ═══════════════════════════════════════
+// UPCOMING LISTS
+// ═══════════════════════════════════════
+function getWeekBounds(){
+  const mon = new Date(today);
+  mon.setDate(today.getDate() - (today.getDay()===0?6:today.getDay()-1));
+  const sun = new Date(mon); sun.setDate(mon.getDate()+6);
+  return {mon, sun};
+}
+
+function renderWeekList(){
+  const {mon, sun} = getWeekBounds();
+  const p = n=>String(n).padStart(2,'0');
+  const fmtD = d=>`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`;
+  const monStr = fmtD(mon), sunStr = fmtD(sun);
+  document.getElementById('week-range').textContent = `${p(mon.getMonth()+1)}/${p(mon.getDate())} – ${p(sun.getMonth()+1)}/${p(sun.getDate())}`;
+
+  const evs = getAllEvents().filter(e=>e.date>=monStr&&e.date<=sunStr&&filterEvent(e))
+    .sort((a,b)=>a.date.localeCompare(b.date));
+  const el = document.getElementById('this-week');
+  if(!evs.length){ el.innerHTML=`<div style="font-family:var(--mono);font-size:10.5px;color:var(--muted);padding:14px;text-align:center">이번 주 이벤트 없음</div>`; return; }
+  el.innerHTML = evs.slice(0,8).map(ev=>upcomingItem(ev)).join('');
+}
+
+function renderNext30(){
+  const p=n=>String(n).padStart(2,'0');
+  const fmtD=d=>`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`;
+  const todayStr = fmtD(today);
+  const end = new Date(today); end.setDate(today.getDate()+30);
+  const endStr = fmtD(end);
+
+  const evs = getAllEvents().filter(e=>e.date>=todayStr&&e.date<=endStr&&e.impact==='high')
+    .sort((a,b)=>a.date.localeCompare(b.date));
+  const el = document.getElementById('next30');
+  if(!evs.length){ el.innerHTML=`<div style="font-family:var(--mono);font-size:10.5px;color:var(--muted);padding:14px;text-align:center">30일 내 하이임팩트 없음</div>`; return; }
+  el.innerHTML = evs.slice(0,10).map(ev=>upcomingItem(ev)).join('');
+}
+
+function upcomingItem(ev){
+  const p=n=>String(n).padStart(2,'0');
+  const d = new Date(ev.date+'T12:00:00');
+  const diffMs = d - today;
+  const diffDays = Math.floor(diffMs/(1000*60*60*24));
+  const isToday2 = diffDays===0||diffDays===-1&&diffMs>-86400000;
+  const dateDisplay = isToday2?'오늘':`${p(d.getMonth()+1)}/${p(d.getDate())}`;
+  const dateCls = isToday2?'today':diffDays<=3?'soon':'';
+  const tagCls = ev.type;
+  const tagLabel = {earn:'어닝',fomc:'FOMC',eco:'지표',kr:'한국',div:'기타'}[ev.type]||ev.type;
+  const delBtn = ev.custom ? `<span onclick="event.stopPropagation();deleteCustomEvent('${ev.date}','${ev.name.replace(/'/g,"\\'")}');" 
+    style="font-family:var(--mono);font-size:11px;color:var(--muted);cursor:pointer;padding:2px 6px;flex-shrink:0"
+    title="삭제">✕</span>` : '';
+  return `<div class="ul-item" onclick="selectDay('${ev.date}');goToDate('${ev.date}')">
+    <div class="ul-date ${dateCls}">${dateDisplay}</div>
+    <div class="ul-content">
+      <div class="ul-name">${ev.sym?ev.sym+' ':''} ${ev.name}</div>
+      <div class="ul-meta">${ev.time||''} ${ev.est?'· '+ev.est:''} ${ev.act?'· '+ev.act:''}</div>
+    </div>
+    <span class="ul-tag ${tagCls}">${tagLabel}</span>
+    ${delBtn}
+  </div>`;
+}
+
+function goToDate(dateStr){
+  const d = new Date(dateStr+'T12:00:00');
+  viewYear  = d.getFullYear();
+  viewMonth = d.getMonth();
+  renderCalendar();
+}
+
+// ═══════════════════════════════════════
+// COUNTDOWN
+// ═══════════════════════════════════════
+function startCountdown(){
+  const p=n=>String(n).padStart(2,'0');
+  const fmtD=d=>`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`;
+  const todayStr=fmtD(today);
+
+  // Find next high-impact event
+  const next = getAllEvents()
+    .filter(e=>e.date>=todayStr&&e.impact==='high')
+    .sort((a,b)=>a.date.localeCompare(b.date))[0];
+
+  if(!next){ document.getElementById('cc-event').textContent='예정된 주요 이벤트 없음'; return; }
+  document.getElementById('cc-event').innerHTML=`<em>${next.name}</em>`;
+
+  function tick(){
+    const target = new Date(next.date+'T'+(next.time?.includes('ET')?next.time.replace(' ET',''):next.time?.replace(' KST','')||'14:00')+':00');
+    // Adjust for timezone
+    const now = new Date();
+    const diff = target - now;
+    if(diff<=0){
+      document.getElementById('cc-d').textContent='00';
+      document.getElementById('cc-h').textContent='00';
+      document.getElementById('cc-m').textContent='00';
+      document.getElementById('cc-s').textContent='00';
+      return;
+    }
+    const days=Math.floor(diff/86400000);
+    const hrs =Math.floor((diff%86400000)/3600000);
+    const mins=Math.floor((diff%3600000)/60000);
+    const secs=Math.floor((diff%60000)/1000);
+    document.getElementById('cc-d').textContent=String(days).padStart(2,'0');
+    document.getElementById('cc-h').textContent=p(hrs);
+    document.getElementById('cc-m').textContent=p(mins);
+    document.getElementById('cc-s').textContent=p(secs);
+    setTimeout(tick,1000);
+  }
+  tick();
+}
+
+// ═══════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════
+function prevMonth(){
+  viewMonth--;
+  if(viewMonth<0){viewMonth=11;viewYear--;}
+  renderCalendar();
+}
+function nextMonth(){
+  viewMonth++;
+  if(viewMonth>11){viewMonth=0;viewYear++;}
+  renderCalendar();
+}
+
+// ═══════════════════════════════════════
+// CUSTOM EVENTS
+// ═══════════════════════════════════════
+function addCustomEvent(){
+  document.getElementById('add-modal').style.display='flex';
+  const p=n=>String(n).padStart(2,'0');
+  document.getElementById('add-date').value=`${today.getFullYear()}-${p(today.getMonth()+1)}-${p(today.getDate())}`;
+}
+function closeModal(){
+  document.getElementById('add-modal').style.display='none';
+}
+function deleteCustomEvent(date, name){
+  if(!confirm(`"${name}" 삭제할까요?`)) return;
+  customEvents = customEvents.filter(e=>!(e.date===date && e.name===name));
+  localStorage.setItem('cal_custom', JSON.stringify(customEvents));
+  renderCalendar();
+  renderWeekList();
+  renderNext30();
+  // Refresh day detail
+  if(selectedDate) renderDayDetail(selectedDate);
+}
+
+function saveCustomEvent(){
+  const date=document.getElementById('add-date').value;
+  const name=document.getElementById('add-name').value.trim();
+  const type=document.getElementById('add-type').value;
+  const impact=document.getElementById('add-impact').value;
+  const note=document.getElementById('add-note').value.trim();
+  if(!date||!name)return;
+  customEvents.push({date,name,type,impact,detail:note||name,time:'—',sym:'USER',custom:true});
+  localStorage.setItem('cal_custom',JSON.stringify(customEvents));
+  closeModal();
+  renderCalendar();
+}
+
+
+// ═══════════════════════════════════════
+// LIVE DATA — Finnhub (무료 키, CORS OK)
+// finnhub.io → 무료 가입 → API Key 복사
+// ═══════════════════════════════════════
+let FMP_KEY  = localStorage.getItem('finnhub_key') || '';
+let FRED_KEY = localStorage.getItem('fred_key') || '';
+let fmpEvents = [];
+
+function toggleKeyPanel(){
+  const p = document.getElementById('key-panel');
+  const hidden = p.style.display==='none'||p.style.display==='';
+  p.style.display = hidden ? 'block' : 'none';
+  if(hidden && FMP_KEY) document.getElementById('fmp-key-i').value = FMP_KEY;
+}
+
+function saveFredKey(){
+  const k = document.getElementById('fred-key-i').value.trim();
+  if(!k) return;
+  FRED_KEY = k;
+  localStorage.setItem('fred_key', k);
+  document.getElementById('fred-panel-status').innerHTML = '<span style="color:var(--green)">✓ 저장됨. 로딩 중...</span>';
+  loadLiveCalendar();
+}
+
+function saveFmpKey(){
+  const k = document.getElementById('fmp-key-i').value.trim();
+  if(!k) return;
+  FMP_KEY = k;
+  localStorage.setItem('finnhub_key', k);
+  document.getElementById('key-panel').style.display = 'none';
+  document.getElementById('fmp-banner').style.display = 'none';
+  setBadgeActive();
+  loadLiveCalendar();
+}
+
+function setBadgeActive(){
+  const b = document.getElementById('fmp-badge');
+  if(b){ b.textContent='LIVE ✓'; b.classList.add('active'); }
+}
+
+function setLoadStatus(msg, type){
+  const colors={ok:'var(--green)',warn:'var(--gold2)',err:'var(--red)',load:'var(--navy)'};
+  const el=document.getElementById('fmp-load-msg');
+  const dot=document.getElementById('fmp-load-dot');
+  if(el){ el.textContent=msg; el.style.color=colors[type]||'var(--muted)'; }
+  if(dot){ dot.style.background=colors[type]||'var(--muted)';
+    dot.style.animation=type==='load'?'pulse 1s infinite':'none'; }
+}
+
+async function finnhubFetch(path){
+  const url = `https://finnhub.io/api/v1/${path}&token=${FMP_KEY}`;
+  try{
+    const r = await fetch(url, {signal:AbortSignal.timeout(12000)});
+    if(!r.ok){ console.warn('[FINNHUB] HTTP', r.status); return null; }
+    return await r.json();
+  } catch(e){ console.warn('[FINNHUB]', e.message); return null; }
+}
+
+async function loadLiveCalendar(){
+  if(!FMP_KEY && !FRED_KEY){
+    setLoadStatus('💡 ⚙ 버튼 → Finnhub(어닝) + FRED(경제지표) 키 입력 (둘 다 무료)', 'warn');
+    return;
+  }
+  setLoadStatus('⏳ 데이터 로딩 중...', 'load');
+  if(!FMP_KEY) { console.log('[FINNHUB] no key, skipping earnings'); }
+  fmpEvents = [];
+
+  const p = n=>String(n).padStart(2,'0');
+  const fmtD = d=>`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`;
+  const from = fmtD(new Date(today.getFullYear(), today.getMonth()-1, 1));
+  const to   = fmtD(new Date(today.getFullYear(), today.getMonth()+4, 0));
+
+  // ── 1) Earnings Calendar ──
+  setLoadStatus('⏳ 어닝 캘린더 로딩 중...', 'load');
+  const earnJ = FMP_KEY ? await finnhubFetch(`calendar/earnings?from=${from}&to=${to}`) : null;
+  console.log('[FINNHUB] earnings:', earnJ);
+
+  let earnCount=0, ecoCount=0;
+  const earningsArr = earnJ?.earningsCalendar || [];
+  earningsArr.forEach(e=>{
+    if(!e.date||!e.symbol) return;
+    const sym = e.symbol.toUpperCase();
+    const eps  = e.epsEstimate!=null ? `EPS Est $${Number(e.epsEstimate).toFixed(2)}` : '';
+    const rev  = e.revenueEstimate!=null ? ` · Rev $${(e.revenueEstimate/1e9).toFixed(1)}B` : '';
+    const epsA = e.epsActual!=null ? `EPS $${Number(e.epsActual).toFixed(2)}` : '';
+    const revA = e.revenueActual!=null ? ` Rev $${(e.revenueActual/1e9).toFixed(1)}B` : '';
+    fmpEvents.push({
+      date: e.date,
+      type: 'earn',
+      impact: isHighProfile(sym) ? 'high' : 'med',
+      name: `${sym} 어닝`,
+      detail: `${sym} 분기 실적 발표`,
+      time: e.hour==='bmo'?'BMO (장전)': e.hour==='amc'?'AMC (장후)': '—',
+      sym,
+      est: (eps+rev)||undefined,
+      act: (epsA+revA)||undefined,
+      live: true,
+    });
+    earnCount++;
+  });
+
+  // ── 2) Economic Calendar — FRED API (무료, 키 없음, CORS OK via proxy) ──
+  setLoadStatus(`⏳ 경제지표 로딩... (어닝 ${earnCount}건)`, 'load');
+
+  // FRED series IDs for major indicators
+  // ── BLS/BEA/Fed 공식 2025 발표 일정 (하드코드 + FRED 실제값 오버레이) ──
+  const ECO_SCHEDULE_2025 = [
+    // CPI (BLS 공식 발표일)
+    {date:'2025-01-15',name:'미국 CPI (12월)',     sym:'CPI',    id:'CPIAUCSL', impact:'high', time:'08:30 ET', detail:'소비자물가지수 YoY / MoM'},
+    {date:'2025-02-12',name:'미국 CPI (1월)',      sym:'CPI',    id:'CPIAUCSL', impact:'high', time:'08:30 ET', detail:'소비자물가지수 YoY / MoM'},
+    {date:'2025-03-12',name:'미국 CPI (2월)',      sym:'CPI',    id:'CPIAUCSL', impact:'high', time:'08:30 ET', detail:'소비자물가지수 YoY / MoM'},
+    {date:'2025-04-10',name:'미국 CPI (3월)',      sym:'CPI',    id:'CPIAUCSL', impact:'high', time:'08:30 ET', detail:'소비자물가지수 YoY / MoM'},
+    {date:'2025-05-13',name:'미국 CPI (4월)',      sym:'CPI',    id:'CPIAUCSL', impact:'high', time:'08:30 ET', detail:'소비자물가지수 YoY / MoM'},
+    {date:'2025-06-11',name:'미국 CPI (5월)',      sym:'CPI',    id:'CPIAUCSL', impact:'high', time:'08:30 ET', detail:'소비자물가지수 YoY / MoM'},
+    {date:'2025-07-15',name:'미국 CPI (6월)',      sym:'CPI',    id:'CPIAUCSL', impact:'high', time:'08:30 ET', detail:'소비자물가지수 YoY / MoM'},
+    {date:'2025-08-12',name:'미국 CPI (7월)',      sym:'CPI',    id:'CPIAUCSL', impact:'high', time:'08:30 ET', detail:'소비자물가지수 YoY / MoM'},
+    {date:'2025-09-10',name:'미국 CPI (8월)',      sym:'CPI',    id:'CPIAUCSL', impact:'high', time:'08:30 ET', detail:'소비자물가지수 YoY / MoM'},
+    {date:'2025-10-14',name:'미국 CPI (9월)',      sym:'CPI',    id:'CPIAUCSL', impact:'high', time:'08:30 ET', detail:'소비자물가지수 YoY / MoM'},
+    {date:'2025-11-13',name:'미국 CPI (10월)',     sym:'CPI',    id:'CPIAUCSL', impact:'high', time:'08:30 ET', detail:'소비자물가지수 YoY / MoM'},
+    {date:'2025-12-10',name:'미국 CPI (11월)',     sym:'CPI',    id:'CPIAUCSL', impact:'high', time:'08:30 ET', detail:'소비자물가지수 YoY / MoM'},
+    // NFP (BLS 공식)
+    {date:'2025-01-10',name:'비농업 고용 (12월)',  sym:'NFP',    id:'PAYEMS',   impact:'high', time:'08:30 ET', detail:'Nonfarm Payrolls / 실업률'},
+    {date:'2025-02-07',name:'비농업 고용 (1월)',   sym:'NFP',    id:'PAYEMS',   impact:'high', time:'08:30 ET', detail:'Nonfarm Payrolls / 실업률'},
+    {date:'2025-03-07',name:'비농업 고용 (2월)',   sym:'NFP',    id:'PAYEMS',   impact:'high', time:'08:30 ET', detail:'Nonfarm Payrolls / 실업률'},
+    {date:'2025-04-04',name:'비농업 고용 (3월)',   sym:'NFP',    id:'PAYEMS',   impact:'high', time:'08:30 ET', detail:'Nonfarm Payrolls / 실업률'},
+    {date:'2025-05-02',name:'비농업 고용 (4월)',   sym:'NFP',    id:'PAYEMS',   impact:'high', time:'08:30 ET', detail:'Nonfarm Payrolls / 실업률'},
+    {date:'2025-06-06',name:'비농업 고용 (5월)',   sym:'NFP',    id:'PAYEMS',   impact:'high', time:'08:30 ET', detail:'Nonfarm Payrolls / 실업률'},
+    {date:'2025-07-03',name:'비농업 고용 (6월)',   sym:'NFP',    id:'PAYEMS',   impact:'high', time:'08:30 ET', detail:'Nonfarm Payrolls / 실업률'},
+    {date:'2025-08-01',name:'비농업 고용 (7월)',   sym:'NFP',    id:'PAYEMS',   impact:'high', time:'08:30 ET', detail:'Nonfarm Payrolls / 실업률'},
+    {date:'2025-09-05',name:'비농업 고용 (8월)',   sym:'NFP',    id:'PAYEMS',   impact:'high', time:'08:30 ET', detail:'Nonfarm Payrolls / 실업률'},
+    {date:'2025-10-03',name:'비농업 고용 (9월)',   sym:'NFP',    id:'PAYEMS',   impact:'high', time:'08:30 ET', detail:'Nonfarm Payrolls / 실업률'},
+    {date:'2025-11-07',name:'비농업 고용 (10월)',  sym:'NFP',    id:'PAYEMS',   impact:'high', time:'08:30 ET', detail:'Nonfarm Payrolls / 실업률'},
+    {date:'2025-12-05',name:'비농업 고용 (11월)',  sym:'NFP',    id:'PAYEMS',   impact:'high', time:'08:30 ET', detail:'Nonfarm Payrolls / 실업률'},
+    // PCE / Core PCE (BEA 공식)
+    {date:'2025-01-31',name:'Core PCE (12월)',     sym:'PCE',    id:'PCEPILFE', impact:'high', time:'08:30 ET', detail:'연준 선호 인플레 지표'},
+    {date:'2025-02-28',name:'Core PCE (1월)',      sym:'PCE',    id:'PCEPILFE', impact:'high', time:'08:30 ET', detail:'연준 선호 인플레 지표'},
+    {date:'2025-03-28',name:'Core PCE (2월)',      sym:'PCE',    id:'PCEPILFE', impact:'high', time:'08:30 ET', detail:'연준 선호 인플레 지표'},
+    {date:'2025-04-30',name:'Core PCE (3월)',      sym:'PCE',    id:'PCEPILFE', impact:'high', time:'08:30 ET', detail:'연준 선호 인플레 지표'},
+    {date:'2025-05-30',name:'Core PCE (4월)',      sym:'PCE',    id:'PCEPILFE', impact:'high', time:'08:30 ET', detail:'연준 선호 인플레 지표'},
+    {date:'2025-06-27',name:'Core PCE (5월)',      sym:'PCE',    id:'PCEPILFE', impact:'high', time:'08:30 ET', detail:'연준 선호 인플레 지표'},
+    {date:'2025-07-31',name:'Core PCE (6월)',      sym:'PCE',    id:'PCEPILFE', impact:'high', time:'08:30 ET', detail:'연준 선호 인플레 지표'},
+    {date:'2025-08-29',name:'Core PCE (7월)',      sym:'PCE',    id:'PCEPILFE', impact:'high', time:'08:30 ET', detail:'연준 선호 인플레 지표'},
+    {date:'2025-09-26',name:'Core PCE (8월)',      sym:'PCE',    id:'PCEPILFE', impact:'high', time:'08:30 ET', detail:'연준 선호 인플레 지표'},
+    {date:'2025-10-31',name:'Core PCE (9월)',      sym:'PCE',    id:'PCEPILFE', impact:'high', time:'08:30 ET', detail:'연준 선호 인플레 지표'},
+    {date:'2025-11-26',name:'Core PCE (10월)',     sym:'PCE',    id:'PCEPILFE', impact:'high', time:'08:30 ET', detail:'연준 선호 인플레 지표'},
+    {date:'2025-12-22',name:'Core PCE (11월)',     sym:'PCE',    id:'PCEPILFE', impact:'high', time:'08:30 ET', detail:'연준 선호 인플레 지표'},
+    // GDP (BEA 공식 — 속보/잠정/확정 3회)
+    {date:'2025-01-30',name:'GDP Q4 2024 (속보)',  sym:'GDP',    id:'GDP',      impact:'high', time:'08:30 ET', detail:'실질GDP 성장률 연율 (QoQ)'},
+    {date:'2025-02-27',name:'GDP Q4 2024 (잠정)',  sym:'GDP',    id:'GDP',      impact:'high', time:'08:30 ET', detail:'실질GDP 성장률 2차 추정'},
+    {date:'2025-03-27',name:'GDP Q4 2024 (확정)',  sym:'GDP',    id:'GDP',      impact:'med',  time:'08:30 ET', detail:'실질GDP 성장률 최종치'},
+    {date:'2025-04-30',name:'GDP Q1 2025 (속보)',  sym:'GDP',    id:'GDP',      impact:'high', time:'08:30 ET', detail:'실질GDP 성장률 연율 (QoQ)'},
+    {date:'2025-05-29',name:'GDP Q1 2025 (잠정)',  sym:'GDP',    id:'GDP',      impact:'high', time:'08:30 ET', detail:'실질GDP 성장률 2차 추정'},
+    {date:'2025-06-26',name:'GDP Q1 2025 (확정)',  sym:'GDP',    id:'GDP',      impact:'med',  time:'08:30 ET', detail:'실질GDP 성장률 최종치'},
+    {date:'2025-07-30',name:'GDP Q2 2025 (속보)',  sym:'GDP',    id:'GDP',      impact:'high', time:'08:30 ET', detail:'실질GDP 성장률 연율 (QoQ)'},
+    {date:'2025-08-28',name:'GDP Q2 2025 (잠정)',  sym:'GDP',    id:'GDP',      impact:'high', time:'08:30 ET', detail:'실질GDP 성장률 2차 추정'},
+    {date:'2025-09-25',name:'GDP Q2 2025 (확정)',  sym:'GDP',    id:'GDP',      impact:'med',  time:'08:30 ET', detail:'실질GDP 성장률 최종치'},
+    {date:'2025-10-30',name:'GDP Q3 2025 (속보)',  sym:'GDP',    id:'GDP',      impact:'high', time:'08:30 ET', detail:'실질GDP 성장률 연율 (QoQ)'},
+    {date:'2025-11-26',name:'GDP Q3 2025 (잠정)',  sym:'GDP',    id:'GDP',      impact:'high', time:'08:30 ET', detail:'실질GDP 성장률 2차 추정'},
+    {date:'2025-12-19',name:'GDP Q3 2025 (확정)',  sym:'GDP',    id:'GDP',      impact:'med',  time:'08:30 ET', detail:'실질GDP 성장률 최종치'},
+    // PPI (BLS 공식)
+    {date:'2025-01-14',name:'PPI (12월)',           sym:'PPI',    id:'PPIFIS',   impact:'med',  time:'08:30 ET', detail:'생산자물가지수 최종수요'},
+    {date:'2025-02-13',name:'PPI (1월)',            sym:'PPI',    id:'PPIFIS',   impact:'med',  time:'08:30 ET', detail:'생산자물가지수 최종수요'},
+    {date:'2025-03-13',name:'PPI (2월)',            sym:'PPI',    id:'PPIFIS',   impact:'med',  time:'08:30 ET', detail:'생산자물가지수 최종수요'},
+    {date:'2025-04-11',name:'PPI (3월)',            sym:'PPI',    id:'PPIFIS',   impact:'med',  time:'08:30 ET', detail:'생산자물가지수 최종수요'},
+    {date:'2025-05-15',name:'PPI (4월)',            sym:'PPI',    id:'PPIFIS',   impact:'med',  time:'08:30 ET', detail:'생산자물가지수 최종수요'},
+    {date:'2025-06-12',name:'PPI (5월)',            sym:'PPI',    id:'PPIFIS',   impact:'med',  time:'08:30 ET', detail:'생산자물가지수 최종수요'},
+    {date:'2025-07-16',name:'PPI (6월)',            sym:'PPI',    id:'PPIFIS',   impact:'med',  time:'08:30 ET', detail:'생산자물가지수 최종수요'},
+    {date:'2025-08-14',name:'PPI (7월)',            sym:'PPI',    id:'PPIFIS',   impact:'med',  time:'08:30 ET', detail:'생산자물가지수 최종수요'},
+    {date:'2025-09-11',name:'PPI (8월)',            sym:'PPI',    id:'PPIFIS',   impact:'med',  time:'08:30 ET', detail:'생산자물가지수 최종수요'},
+    {date:'2025-10-16',name:'PPI (9월)',            sym:'PPI',    id:'PPIFIS',   impact:'med',  time:'08:30 ET', detail:'생산자물가지수 최종수요'},
+    {date:'2025-11-13',name:'PPI (10월)',           sym:'PPI',    id:'PPIFIS',   impact:'med',  time:'08:30 ET', detail:'생산자물가지수 최종수요'},
+    {date:'2025-12-11',name:'PPI (11월)',           sym:'PPI',    id:'PPIFIS',   impact:'med',  time:'08:30 ET', detail:'생산자물가지수 최종수요'},
+    // Retail Sales (Census Bureau)
+    {date:'2025-01-16',name:'소매판매 (12월)',      sym:'RETAIL', id:'RSXFS',    impact:'med',  time:'08:30 ET', detail:'Retail Sales MoM'},
+    {date:'2025-02-14',name:'소매판매 (1월)',       sym:'RETAIL', id:'RSXFS',    impact:'med',  time:'08:30 ET', detail:'Retail Sales MoM'},
+    {date:'2025-03-17',name:'소매판매 (2월)',       sym:'RETAIL', id:'RSXFS',    impact:'med',  time:'08:30 ET', detail:'Retail Sales MoM'},
+    {date:'2025-04-16',name:'소매판매 (3월)',       sym:'RETAIL', id:'RSXFS',    impact:'med',  time:'08:30 ET', detail:'Retail Sales MoM'},
+    {date:'2025-05-15',name:'소매판매 (4월)',       sym:'RETAIL', id:'RSXFS',    impact:'med',  time:'08:30 ET', detail:'Retail Sales MoM'},
+    {date:'2025-06-17',name:'소매판매 (5월)',       sym:'RETAIL', id:'RSXFS',    impact:'med',  time:'08:30 ET', detail:'Retail Sales MoM'},
+    {date:'2025-07-17',name:'소매판매 (6월)',       sym:'RETAIL', id:'RSXFS',    impact:'med',  time:'08:30 ET', detail:'Retail Sales MoM'},
+    {date:'2025-08-15',name:'소매판매 (7월)',       sym:'RETAIL', id:'RSXFS',    impact:'med',  time:'08:30 ET', detail:'Retail Sales MoM'},
+    {date:'2025-09-17',name:'소매판매 (8월)',       sym:'RETAIL', id:'RSXFS',    impact:'med',  time:'08:30 ET', detail:'Retail Sales MoM'},
+    {date:'2025-10-17',name:'소매판매 (9월)',       sym:'RETAIL', id:'RSXFS',    impact:'med',  time:'08:30 ET', detail:'Retail Sales MoM'},
+    {date:'2025-11-14',name:'소매판매 (10월)',      sym:'RETAIL', id:'RSXFS',    impact:'med',  time:'08:30 ET', detail:'Retail Sales MoM'},
+    {date:'2025-12-16',name:'소매판매 (11월)',      sym:'RETAIL', id:'RSXFS',    impact:'med',  time:'08:30 ET', detail:'Retail Sales MoM'},
+    // ISM PMI (ISM 공식)
+    {date:'2025-01-03',name:'ISM 제조업 PMI (12월)',sym:'ISM',    id:'MANEMP',   impact:'med',  time:'10:00 ET', detail:'구매관리자지수 제조업'},
+    {date:'2025-02-03',name:'ISM 제조업 PMI (1월)', sym:'ISM',    id:'MANEMP',   impact:'med',  time:'10:00 ET', detail:'구매관리자지수 제조업'},
+    {date:'2025-03-03',name:'ISM 제조업 PMI (2월)', sym:'ISM',    id:'MANEMP',   impact:'med',  time:'10:00 ET', detail:'구매관리자지수 제조업'},
+    {date:'2025-04-01',name:'ISM 제조업 PMI (3월)', sym:'ISM',    id:'MANEMP',   impact:'med',  time:'10:00 ET', detail:'구매관리자지수 제조업'},
+    {date:'2025-05-01',name:'ISM 제조업 PMI (4월)', sym:'ISM',    id:'MANEMP',   impact:'med',  time:'10:00 ET', detail:'구매관리자지수 제조업'},
+    {date:'2025-06-02',name:'ISM 제조업 PMI (5월)', sym:'ISM',    id:'MANEMP',   impact:'med',  time:'10:00 ET', detail:'구매관리자지수 제조업'},
+    {date:'2025-07-01',name:'ISM 제조업 PMI (6월)', sym:'ISM',    id:'MANEMP',   impact:'med',  time:'10:00 ET', detail:'구매관리자지수 제조업'},
+    {date:'2025-08-01',name:'ISM 제조업 PMI (7월)', sym:'ISM',    id:'MANEMP',   impact:'med',  time:'10:00 ET', detail:'구매관리자지수 제조업'},
+    {date:'2025-09-02',name:'ISM 제조업 PMI (8월)', sym:'ISM',    id:'MANEMP',   impact:'med',  time:'10:00 ET', detail:'구매관리자지수 제조업'},
+    {date:'2025-10-01',name:'ISM 제조업 PMI (9월)', sym:'ISM',    id:'MANEMP',   impact:'med',  time:'10:00 ET', detail:'구매관리자지수 제조업'},
+    {date:'2025-11-03',name:'ISM 제조업 PMI (10월)',sym:'ISM',    id:'MANEMP',   impact:'med',  time:'10:00 ET', detail:'구매관리자지수 제조업'},
+    {date:'2025-12-01',name:'ISM 제조업 PMI (11월)',sym:'ISM',    id:'MANEMP',   impact:'med',  time:'10:00 ET', detail:'구매관리자지수 제조업'},
+    // Unemployment / Initial Jobless Claims (주간)
+    {date:'2025-01-09',name:'초기 실업수당 청구',   sym:'UNEMP',  id:'IC4WSA',   impact:'low',  time:'08:30 ET', detail:'Initial Jobless Claims (주간)'},
+    // JOLTS
+    {date:'2025-02-04',name:'JOLTS 구인건수 (12월)',sym:'JOLTS',  id:'JTSJOL',   impact:'med',  time:'10:00 ET', detail:'Job Openings and Labor Turnover'},
+    {date:'2025-03-11',name:'JOLTS 구인건수 (1월)', sym:'JOLTS',  id:'JTSJOL',   impact:'med',  time:'10:00 ET', detail:'Job Openings and Labor Turnover'},
+    {date:'2025-04-08',name:'JOLTS 구인건수 (2월)', sym:'JOLTS',  id:'JTSJOL',   impact:'med',  time:'10:00 ET', detail:'Job Openings and Labor Turnover'},
+    {date:'2025-05-06',name:'JOLTS 구인건수 (3월)', sym:'JOLTS',  id:'JTSJOL',   impact:'med',  time:'10:00 ET', detail:'Job Openings and Labor Turnover'},
+    {date:'2025-06-03',name:'JOLTS 구인건수 (4월)', sym:'JOLTS',  id:'JTSJOL',   impact:'med',  time:'10:00 ET', detail:'Job Openings and Labor Turnover'},
+    {date:'2025-07-08',name:'JOLTS 구인건수 (5월)', sym:'JOLTS',  id:'JTSJOL',   impact:'med',  time:'10:00 ET', detail:'Job Openings and Labor Turnover'},
+    // Michigan Consumer Sentiment
+    {date:'2025-01-17',name:'미시간 소비자심리 (1월 예비)',sym:'UMICH',id:'UMCSENT',impact:'med',time:'10:00 ET',detail:'University of Michigan Consumer Sentiment'},
+    {date:'2025-02-14',name:'미시간 소비자심리 (2월 예비)',sym:'UMICH',id:'UMCSENT',impact:'med',time:'10:00 ET',detail:'University of Michigan Consumer Sentiment'},
+    {date:'2025-03-14',name:'미시간 소비자심리 (3월 예비)',sym:'UMICH',id:'UMCSENT',impact:'med',time:'10:00 ET',detail:'University of Michigan Consumer Sentiment'},
+    {date:'2025-04-11',name:'미시간 소비자심리 (4월 예비)',sym:'UMICH',id:'UMCSENT',impact:'med',time:'10:00 ET',detail:'University of Michigan Consumer Sentiment'},
+    {date:'2025-05-16',name:'미시간 소비자심리 (5월 예비)',sym:'UMICH',id:'UMCSENT',impact:'med',time:'10:00 ET',detail:'University of Michigan Consumer Sentiment'},
+    {date:'2025-06-13',name:'미시간 소비자심리 (6월 예비)',sym:'UMICH',id:'UMCSENT',impact:'med',time:'10:00 ET',detail:'University of Michigan Consumer Sentiment'},
+    // Durable Goods Orders
+    {date:'2025-01-28',name:'내구재 주문 (12월)',    sym:'DURABLE',id:'DGORDER',  impact:'med',  time:'08:30 ET', detail:'Durable Goods Orders MoM'},
+    {date:'2025-02-26',name:'내구재 주문 (1월)',     sym:'DURABLE',id:'DGORDER',  impact:'med',  time:'08:30 ET', detail:'Durable Goods Orders MoM'},
+    {date:'2025-03-26',name:'내구재 주문 (2월)',     sym:'DURABLE',id:'DGORDER',  impact:'med',  time:'08:30 ET', detail:'Durable Goods Orders MoM'},
+    {date:'2025-04-25',name:'내구재 주문 (3월)',     sym:'DURABLE',id:'DGORDER',  impact:'med',  time:'08:30 ET', detail:'Durable Goods Orders MoM'},
+    {date:'2025-05-28',name:'내구재 주문 (4월)',     sym:'DURABLE',id:'DGORDER',  impact:'med',  time:'08:30 ET', detail:'Durable Goods Orders MoM'},
+    // Housing
+    {date:'2025-01-24',name:'신규 주택착공 (12월)',  sym:'HOUSE',  id:'HOUST',    impact:'low',  time:'08:30 ET', detail:'Housing Starts & Building Permits'},
+    {date:'2025-02-19',name:'신규 주택착공 (1월)',   sym:'HOUSE',  id:'HOUST',    impact:'low',  time:'08:30 ET', detail:'Housing Starts & Building Permits'},
+    {date:'2025-03-18',name:'신규 주택착공 (2월)',   sym:'HOUSE',  id:'HOUST',    impact:'low',  time:'08:30 ET', detail:'Housing Starts & Building Permits'},
+    {date:'2025-04-17',name:'신규 주택착공 (3월)',   sym:'HOUSE',  id:'HOUST',    impact:'low',  time:'08:30 ET', detail:'Housing Starts & Building Permits'},
+    // Existing Home Sales (NAR)
+    {date:'2025-01-24',name:'기존 주택판매 (12월)',  sym:'EHSALES',id:'EXHOSLUSM052N',impact:'low',time:'10:00 ET',detail:'Existing Home Sales (NAR)'},
+    {date:'2025-02-21',name:'기존 주택판매 (1월)',   sym:'EHSALES',id:'EXHOSLUSM052N',impact:'low',time:'10:00 ET',detail:'Existing Home Sales (NAR)'},
+    // Empire State Mfg
+    {date:'2025-01-15',name:'엠파이어 제조업 (1월)', sym:'EMPIRE', id:'GAUTHMPNSA',impact:'low', time:'08:30 ET', detail:'Empire State Manufacturing Survey'},
+    {date:'2025-02-18',name:'엠파이어 제조업 (2월)', sym:'EMPIRE', id:'GAUTHMPNSA',impact:'low', time:'08:30 ET', detail:'Empire State Manufacturing Survey'},
+    {date:'2025-03-17',name:'엠파이어 제조업 (3월)', sym:'EMPIRE', id:'GAUTHMPNSA',impact:'low', time:'08:30 ET', detail:'Empire State Manufacturing Survey'},
+    // Philly Fed
+    {date:'2025-01-16',name:'필라델피아 연은 (1월)', sym:'PHILLYFED',id:'DPRIME',  impact:'low',  time:'08:30 ET', detail:'Philadelphia Fed Manufacturing Index'},
+    {date:'2025-02-20',name:'필라델피아 연은 (2월)', sym:'PHILLYFED',id:'DPRIME',  impact:'low',  time:'08:30 ET', detail:'Philadelphia Fed Manufacturing Index'},
+    {date:'2025-03-20',name:'필라델피아 연은 (3월)', sym:'PHILLYFED',id:'DPRIME',  impact:'low',  time:'08:30 ET', detail:'Philadelphia Fed Manufacturing Index'},
+    // 한국 주요 지표
+    {date:'2025-01-22',name:'한국 GDP Q3 2024 (확정)',sym:'KR-GDP', id:null,      impact:'high', time:'08:00 KST', detail:'한국 실질GDP 성장률'},
+    {date:'2025-02-25',name:'한국 소비자물가 (1월)', sym:'KR-CPI', id:null,       impact:'med',  time:'08:00 KST', detail:'한국 CPI YoY'},
+    {date:'2025-03-04',name:'한국 소비자물가 (2월)', sym:'KR-CPI', id:null,       impact:'med',  time:'08:00 KST', detail:'한국 CPI YoY'},
+    {date:'2025-04-02',name:'한국 소비자물가 (3월)', sym:'KR-CPI', id:null,       impact:'med',  time:'08:00 KST', detail:'한국 CPI YoY'},
+    {date:'2025-02-28',name:'한국 산업생산 (1월)',   sym:'KR-IP',  id:null,       impact:'med',  time:'08:00 KST', detail:'광공업생산지수 MoM/YoY'},
+    {date:'2025-03-31',name:'한국 산업생산 (2월)',   sym:'KR-IP',  id:null,       impact:'med',  time:'08:00 KST', detail:'광공업생산지수 MoM/YoY'},
+    {date:'2025-02-01',name:'한국 수출입 (1월)',     sym:'KR-TRADE',id:null,      impact:'high', time:'08:00 KST', detail:'수출 YoY / 무역수지'},
+    {date:'2025-03-01',name:'한국 수출입 (2월)',     sym:'KR-TRADE',id:null,      impact:'high', time:'08:00 KST', detail:'수출 YoY / 무역수지'},
+    {date:'2025-04-01',name:'한국 수출입 (3월)',     sym:'KR-TRADE',id:null,      impact:'high', time:'08:00 KST', detail:'수출 YoY / 무역수지'},
+    {date:'2025-05-01',name:'한국 수출입 (4월)',     sym:'KR-TRADE',id:null,      impact:'high', time:'08:00 KST', detail:'수출 YoY / 무역수지'},
+    {date:'2025-06-01',name:'한국 수출입 (5월)',     sym:'KR-TRADE',id:null,      impact:'high', time:'08:00 KST', detail:'수출 YoY / 무역수지'},
+    {date:'2025-07-01',name:'한국 수출입 (6월)',     sym:'KR-TRADE',id:null,      impact:'high', time:'08:00 KST', detail:'수출 YoY / 무역수지'},
+    {date:'2025-04-24',name:'한국 GDP Q1 2025 (속보)',sym:'KR-GDP',id:null,      impact:'high', time:'08:00 KST', detail:'한국 실질GDP 성장률 속보치'},
+    {date:'2025-07-24',name:'한국 GDP Q2 2025 (속보)',sym:'KR-GDP',id:null,      impact:'high', time:'08:00 KST', detail:'한국 실질GDP 성장률 속보치'},
+
+    // ── 2026 ──
+    // CPI 2026
+    {date:'2026-01-15',name:'미국 CPI (12월 2025)',  sym:'CPI',    id:'CPIAUCSL', impact:'high', time:'08:30 ET', detail:'소비자물가지수 YoY / MoM'},
+    {date:'2026-02-11',name:'미국 CPI (1월)',        sym:'CPI',    id:'CPIAUCSL', impact:'high', time:'08:30 ET', detail:'소비자물가지수 YoY / MoM'},
+    {date:'2026-03-11',name:'미국 CPI (2월)',        sym:'CPI',    id:'CPIAUCSL', impact:'high', time:'08:30 ET', detail:'소비자물가지수 YoY / MoM'},
+    {date:'2026-04-10',name:'미국 CPI (3월)',        sym:'CPI',    id:'CPIAUCSL', impact:'high', time:'08:30 ET', detail:'소비자물가지수 YoY / MoM'},
+    {date:'2026-05-13',name:'미국 CPI (4월)',        sym:'CPI',    id:'CPIAUCSL', impact:'high', time:'08:30 ET', detail:'소비자물가지수 YoY / MoM'},
+    {date:'2026-06-10',name:'미국 CPI (5월)',        sym:'CPI',    id:'CPIAUCSL', impact:'high', time:'08:30 ET', detail:'소비자물가지수 YoY / MoM'},
+    // NFP 2026
+    {date:'2026-01-09',name:'비농업 고용 (12월 2025)',sym:'NFP',   id:'PAYEMS',   impact:'high', time:'08:30 ET', detail:'Nonfarm Payrolls / 실업률'},
+    {date:'2026-02-06',name:'비농업 고용 (1월)',     sym:'NFP',    id:'PAYEMS',   impact:'high', time:'08:30 ET', detail:'Nonfarm Payrolls / 실업률'},
+    {date:'2026-03-06',name:'비농업 고용 (2월)',     sym:'NFP',    id:'PAYEMS',   impact:'high', time:'08:30 ET', detail:'Nonfarm Payrolls / 실업률'},
+    {date:'2026-04-03',name:'비농업 고용 (3월)',     sym:'NFP',    id:'PAYEMS',   impact:'high', time:'08:30 ET', detail:'Nonfarm Payrolls / 실업률'},
+    {date:'2026-05-08',name:'비농업 고용 (4월)',     sym:'NFP',    id:'PAYEMS',   impact:'high', time:'08:30 ET', detail:'Nonfarm Payrolls / 실업률'},
+    {date:'2026-06-05',name:'비농업 고용 (5월)',     sym:'NFP',    id:'PAYEMS',   impact:'high', time:'08:30 ET', detail:'Nonfarm Payrolls / 실업률'},
+    // PCE 2026
+    {date:'2026-01-30',name:'Core PCE (12월 2025)', sym:'PCE',    id:'PCEPILFE', impact:'high', time:'08:30 ET', detail:'연준 선호 인플레 지표'},
+    {date:'2026-02-27',name:'Core PCE (1월)',       sym:'PCE',    id:'PCEPILFE', impact:'high', time:'08:30 ET', detail:'연준 선호 인플레 지표'},
+    {date:'2026-03-27',name:'Core PCE (2월)',       sym:'PCE',    id:'PCEPILFE', impact:'high', time:'08:30 ET', detail:'연준 선호 인플레 지표'},
+    {date:'2026-04-30',name:'Core PCE (3월)',       sym:'PCE',    id:'PCEPILFE', impact:'high', time:'08:30 ET', detail:'연준 선호 인플레 지표'},
+    {date:'2026-05-29',name:'Core PCE (4월)',       sym:'PCE',    id:'PCEPILFE', impact:'high', time:'08:30 ET', detail:'연준 선호 인플레 지표'},
+    // GDP 2026
+    {date:'2026-01-29',name:'GDP Q4 2025 (속보)',   sym:'GDP',    id:'GDP',      impact:'high', time:'08:30 ET', detail:'실질GDP 성장률 연율 (QoQ)'},
+    {date:'2026-02-26',name:'GDP Q4 2025 (잠정)',   sym:'GDP',    id:'GDP',      impact:'high', time:'08:30 ET', detail:'실질GDP 성장률 2차 추정'},
+    {date:'2026-04-29',name:'GDP Q1 2026 (속보)',   sym:'GDP',    id:'GDP',      impact:'high', time:'08:30 ET', detail:'실질GDP 성장률 연율 (QoQ)'},
+    // PPI 2026
+    {date:'2026-01-14',name:'PPI (12월 2025)',      sym:'PPI',    id:'PPIFIS',   impact:'med',  time:'08:30 ET', detail:'생산자물가지수'},
+    {date:'2026-02-12',name:'PPI (1월)',            sym:'PPI',    id:'PPIFIS',   impact:'med',  time:'08:30 ET', detail:'생산자물가지수'},
+    {date:'2026-03-12',name:'PPI (2월)',            sym:'PPI',    id:'PPIFIS',   impact:'med',  time:'08:30 ET', detail:'생산자물가지수'},
+    {date:'2026-04-09',name:'PPI (3월)',            sym:'PPI',    id:'PPIFIS',   impact:'med',  time:'08:30 ET', detail:'생산자물가지수'},
+    {date:'2026-05-14',name:'PPI (4월)',            sym:'PPI',    id:'PPIFIS',   impact:'med',  time:'08:30 ET', detail:'생산자물가지수'},
+    // Retail Sales 2026
+    {date:'2026-01-16',name:'소매판매 (12월 2025)', sym:'RETAIL', id:'RSXFS',    impact:'med',  time:'08:30 ET', detail:'Retail Sales MoM'},
+    {date:'2026-02-13',name:'소매판매 (1월)',       sym:'RETAIL', id:'RSXFS',    impact:'med',  time:'08:30 ET', detail:'Retail Sales MoM'},
+    {date:'2026-03-17',name:'소매판매 (2월)',       sym:'RETAIL', id:'RSXFS',    impact:'med',  time:'08:30 ET', detail:'Retail Sales MoM'},
+    {date:'2026-04-15',name:'소매판매 (3월)',       sym:'RETAIL', id:'RSXFS',    impact:'med',  time:'08:30 ET', detail:'Retail Sales MoM'},
+    {date:'2026-05-15',name:'소매판매 (4월)',       sym:'RETAIL', id:'RSXFS',    impact:'med',  time:'08:30 ET', detail:'Retail Sales MoM'},
+    // ISM PMI 2026
+    {date:'2026-01-05',name:'ISM 제조업 PMI (12월 2025)',sym:'ISM',id:'MANEMP', impact:'med',  time:'10:00 ET', detail:'구매관리자지수 제조업'},
+    {date:'2026-02-02',name:'ISM 제조업 PMI (1월)', sym:'ISM',    id:'MANEMP',   impact:'med',  time:'10:00 ET', detail:'구매관리자지수 제조업'},
+    {date:'2026-03-02',name:'ISM 제조업 PMI (2월)', sym:'ISM',    id:'MANEMP',   impact:'med',  time:'10:00 ET', detail:'구매관리자지수 제조업'},
+    {date:'2026-04-01',name:'ISM 제조업 PMI (3월)', sym:'ISM',    id:'MANEMP',   impact:'med',  time:'10:00 ET', detail:'구매관리자지수 제조업'},
+    {date:'2026-05-01',name:'ISM 제조업 PMI (4월)', sym:'ISM',    id:'MANEMP',   impact:'med',  time:'10:00 ET', detail:'구매관리자지수 제조업'},
+    // FOMC 2026
+    {date:'2026-01-28',name:'FOMC 회의 결과',       sym:'FED',    id:null,       impact:'high', time:'14:00 ET', detail:'연방공개시장위원회 금리 결정'},
+    {date:'2026-03-18',name:'FOMC 회의 결과 + SEP', sym:'FED',    id:null,       impact:'high', time:'14:00 ET', detail:'금리 결정 + 점도표(SEP) 발표'},
+    {date:'2026-05-06',name:'FOMC 회의 결과',       sym:'FED',    id:null,       impact:'high', time:'14:00 ET', detail:'연방공개시장위원회 금리 결정'},
+    {date:'2026-06-17',name:'FOMC 회의 결과 + SEP', sym:'FED',    id:null,       impact:'high', time:'14:00 ET', detail:'금리 결정 + 점도표 발표'},
+    // BOK 2026
+    {date:'2026-01-16',name:'한국은행 기준금리',    sym:'BOK',    id:null,       impact:'high', time:'10:00 KST', detail:'금통위 통화정책방향 결정'},
+    {date:'2026-02-26',name:'한국은행 기준금리',    sym:'BOK',    id:null,       impact:'high', time:'10:00 KST', detail:'금통위 통화정책방향 결정'},
+    {date:'2026-04-16',name:'한국은행 기준금리',    sym:'BOK',    id:null,       impact:'high', time:'10:00 KST', detail:'금통위 통화정책방향 결정'},
+    {date:'2026-05-28',name:'한국은행 기준금리',    sym:'BOK',    id:null,       impact:'high', time:'10:00 KST', detail:'금통위 통화정책방향 결정'},
+    // 한국 수출입 2026
+    {date:'2026-01-02',name:'한국 수출입 (12월 2025)',sym:'KR-TRADE',id:null,    impact:'high', time:'08:00 KST', detail:'수출 YoY / 무역수지'},
+    {date:'2026-02-02',name:'한국 수출입 (1월)',    sym:'KR-TRADE',id:null,      impact:'high', time:'08:00 KST', detail:'수출 YoY / 무역수지'},
+    {date:'2026-03-02',name:'한국 수출입 (2월)',    sym:'KR-TRADE',id:null,      impact:'high', time:'08:00 KST', detail:'수출 YoY / 무역수지'},
+    {date:'2026-04-01',name:'한국 수출입 (3월)',    sym:'KR-TRADE',id:null,      impact:'high', time:'08:00 KST', detail:'수출 YoY / 무역수지'},
+    {date:'2026-05-01',name:'한국 수출입 (4월)',    sym:'KR-TRADE',id:null,      impact:'high', time:'08:00 KST', detail:'수출 YoY / 무역수지'},
+    // 한국 CPI 2026
+    {date:'2026-01-02',name:'한국 소비자물가 (12월 2025)',sym:'KR-CPI',id:null,  impact:'med',  time:'08:00 KST', detail:'한국 CPI YoY'},
+    {date:'2026-02-03',name:'한국 소비자물가 (1월)',sym:'KR-CPI',id:null,        impact:'med',  time:'08:00 KST', detail:'한국 CPI YoY'},
+    {date:'2026-03-03',name:'한국 소비자물가 (2월)',sym:'KR-CPI',id:null,        impact:'med',  time:'08:00 KST', detail:'한국 CPI YoY'},
+    {date:'2026-04-02',name:'한국 소비자물가 (3월)',sym:'KR-CPI',id:null,        impact:'med',  time:'08:00 KST', detail:'한국 CPI YoY'},
+    {date:'2026-05-05',name:'한국 소비자물가 (4월)',sym:'KR-CPI',id:null,        impact:'med',  time:'08:00 KST', detail:'한국 CPI YoY'},
+    // 미시간 소비자심리 2026
+    {date:'2026-01-16',name:'미시간 소비자심리 (1월)',sym:'UMICH',id:'UMCSENT',  impact:'med',  time:'10:00 ET', detail:'University of Michigan Consumer Sentiment'},
+    {date:'2026-02-13',name:'미시간 소비자심리 (2월)',sym:'UMICH',id:'UMCSENT',  impact:'med',  time:'10:00 ET', detail:'University of Michigan Consumer Sentiment'},
+    {date:'2026-03-13',name:'미시간 소비자심리 (3월)',sym:'UMICH',id:'UMCSENT',  impact:'med',  time:'10:00 ET', detail:'University of Michigan Consumer Sentiment'},
+    {date:'2026-04-10',name:'미시간 소비자심리 (4월)',sym:'UMICH',id:'UMCSENT',  impact:'med',  time:'10:00 ET', detail:'University of Michigan Consumer Sentiment'},
+    {date:'2026-05-08',name:'미시간 소비자심리 (5월)',sym:'UMICH',id:'UMCSENT',  impact:'med',  time:'10:00 ET', detail:'University of Michigan Consumer Sentiment'},
+    // JOLTS 2026
+    {date:'2026-02-03',name:'JOLTS 구인건수 (12월 2025)',sym:'JOLTS',id:'JTSJOL',impact:'med', time:'10:00 ET', detail:'Job Openings'},
+    {date:'2026-03-10',name:'JOLTS 구인건수 (1월)', sym:'JOLTS',  id:'JTSJOL',   impact:'med',  time:'10:00 ET', detail:'Job Openings'},
+    {date:'2026-04-07',name:'JOLTS 구인건수 (2월)', sym:'JOLTS',  id:'JTSJOL',   impact:'med',  time:'10:00 ET', detail:'Job Openings'},
+    {date:'2026-05-05',name:'JOLTS 구인건수 (3월)', sym:'JOLTS',  id:'JTSJOL',   impact:'med',  time:'10:00 ET', detail:'Job Openings'},
+
+    // ── 2026 하반기 ──
+    // CPI
+    {date:'2026-07-15',name:'미국 CPI (6월)',        sym:'CPI',    id:'CPIAUCSL', impact:'high', time:'08:30 ET', detail:'소비자물가지수 YoY / MoM'},
+    {date:'2026-08-12',name:'미국 CPI (7월)',        sym:'CPI',    id:'CPIAUCSL', impact:'high', time:'08:30 ET', detail:'소비자물가지수 YoY / MoM'},
+    {date:'2026-09-10',name:'미국 CPI (8월)',        sym:'CPI',    id:'CPIAUCSL', impact:'high', time:'08:30 ET', detail:'소비자물가지수 YoY / MoM'},
+    {date:'2026-10-14',name:'미국 CPI (9월)',        sym:'CPI',    id:'CPIAUCSL', impact:'high', time:'08:30 ET', detail:'소비자물가지수 YoY / MoM'},
+    {date:'2026-11-12',name:'미국 CPI (10월)',       sym:'CPI',    id:'CPIAUCSL', impact:'high', time:'08:30 ET', detail:'소비자물가지수 YoY / MoM'},
+    {date:'2026-12-10',name:'미국 CPI (11월)',       sym:'CPI',    id:'CPIAUCSL', impact:'high', time:'08:30 ET', detail:'소비자물가지수 YoY / MoM'},
+    // NFP
+    {date:'2026-07-02',name:'비농업 고용 (6월)',     sym:'NFP',    id:'PAYEMS',   impact:'high', time:'08:30 ET', detail:'Nonfarm Payrolls / 실업률'},
+    {date:'2026-08-07',name:'비농업 고용 (7월)',     sym:'NFP',    id:'PAYEMS',   impact:'high', time:'08:30 ET', detail:'Nonfarm Payrolls / 실업률'},
+    {date:'2026-09-04',name:'비농업 고용 (8월)',     sym:'NFP',    id:'PAYEMS',   impact:'high', time:'08:30 ET', detail:'Nonfarm Payrolls / 실업률'},
+    {date:'2026-10-02',name:'비농업 고용 (9월)',     sym:'NFP',    id:'PAYEMS',   impact:'high', time:'08:30 ET', detail:'Nonfarm Payrolls / 실업률'},
+    {date:'2026-11-06',name:'비농업 고용 (10월)',    sym:'NFP',    id:'PAYEMS',   impact:'high', time:'08:30 ET', detail:'Nonfarm Payrolls / 실업률'},
+    {date:'2026-12-04',name:'비농업 고용 (11월)',    sym:'NFP',    id:'PAYEMS',   impact:'high', time:'08:30 ET', detail:'Nonfarm Payrolls / 실업률'},
+    // PCE
+    {date:'2026-06-26',name:'Core PCE (5월)',       sym:'PCE',    id:'PCEPILFE', impact:'high', time:'08:30 ET', detail:'연준 선호 인플레 지표'},
+    {date:'2026-07-31',name:'Core PCE (6월)',       sym:'PCE',    id:'PCEPILFE', impact:'high', time:'08:30 ET', detail:'연준 선호 인플레 지표'},
+    {date:'2026-08-28',name:'Core PCE (7월)',       sym:'PCE',    id:'PCEPILFE', impact:'high', time:'08:30 ET', detail:'연준 선호 인플레 지표'},
+    {date:'2026-09-25',name:'Core PCE (8월)',       sym:'PCE',    id:'PCEPILFE', impact:'high', time:'08:30 ET', detail:'연준 선호 인플레 지표'},
+    {date:'2026-10-30',name:'Core PCE (9월)',       sym:'PCE',    id:'PCEPILFE', impact:'high', time:'08:30 ET', detail:'연준 선호 인플레 지표'},
+    {date:'2026-11-25',name:'Core PCE (10월)',      sym:'PCE',    id:'PCEPILFE', impact:'high', time:'08:30 ET', detail:'연준 선호 인플레 지표'},
+    {date:'2026-12-18',name:'Core PCE (11월)',      sym:'PCE',    id:'PCEPILFE', impact:'high', time:'08:30 ET', detail:'연준 선호 인플레 지표'},
+    // GDP
+    {date:'2026-07-29',name:'GDP Q2 2026 (속보)',   sym:'GDP',    id:'GDP',      impact:'high', time:'08:30 ET', detail:'실질GDP 성장률 연율 (QoQ)'},
+    {date:'2026-08-27',name:'GDP Q2 2026 (잠정)',   sym:'GDP',    id:'GDP',      impact:'high', time:'08:30 ET', detail:'실질GDP 성장률 2차 추정'},
+    {date:'2026-09-25',name:'GDP Q2 2026 (확정)',   sym:'GDP',    id:'GDP',      impact:'med',  time:'08:30 ET', detail:'실질GDP 성장률 최종치'},
+    {date:'2026-10-29',name:'GDP Q3 2026 (속보)',   sym:'GDP',    id:'GDP',      impact:'high', time:'08:30 ET', detail:'실질GDP 성장률 연율 (QoQ)'},
+    // PPI
+    {date:'2026-06-11',name:'PPI (5월)',            sym:'PPI',    id:'PPIFIS',   impact:'med',  time:'08:30 ET', detail:'생산자물가지수'},
+    {date:'2026-07-14',name:'PPI (6월)',            sym:'PPI',    id:'PPIFIS',   impact:'med',  time:'08:30 ET', detail:'생산자물가지수'},
+    {date:'2026-08-13',name:'PPI (7월)',            sym:'PPI',    id:'PPIFIS',   impact:'med',  time:'08:30 ET', detail:'생산자물가지수'},
+    {date:'2026-09-10',name:'PPI (8월)',            sym:'PPI',    id:'PPIFIS',   impact:'med',  time:'08:30 ET', detail:'생산자물가지수'},
+    {date:'2026-10-14',name:'PPI (9월)',            sym:'PPI',    id:'PPIFIS',   impact:'med',  time:'08:30 ET', detail:'생산자물가지수'},
+    {date:'2026-11-12',name:'PPI (10월)',           sym:'PPI',    id:'PPIFIS',   impact:'med',  time:'08:30 ET', detail:'생산자물가지수'},
+    {date:'2026-12-10',name:'PPI (11월)',           sym:'PPI',    id:'PPIFIS',   impact:'med',  time:'08:30 ET', detail:'생산자물가지수'},
+    // Retail Sales
+    {date:'2026-06-12',name:'소매판매 (5월)',       sym:'RETAIL', id:'RSXFS',    impact:'med',  time:'08:30 ET', detail:'Retail Sales MoM'},
+    {date:'2026-07-16',name:'소매판매 (6월)',       sym:'RETAIL', id:'RSXFS',    impact:'med',  time:'08:30 ET', detail:'Retail Sales MoM'},
+    {date:'2026-08-14',name:'소매판매 (7월)',       sym:'RETAIL', id:'RSXFS',    impact:'med',  time:'08:30 ET', detail:'Retail Sales MoM'},
+    {date:'2026-09-16',name:'소매판매 (8월)',       sym:'RETAIL', id:'RSXFS',    impact:'med',  time:'08:30 ET', detail:'Retail Sales MoM'},
+    {date:'2026-10-15',name:'소매판매 (9월)',       sym:'RETAIL', id:'RSXFS',    impact:'med',  time:'08:30 ET', detail:'Retail Sales MoM'},
+    {date:'2026-11-13',name:'소매판매 (10월)',      sym:'RETAIL', id:'RSXFS',    impact:'med',  time:'08:30 ET', detail:'Retail Sales MoM'},
+    {date:'2026-12-11',name:'소매판매 (11월)',      sym:'RETAIL', id:'RSXFS',    impact:'med',  time:'08:30 ET', detail:'Retail Sales MoM'},
+    // ISM PMI
+    {date:'2026-06-01',name:'ISM 제조업 PMI (5월)', sym:'ISM',    id:'MANEMP',   impact:'med',  time:'10:00 ET', detail:'구매관리자지수'},
+    {date:'2026-07-01',name:'ISM 제조업 PMI (6월)', sym:'ISM',    id:'MANEMP',   impact:'med',  time:'10:00 ET', detail:'구매관리자지수'},
+    {date:'2026-08-03',name:'ISM 제조업 PMI (7월)', sym:'ISM',    id:'MANEMP',   impact:'med',  time:'10:00 ET', detail:'구매관리자지수'},
+    {date:'2026-09-01',name:'ISM 제조업 PMI (8월)', sym:'ISM',    id:'MANEMP',   impact:'med',  time:'10:00 ET', detail:'구매관리자지수'},
+    {date:'2026-10-01',name:'ISM 제조업 PMI (9월)', sym:'ISM',    id:'MANEMP',   impact:'med',  time:'10:00 ET', detail:'구매관리자지수'},
+    {date:'2026-11-02',name:'ISM 제조업 PMI (10월)',sym:'ISM',    id:'MANEMP',   impact:'med',  time:'10:00 ET', detail:'구매관리자지수'},
+    {date:'2026-12-01',name:'ISM 제조업 PMI (11월)',sym:'ISM',    id:'MANEMP',   impact:'med',  time:'10:00 ET', detail:'구매관리자지수'},
+    // FOMC 하반기
+    {date:'2026-07-29',name:'FOMC 회의 결과',       sym:'FED',    id:null,       impact:'high', time:'14:00 ET', detail:'연방공개시장위원회 금리 결정'},
+    {date:'2026-09-16',name:'FOMC 회의 결과 + SEP', sym:'FED',    id:null,       impact:'high', time:'14:00 ET', detail:'금리 결정 + 점도표 발표'},
+    {date:'2026-10-28',name:'FOMC 회의 결과',       sym:'FED',    id:null,       impact:'high', time:'14:00 ET', detail:'연방공개시장위원회 금리 결정'},
+    {date:'2026-12-09',name:'FOMC 회의 결과 + SEP', sym:'FED',    id:null,       impact:'high', time:'14:00 ET', detail:'연내 마지막 FOMC. 점도표 발표'},
+    // BOK 하반기
+    {date:'2026-07-09',name:'한국은행 기준금리',    sym:'BOK',    id:null,       impact:'high', time:'10:00 KST', detail:'금통위 통화정책방향 결정'},
+    {date:'2026-08-27',name:'한국은행 기준금리',    sym:'BOK',    id:null,       impact:'high', time:'10:00 KST', detail:'금통위 통화정책방향 결정'},
+    {date:'2026-10-15',name:'한국은행 기준금리',    sym:'BOK',    id:null,       impact:'high', time:'10:00 KST', detail:'금통위 통화정책방향 결정'},
+    {date:'2026-11-26',name:'한국은행 기준금리',    sym:'BOK',    id:null,       impact:'high', time:'10:00 KST', detail:'금통위 통화정책방향 결정'},
+    // 한국 수출입 하반기
+    {date:'2026-06-01',name:'한국 수출입 (5월)',    sym:'KR-TRADE',id:null,      impact:'high', time:'08:00 KST', detail:'수출 YoY / 무역수지'},
+    {date:'2026-07-01',name:'한국 수출입 (6월)',    sym:'KR-TRADE',id:null,      impact:'high', time:'08:00 KST', detail:'수출 YoY / 무역수지'},
+    {date:'2026-08-01',name:'한국 수출입 (7월)',    sym:'KR-TRADE',id:null,      impact:'high', time:'08:00 KST', detail:'수출 YoY / 무역수지'},
+    {date:'2026-09-01',name:'한국 수출입 (8월)',    sym:'KR-TRADE',id:null,      impact:'high', time:'08:00 KST', detail:'수출 YoY / 무역수지'},
+    {date:'2026-10-01',name:'한국 수출입 (9월)',    sym:'KR-TRADE',id:null,      impact:'high', time:'08:00 KST', detail:'수출 YoY / 무역수지'},
+    {date:'2026-11-01',name:'한국 수출입 (10월)',   sym:'KR-TRADE',id:null,      impact:'high', time:'08:00 KST', detail:'수출 YoY / 무역수지'},
+    {date:'2026-12-01',name:'한국 수출입 (11월)',   sym:'KR-TRADE',id:null,      impact:'high', time:'08:00 KST', detail:'수출 YoY / 무역수지'},
+    // 한국 CPI 하반기
+    {date:'2026-06-02',name:'한국 소비자물가 (5월)',sym:'KR-CPI',id:null,        impact:'med',  time:'08:00 KST', detail:'한국 CPI YoY'},
+    {date:'2026-07-02',name:'한국 소비자물가 (6월)',sym:'KR-CPI',id:null,        impact:'med',  time:'08:00 KST', detail:'한국 CPI YoY'},
+    {date:'2026-08-04',name:'한국 소비자물가 (7월)',sym:'KR-CPI',id:null,        impact:'med',  time:'08:00 KST', detail:'한국 CPI YoY'},
+    {date:'2026-09-02',name:'한국 소비자물가 (8월)',sym:'KR-CPI',id:null,        impact:'med',  time:'08:00 KST', detail:'한국 CPI YoY'},
+    {date:'2026-10-02',name:'한국 소비자물가 (9월)',sym:'KR-CPI',id:null,        impact:'med',  time:'08:00 KST', detail:'한국 CPI YoY'},
+    {date:'2026-11-03',name:'한국 소비자물가 (10월)',sym:'KR-CPI',id:null,       impact:'med',  time:'08:00 KST', detail:'한국 CPI YoY'},
+    {date:'2026-12-02',name:'한국 소비자물가 (11월)',sym:'KR-CPI',id:null,       impact:'med',  time:'08:00 KST', detail:'한국 CPI YoY'},
+    // 한국 GDP
+    {date:'2026-07-23',name:'한국 GDP Q2 2026 (속보)',sym:'KR-GDP',id:null,     impact:'high', time:'08:00 KST', detail:'한국 실질GDP 성장률 속보치'},
+    {date:'2026-10-22',name:'한국 GDP Q3 2026 (속보)',sym:'KR-GDP',id:null,     impact:'high', time:'08:00 KST', detail:'한국 실질GDP 성장률 속보치'},
+  ];
+
+  // ── Add schedule as eco events (always, no key needed) ──
+  ECO_SCHEDULE_2025.forEach(s=>{
+    const isKR = s.sym.startsWith('KR-');
+    fmpEvents.push({
+      date: s.date, type: isKR ? 'kr' : 'eco',
+      impact: s.impact, name: s.name, detail: s.detail,
+      time: s.time, sym: s.sym,
+      live: false, scheduled: true,
+    });
+    ecoCount++;
+  });
+  console.log('[ECO] schedule injected:', ecoCount, 'events');
+
+  // ── FRED actual values overlay (if key available) ──
+  const seriesForFred = [...new Set(ECO_SCHEDULE_2025.filter(s=>s.id).map(s=>s.id))];
+
+  // ── FRED: overlay actual values onto scheduled events ──
+  let fredSuccess = 0;
+  if(FRED_KEY){
+    setLoadStatus(`⏳ FRED 실측값 로딩... (경제지표 일정 ${ecoCount}건 확보)`, 'load');
+    for(const seriesId of seriesForFred){
+      try{
+        const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${seriesId}&sort_order=desc&limit=3&file_type=json&api_key=${FRED_KEY}`;
+        const proxy = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+        const r = await fetch(proxy, {signal:AbortSignal.timeout(8000)});
+        if(!r.ok) continue;
+        const j = await r.json();
+        const obs = (j?.observations||[]).filter(o=>o.value&&o.value!=='.');
+        if(!obs.length) continue;
+        // Find matching scheduled events and inject actual value
+        obs.forEach(o=>{
+          const matchIdx = fmpEvents.findIndex(ev=>
+            ev.scheduled && ev.date===o.date &&
+            ECO_SCHEDULE_2025.find(s=>s.id===seriesId && s.date===o.date)
+          );
+          if(matchIdx>=0){
+            fmpEvents[matchIdx].act = o.value;
+            fmpEvents[matchIdx].live = true;
+          }
+        });
+        fredSuccess++;
+      } catch(e){ console.warn('[FRED]', seriesId, e.message); }
+      await new Promise(r=>setTimeout(r,80));
+    }
+    console.log('[FRED] overlaid actuals from', fredSuccess, 'series');
+  }
+
+  const total = earnCount + ecoCount;
+  if(total > 0){
+    setLoadStatus(`✓ Finnhub 로드 완료 — 어닝 ${earnCount}건 · 경제지표 ${ecoCount}건`, 'ok');
+    document.getElementById('nav-ts').textContent=`Live ${total}건`;
+    setBadgeActive();
+  } else if(earnJ===null){
+    setLoadStatus('✕ Finnhub 연결 실패 — 키를 다시 확인해주세요', 'err');
+  } else {
+    setLoadStatus(`⚠ 이 기간 이벤트 없음 (${from} ~ ${to})`, 'warn');
+  }
+
+  renderCalendar();
+  renderWeekList();
+  renderNext30();
+}
+
+function isHighProfile(sym){
+  const HP=['NVDA','MSFT','AAPL','AMZN','META','GOOGL','GOOG','TSLA','AMD','AVGO','TSM','NFLX','INTC','QCOM','MU','JPM','GS','MS','BAC','C','V','MA','ORCL','ADBE','CRM','UBER','ABNB','SHOP','WMT','COST','DIS','SBUX','005930','000660'];
+  return HP.includes((sym||'').toUpperCase());
+}
+
+function getEcoSym(name){
+  if(name.includes('CPI')) return 'CPI';
+  if(name.includes('Nonfarm')||name.includes('NFP')) return 'NFP';
+  if(name.includes('GDP')) return 'GDP';
+  if(name.includes('PCE')) return 'PCE';
+  if(name.includes('PPI')) return 'PPI';
+  if(name.includes('Unemployment')) return 'UNEMP';
+  if(name.includes('Retail')) return 'RETAIL';
+  if(name.includes('ISM')||name.includes('PMI')) return 'PMI';
+  return 'ECO';
+}
+
+function getAllEvents(){
+  const seen = new Set();
+  return [...EVENTS_2025, ...fmpEvents, ...customEvents].filter(e=>{
+    const key=`${e.date}|${e.sym}|${e.type}`;
+    if(seen.has(key)) return false;
+    seen.add(key); return true;
+  });
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+// Restore keys
+if(FMP_KEY) document.getElementById('fmp-key-i').value = FMP_KEY;
+if(FRED_KEY) document.getElementById('fred-key-i').value = FRED_KEY;
+
+if(FMP_KEY || FRED_KEY){
+  setBadgeActive();
+  document.getElementById('fmp-banner').style.display = 'none';
+  loadLiveCalendar();
+} else {
+  setLoadStatus('💡 우측 상단 ⚙ 버튼 → Finnhub(어닝) + FRED(경제지표) 키 입력', 'warn');
+}
+
+renderCalendar();
+startCountdown();
+// Auto-select today
+const p2=n=>String(n).padStart(2,'0');
+const todayStr=`${today.getFullYear()}-${p2(today.getMonth()+1)}-${p2(today.getDate())}`;
+selectDay(todayStr);
+document.getElementById('nav-ts').textContent=`${MONTHS_KO[viewMonth]} ${viewYear}`;
+
+document.querySelectorAll('.nl').forEach(l=>{
+  l.addEventListener('click',()=>{
+    document.querySelectorAll('.nl').forEach(x=>x.classList.remove('act'));
+    l.classList.add('act');
+  });
+});
+</script>
+</body>
+</html>
