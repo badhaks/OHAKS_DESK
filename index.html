@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OHAKS_Desk</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#08090C;
+  --s1:#0F1117;--s2:#161820;--s3:#1E2028;--s4:#252830;
+  --b1:#2E3240;--b2:#3D4255;--b3:#555C75;
+  --t1:#F0F2FF;--t2:#A0A8C0;--t3:#606880;
+  --green:#22C55E;--green-d:#16A34A;--green-bg:rgba(34,197,94,.1);--green-border:rgba(34,197,94,.2);
+  --red:#EF4444;--red-bg:rgba(239,68,68,.1);--red-border:rgba(239,68,68,.2);
+  --blue:#6366F1;--blue-bg:rgba(99,102,241,.12);
+  --amber:#F59E0B;--amber-bg:rgba(245,158,11,.1);
+  --cyan:#06B6D4;
+  --grad1:linear-gradient(135deg,#1a1f35 0%,#0f1525 100%);
+  --grad2:linear-gradient(135deg,#1a2535 0%,#0a1520 100%);
+  --grad3:linear-gradient(135deg,#0f2018 0%,#051510 100%);
+  --grad4:linear-gradient(135deg,#1f1020 0%,#0f0815 100%);
+  --r8:8px;--r12:12px;--r16:16px;
+  --mono:'DM Mono',monospace;
+  --ui:'Inter',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{height:100%;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--t2);font-family:var(--ui);font-size:13px;-webkit-font-smoothing:antialiased;min-height:100%}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--b1);border-radius:4px}
+.up{color:var(--green)!important}.dn{color:var(--red)!important}
+
+/* ─── TOPBAR ─── */
+.topbar{
+  position:sticky;top:0;z-index:200;
+  height:52px;
+  background:rgba(8,9,12,.8);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(255,255,255,.05);
+  display:flex;align-items:center;padding:0 20px;gap:8px;
+}
+.logo{
+  font-size:15px;font-weight:800;letter-spacing:-.03em;color:var(--t1);
+  white-space:nowrap;margin-right:20px;
+  background:linear-gradient(135deg,#fff 0%,rgba(255,255,255,.6) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.logo em{background:linear-gradient(135deg,var(--blue) 0%,var(--cyan) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-style:normal}
+.nav-links{display:flex;gap:2px}
+.nl{font-size:12px;font-weight:500;color:var(--t3);padding:6px 12px;border-radius:var(--r8);cursor:pointer;transition:all .15s;white-space:nowrap}
+.nl:hover{color:var(--t2);background:var(--s3)}
+.nl.act{color:var(--t1);background:var(--s3)}
+.topbar-r{margin-left:auto;display:flex;align-items:center;gap:8px}
+.chip{display:flex;align-items:center;gap:5px;font-size:10.5px;font-weight:500;color:var(--t3);padding:5px 10px;border-radius:20px;background:var(--s2);border:1px solid var(--b1)}
+.chip-dot{width:6px;height:6px;border-radius:50%}
+.chip-dot.open{background:var(--green);box-shadow:0 0 6px var(--green);animation:glow 2s infinite}
+.chip-dot.closed{background:var(--b2)}
+@keyframes glow{0%,100%{opacity:1;box-shadow:0 0 6px var(--green)}50%{opacity:.6;box-shadow:0 0 2px var(--green)}}
+.clk{font-family:var(--mono);font-size:11px;color:var(--t3);letter-spacing:.04em}
+.kis-pill{font-size:11px;font-weight:500;padding:6px 14px;border-radius:20px;border:1px solid var(--b1);background:var(--s2);cursor:pointer;color:var(--t3);transition:all .15s}
+.kis-pill:hover{border-color:var(--b2);color:var(--t2)}
+.kis-pill.active{border-color:var(--green-border);color:var(--green);background:var(--green-bg)}
+
+/* ─── TAPE ─── */
+.tape{height:30px;background:var(--s1);border-bottom:1px solid rgba(255,255,255,.04);overflow:hidden}
+.tape-inner{display:inline-flex;white-space:nowrap;animation:sc 90s linear infinite}
+.tape-inner:hover{animation-play-state:paused}
+@keyframes sc{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ti{display:inline-flex;align-items:center;gap:7px;padding:0 18px;height:30px;border-right:1px solid rgba(255,255,255,.04)}
+.ti-sym{font-size:9.5px;font-weight:600;letter-spacing:.06em;color:var(--t3);text-transform:uppercase}
+.ti-val{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--t1)}
+.ti-chg{font-size:9.5px;font-weight:500}
+.ti-chg.up{color:var(--green)}.ti-chg.dn{color:var(--red)}
+
+/* ─── PAGE ─── */
+.page{max-width:1400px;margin:0 auto;padding:20px 20px 32px;display:flex;flex-direction:column;gap:12px}
+
+/* ─── SECTION LABEL ─── */
+.sec-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:4px;padding:0 2px}
+
+/* ─── INDEX ROW ─── */
+.idx-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.idx-card{
+  background:var(--s1);
+  border:1px solid rgba(255,255,255,.05);
+  border-radius:var(--r16);
+  padding:20px 20px 16px;
+  cursor:pointer;
+  transition:all .2s;
+  position:relative;
+  overflow:hidden;
+}
+.idx-card::before{content:'';position:absolute;inset:0;border-radius:var(--r16);opacity:0;background:radial-gradient(circle at 30% 50%,rgba(99,102,241,.08) 0%,transparent 70%);transition:opacity .3s}
+.idx-card:hover{border-color:var(--b1);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.idx-card:hover::before{opacity:1}
+.ic-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.ic-flag{font-size:11px;font-weight:600;color:var(--t3);letter-spacing:.04em;display:flex;align-items:center;gap:5px}
+.ic-badge{font-size:9.5px;font-weight:600;padding:3px 8px;border-radius:6px;letter-spacing:.02em}
+.ic-badge.up{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.ic-badge.dn{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.ic-name{font-size:11px;font-weight:500;color:var(--t3);margin-bottom:6px}
+.ic-val{font-size:38px;font-weight:700;letter-spacing:-.03em;color:var(--t1);line-height:1;margin-bottom:6px}
+.ic-val.sk{background:linear-gradient(90deg,var(--s2) 25%,var(--s3) 50%,var(--s2) 75%);background-size:200% 100%;animation:sk 1.5s infinite;color:transparent!important;border-radius:6px;display:inline-block;width:70%}
+@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.ic-sub{font-family:var(--mono);font-size:10.5px;color:var(--t3)}
+.ic-bar-wrap{margin-top:12px;height:3px;background:var(--s3);border-radius:2px;overflow:hidden}
+.ic-bar{height:100%;border-radius:2px;transition:width .8s ease}
+
+/* ─── MACRO ROW ─── */
+.macro-row{display:grid;grid-template-columns:2fr 2fr 3fr 5fr;gap:10px}
+
+/* ─── PILL CARD ─── */
+.pill-card{
+  background:var(--s1);border:1px solid rgba(255,255,255,.05);border-radius:var(--r16);padding:16px 18px;
+  display:flex;flex-direction:column;gap:0;
+}
+.pc-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.05)}
+.pc-item{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.pc-item:last-child{border-bottom:none}
+.pc-l{font-size:11px;font-weight:500;color:var(--t2)}
+.pc-v{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--t1);text-align:right}
+.pc-c{font-size:10.5px;font-weight:600;text-align:right;min-width:52px}
+.pc-c.up{color:var(--green)}.pc-c.dn{color:var(--red)}
+
+/* ─── CALENDAR CARD ─── */
+.cal-card{background:var(--s1);border:1px solid rgba(255,255,255,.05);border-radius:var(--r16);overflow:hidden}
+.cal-head{padding:16px 18px 12px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;justify-content:space-between}
+.cal-title{font-size:13px;font-weight:700;color:var(--t1)}
+.cal-link{font-size:11px;font-weight:500;color:var(--blue);cursor:pointer;transition:opacity .15s}
+.cal-link:hover{opacity:.7}
+.cal-body{padding:4px 0}
+.cal-item{display:grid;grid-template-columns:52px 1fr auto;gap:10px;padding:9px 18px;align-items:center;border-bottom:1px solid rgba(255,255,255,.03);transition:background .1s}
+.cal-item:last-child{border-bottom:none}
+.cal-item:hover{background:var(--s2)}
+.cal-item.today{background:rgba(99,102,241,.05)}
+.ci-dt{font-family:var(--mono);font-size:9px;color:var(--t3);line-height:1.6}
+.ci-title{font-size:12px;font-weight:500;color:var(--t2)}
+.ci-today{font-size:9px;font-weight:700;color:var(--amber)}
+.ci-tag{font-size:9px;font-weight:600;padding:3px 8px;border-radius:6px;white-space:nowrap}
+.ci-tag.eco{background:var(--blue-bg);color:var(--blue);border:1px solid rgba(99,102,241,.2)}
+.ci-tag.kr{background:var(--amber-bg);color:var(--amber);border:1px solid rgba(245,158,11,.2)}
+
+/* ─── BRIEF CARD ─── */
+.brief-card{background:var(--s1);border:1px solid rgba(255,255,255,.05);border-radius:var(--r16);padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.bc-ts{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--t3)}
+.bc-hl{font-size:18px;font-weight:700;letter-spacing:-.02em;color:var(--t1);line-height:1.3}
+.bc-kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bck{background:var(--s2);border-radius:var(--r12);padding:12px;border:1px solid rgba(255,255,255,.04)}
+.bck-l{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
+.bck-v{font-size:22px;font-weight:700;letter-spacing:-.02em;color:var(--t1);line-height:1}
+.bck-c{font-size:10.5px;font-weight:600;margin-top:3px}
+.bck-c.up{color:var(--green)}.bck-c.dn{color:var(--red)}
+
+/* ─── BOTTOM ROW ─── */
+.bottom-row{display:grid;grid-template-columns:1fr 1fr 2fr;gap:10px}
+
+/* ─── KIS PANEL ─── */
+#kis-panel{display:none;position:fixed;top:0;right:0;width:320px;height:100vh;background:var(--s1);border-left:1px solid rgba(255,255,255,.06);z-index:999;padding:24px 20px;overflow-y:auto;box-shadow:-20px 0 60px rgba(0,0,0,.6)}
+.kp-close{font-size:11px;color:var(--t3);cursor:pointer;margin-bottom:20px;display:inline-flex;align-items:center;gap:5px;transition:color .15s;font-weight:500}
+.kp-close:hover{color:var(--t1)}
+.kp-logo{font-size:20px;font-weight:800;letter-spacing:-.03em;color:var(--t1);margin-bottom:4px}
+.kp-sub{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.06)}
+.kp-lbl{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin:14px 0 5px}
+.kp-in{width:100%;padding:10px 12px;border:1px solid var(--b1);background:var(--s2);border-radius:var(--r8);font-family:var(--mono);font-size:12px;color:var(--t1);outline:none;transition:border-color .15s}
+.kp-in:focus{border-color:var(--blue)}
+.kp-save{width:100%;padding:11px;background:linear-gradient(135deg,var(--blue),#4F46E5);color:#fff;border:none;cursor:pointer;margin-top:16px;border-radius:var(--r8);font-size:12px;font-weight:600;letter-spacing:.02em;transition:opacity .15s}
+.kp-save:hover{opacity:.85}
+#kp-st{font-size:10px;min-height:14px;color:var(--t3);margin-top:8px;font-family:var(--mono)}
+.kp-guide{font-size:11px;color:var(--t3);line-height:1.8;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.05)}
+
+/* ─── MOBILE NAV ─── */
+.bnav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:999;background:rgba(15,17,23,.95);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.06);grid-template-columns:repeat(6,1fr);height:58px}
+.bni{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:5px;transition:background .15s;border-right:1px solid rgba(255,255,255,.04)}
+.bni:last-child{border-right:none}
+.bni:hover,.bni.act{background:var(--s2)}
+.bni-icon{font-size:16px;line-height:1}
+.bni-label{font-size:8px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--t3)}
+.bni.act .bni-label{color:var(--t1)}
+
+@media(max-width:960px){
+  .bnav{display:grid!important}
+  body{padding-bottom:58px}
+  .nav-links{display:none}
+  .idx-row{grid-template-columns:1fr 1fr}
+  .macro-row{grid-template-columns:1fr 1fr}
+  .bottom-row{grid-template-columns:1fr 1fr}
+  .ic-val{font-size:28px!important}
+  #kis-panel{width:100%!important}
+}
+@media(max-width:600px){
+  .idx-row{grid-template-columns:1fr 1fr}
+  .macro-row{grid-template-columns:1fr 1fr}
+  .bottom-row{grid-template-columns:1fr}
+  .page{padding:12px}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">OHAKS<em>_</em>Desk</div>
+  <div class="nav-links">
+    <div class="nl act">홈</div>
+    <div class="nl" onclick="go('chart.html')">차트</div>
+    <div class="nl" onclick="go('macro.html')">매크로</div>
+    <div class="nl" onclick="go('research.html')">리서치</div>
+    <div class="nl" onclick="go('quant.html')">퀀트</div>
+    <div class="nl" onclick="go('portfolio.html')">포트폴리오</div>
+    <div class="nl" onclick="go('calendar.html')">캘린더</div>
+  </div>
+  <div class="topbar-r">
+    <div class="chip"><div class="chip-dot" id="kr-dot"></div><span id="kr-st">KRX</span></div>
+    <div class="chip"><div class="chip-dot" id="us-dot"></div><span id="us-st">NYSE</span></div>
+    <div class="clk" id="clk">—</div>
+    <button class="kis-pill" id="kis-btn" onclick="toggleKis()">⚙ KIS API</button>
+  </div>
+</div>
+
+<div class="tape"><div class="tape-inner" id="tape"></div></div>
+
+<div class="page">
+
+  <!-- 지수 -->
+  <div class="sec-label">시장 지수</div>
+  <div class="idx-row">
+    <div class="idx-card" onclick="go('chart.html')">
+      <div class="ic-top">
+        <div class="ic-flag">🇰🇷 KOSPI</div>
+        <div class="ic-badge" id="pb-kospi">—</div>
+      </div>
+      <div class="ic-name">Korea Composite</div>
+      <div class="ic-val sk" id="v-kospi">2600.00</div>
+      <div class="ic-sub" id="s-kospi">전일 —</div>
+      <div class="ic-bar-wrap"><div class="ic-bar" id="b-kospi" style="width:50%;background:var(--b2)"></div></div>
+    </div>
+    <div class="idx-card" onclick="go('chart.html')">
+      <div class="ic-top">
+        <div class="ic-flag">🇰🇷 KOSDAQ</div>
+        <div class="ic-badge" id="pb-kosdaq">—</div>
+      </div>
+      <div class="ic-name">KOSDAQ</div>
+      <div class="ic-val sk" id="v-kosdaq">800.00</div>
+      <div class="ic-sub" id="s-kosdaq">전일 —</div>
+      <div class="ic-bar-wrap"><div class="ic-bar" id="b-kosdaq" style="width:50%;background:var(--b2)"></div></div>
+    </div>
+    <div class="idx-card" onclick="go('chart.html')">
+      <div class="ic-top">
+        <div class="ic-flag">🇺🇸 S&amp;P 500</div>
+        <div class="ic-badge" id="pb-sp500">—</div>
+      </div>
+      <div class="ic-name">S&amp;P 500 Index</div>
+      <div class="ic-val sk" id="v-sp500">5600.00</div>
+      <div class="ic-sub" id="s-sp500">전일 —</div>
+      <div class="ic-bar-wrap"><div class="ic-bar" id="b-sp500" style="width:50%;background:var(--b2)"></div></div>
+    </div>
+    <div class="idx-card" onclick="go('chart.html')">
+      <div class="ic-top">
+        <div class="ic-flag">🇺🇸 NASDAQ</div>
+        <div class="ic-badge" id="pb-nasdaq">—</div>
+      </div>
+      <div class="ic-name">NASDAQ Composite</div>
+      <div class="ic-val sk" id="v-nasdaq">18000.00</div>
+      <div class="ic-sub" id="s-nasdaq">전일 —</div>
+      <div class="ic-bar-wrap"><div class="ic-bar" id="b-nasdaq" style="width:50%;background:var(--b2)"></div></div>
+    </div>
+  </div>
+
+  <!-- 매크로 -->
+  <div class="sec-label" style="margin-top:4px">글로벌 매크로</div>
+  <div class="macro-row">
+    <div class="pill-card">
+      <div class="pc-title">환율</div>
+      <div id="fx-list"></div>
+    </div>
+    <div class="pill-card">
+      <div class="pc-title">금리</div>
+      <div id="rate-list"></div>
+    </div>
+    <div class="pill-card">
+      <div class="pc-title">원자재 · 글로벌</div>
+      <div id="cmd-list"></div>
+    </div>
+    <div class="brief-card">
+      <div class="bc-ts" id="brief-ts">마켓 브리프</div>
+      <div class="bc-hl" id="brief-hl">데이터 로딩 중...</div>
+      <div class="bc-kpis" id="brief-kpis"></div>
+    </div>
+  </div>
+
+  <!-- 하단 -->
+  <div class="sec-label" style="margin-top:4px">이벤트 · 글로벌</div>
+  <div class="bottom-row">
+    <div class="pill-card">
+      <div class="pc-title">글로벌 지수</div>
+      <div id="global-list"></div>
+    </div>
+    <div class="pill-card">
+      <div class="pc-title">변동성 · 섹터</div>
+      <div id="vol-list"></div>
+    </div>
+    <div class="cal-card">
+      <div class="cal-head">
+        <div class="cal-title">이벤트 캘린더</div>
+        <span class="cal-link" onclick="go('calendar.html')">전체보기 →</span>
+      </div>
+      <div class="cal-body" id="cal-body"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MOBILE NAV -->
+<div class="bnav">
+  <div class="bni act"><div class="bni-icon">🏠</div><div class="bni-label">홈</div></div>
+  <div class="bni" onclick="go('chart.html')"><div class="bni-icon">📈</div><div class="bni-label">차트</div></div>
+  <div class="bni" onclick="go('macro.html')"><div class="bni-icon">🌐</div><div class="bni-label">매크로</div></div>
+  <div class="bni" onclick="go('research.html')"><div class="bni-icon">🔍</div><div class="bni-label">리서치</div></div>
+  <div class="bni" onclick="go('quant.html')"><div class="bni-icon">⚡</div><div class="bni-label">퀀트</div></div>
+  <div class="bni" onclick="go('calendar.html')"><div class="bni-icon">📅</div><div class="bni-label">캘린더</div></div>
+</div>
+
+<!-- KIS PANEL -->
+<div id="kis-panel">
+  <span class="kp-close" onclick="toggleKis()">← 닫기</span>
+  <div class="kp-logo">KIS API</div>
+  <div class="kp-sub">한국투자증권 OpenAPI</div>
+  <div class="kp-lbl">App Key</div>
+  <input class="kp-in" id="kp-key" type="text" placeholder="App Key" spellcheck="false">
+  <div class="kp-lbl">App Secret</div>
+  <input class="kp-in" id="kp-sec" type="password" placeholder="App Secret">
+  <div class="kp-lbl">계좌번호 앞 8자리 (선택)</div>
+  <input class="kp-in" id="kp-acc" type="text" placeholder="12345678" maxlength="8">
+  <button class="kp-save" onclick="saveKis()">저장 + 토큰 발급</button>
+  <div id="kp-st"></div>
+  <div class="kp-guide">apiportal.koreainvestment.com → 로그인 → 앱 등록 → App Key / Secret 복사<br><br>저장하면 모든 페이지에서 공유됩니다.</div>
+</div>
+
+<script src="kis.js"></script>
+<script>
+const go=u=>location.href=u;
+
+function tick(){
+  const now=new Date(),kst=new Date(now.toLocaleString('en-US',{timeZone:'Asia/Seoul'})),et=new Date(now.toLocaleString('en-US',{timeZone:'America/New_York'}));
+  const p=n=>String(n).padStart(2,'0');
+  document.getElementById('clk').textContent=`${p(kst.getHours())}:${p(kst.getMinutes())}:${p(kst.getSeconds())}`;
+  const kH=kst.getHours()*60+kst.getMinutes(),kD=kst.getDay(),kO=kD>=1&&kD<=5&&kH>=540&&kH<930;
+  document.getElementById('kr-dot').className='chip-dot '+(kO?'open':'closed');
+  document.getElementById('kr-st').textContent='KRX '+(kO?'OPEN':'CLOSED');
+  const uH=et.getHours()*60+et.getMinutes(),uD=et.getDay(),uO=uD>=1&&uD<=5&&uH>=570&&uH<960;
+  document.getElementById('us-dot').className='chip-dot '+(uO?'open':'closed');
+  document.getElementById('us-st').textContent='NYSE '+(uO?'OPEN':'CLOSED');
+  setTimeout(tick,1000);
+}
+tick();
+
+async function fetchY(sym){
+  const enc=encodeURIComponent(sym);
+  const urls=[
+    `https://corsproxy.io/?${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${enc}?interval=1d&range=5d`)}`,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${enc}?interval=1d&range=5d`)}`,
+  ];
+  for(const u of urls){
+    try{
+      const r=await fetch(u,{signal:AbortSignal.timeout(10000)});
+      if(!r.ok)continue;
+      const j=await r.json();
+      const res=j?.chart?.result?.[0],meta=res?.meta;
+      if(!meta?.regularMarketPrice)continue;
+      const cur=meta.regularMarketPrice;
+      const closes=(res?.indicators?.quote?.[0]?.close||[]).filter(v=>v!=null&&!isNaN(v));
+      const prev=closes.length>=2?closes[closes.length-2]:meta.regularMarketPreviousClose||meta.previousClose||cur;
+      return{c:cur,prev,chg:cur-prev,chgPct:prev?(cur-prev)/prev*100:0};
+    }catch(_){}
+  }
+  return null;
+}
+
+const tD=[];
+function pushTape(sym,val,chg,up){
+  tD.push({sym,val,chg,up});
+  document.getElementById('tape').innerHTML=[...tD,...tD].map(t=>`<div class="ti"><span class="ti-sym">${t.sym}</span><span class="ti-val">${t.val}</span><span class="ti-chg ${t.up?'up':'dn'}">${t.chg}</span></div>`).join('');
+}
+
+const IDXS=[
+  {id:'kospi', sym:'^KS11', fmt:v=>v.toFixed(2)},
+  {id:'kosdaq',sym:'^KQ11', fmt:v=>v.toFixed(2)},
+  {id:'sp500', sym:'^GSPC', fmt:v=>v.toFixed(2)},
+  {id:'nasdaq',sym:'^IXIC', fmt:v=>v.toFixed(2)},
+];
+async function loadIndices(){
+  for(const idx of IDXS){
+    const q=await fetchY(idx.sym);if(!q)continue;
+    const up=q.chg>=0;
+    const ve=document.getElementById('v-'+idx.id);
+    ve.textContent=idx.fmt(q.c);ve.classList.remove('sk');
+    const pb=document.getElementById('pb-'+idx.id);
+    pb.textContent=(up?'+':'')+q.chgPct.toFixed(2)+'%';
+    pb.className='ic-badge '+(up?'up':'dn');
+    document.getElementById('s-'+idx.id).textContent='전일 '+idx.fmt(q.prev);
+    const bw=Math.min(Math.abs(q.chgPct)*15+50,100);
+    const bar=document.getElementById('b-'+idx.id);
+    bar.style.width=bw+'%';bar.style.background=up?'var(--green)':'var(--red)';
+    pushTape(idx.id.toUpperCase(),idx.fmt(q.c),(up?'+':'')+q.chgPct.toFixed(2)+'%',up);
+  }
+  updateBrief();
+}
+
+const LISTS={
+  fx:[{sym:'KRW=X',l:'USD / KRW',f:v=>v.toFixed(0)},{sym:'EURUSD=X',l:'EUR / USD',f:v=>v.toFixed(4)},{sym:'JPY=X',l:'USD / JPY',f:v=>v.toFixed(2)},{sym:'CNY=X',l:'USD / CNY',f:v=>v.toFixed(4)}],
+  rate:[{sym:'^IRX',l:'US 3M',f:v=>v.toFixed(3)+'%'},{sym:'^TNX',l:'US 10Y',f:v=>v.toFixed(3)+'%'},{sym:'^TYX',l:'US 30Y',f:v=>v.toFixed(3)+'%'}],
+  cmd:[{sym:'CL=F',l:'WTI Crude',f:v=>'$'+v.toFixed(2)},{sym:'GC=F',l:'Gold',f:v=>'$'+v.toFixed(0)},{sym:'SI=F',l:'Silver',f:v=>'$'+v.toFixed(3)},{sym:'NG=F',l:'Nat Gas',f:v=>'$'+v.toFixed(3)}],
+  global:[{sym:'^N225',l:'Nikkei 225',f:v=>v.toFixed(0)},{sym:'^HSI',l:'Hang Seng',f:v=>v.toFixed(0)},{sym:'^FTSE',l:'FTSE 100',f:v=>v.toFixed(2)},{sym:'^GDAXI',l:'DAX',f:v=>v.toFixed(2)}],
+  vol:[{sym:'^VIX',l:'VIX',f:v=>v.toFixed(2)},{sym:'^MOVE',l:'MOVE Index',f:v=>v.toFixed(2)},{sym:'DX-Y.NYB',l:'DXY',f:v=>v.toFixed(3)},{sym:'^VKOSPI',l:'VKOSPI',f:v=>v.toFixed(2)}],
+};
+function pillRow(l,v,chgPct){
+  const up=chgPct>=0;
+  return `<div class="pc-item"><span class="pc-l">${l}</span><span class="pc-v">${v}</span><span class="pc-c ${up?'up':'dn'}">${up?'+':''}${chgPct.toFixed(2)}%</span></div>`;
+}
+async function loadList(items,id){
+  const rows=[];
+  for(const m of items){
+    const q=await fetchY(m.sym);if(!q)continue;
+    rows.push(pillRow(m.l,m.f(q.c),q.chgPct));
+    pushTape(m.l.replace(' ',''),m.f(q.c),(q.chgPct>=0?'+':'')+q.chgPct.toFixed(2)+'%',q.chgPct>=0);
+  }
+  document.getElementById(id).innerHTML=rows.join('');
+}
+
+function updateBrief(){
+  const items=[
+    {l:'KOSPI', vid:'v-kospi', pid:'pb-kospi'},
+    {l:'NASDAQ',vid:'v-nasdaq',pid:'pb-nasdaq'},
+    {l:'S&P 500',vid:'v-sp500',pid:'pb-sp500'},
+    {l:'KOSDAQ',vid:'v-kosdaq',pid:'pb-kosdaq'},
+  ];
+  document.getElementById('brief-kpis').innerHTML=items.map(k=>{
+    const v=document.getElementById(k.vid)?.textContent||'—';
+    const p=document.getElementById(k.pid)?.textContent||'—';
+    const up=p.startsWith('+');
+    return `<div class="bck"><div class="bck-l">${k.l}</div><div class="bck-v">${v}</div><div class="bck-c ${up?'up':'dn'}">${p}</div></div>`;
+  }).join('');
+  const ts=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('brief-ts').textContent=ts+' 업데이트';
+  const kv=document.getElementById('v-kospi')?.textContent||'';
+  const sv=document.getElementById('v-sp500')?.textContent||'';
+  if(kv&&sv) document.getElementById('brief-hl').textContent=`KOSPI ${kv} · S&P ${sv}`;
+}
+
+const ECO=[
+  {date:'2026-03-12',title:'미국 CPI (2월)',type:'eco'},
+  {date:'2026-03-13',title:'미국 PPI (2월)',type:'eco'},
+  {date:'2026-03-18',title:'FOMC 회의 개시',type:'eco'},
+  {date:'2026-03-19',title:'FOMC 금리결정 · 점도표',type:'eco'},
+  {date:'2026-03-21',title:'한국 BOK 금통위',type:'kr'},
+  {date:'2026-03-28',title:'미국 Core PCE (2월)',type:'eco'},
+  {date:'2026-04-04',title:'NFP 비농업 고용 (3월)',type:'eco'},
+  {date:'2026-04-10',title:'미국 CPI (3월)',type:'eco'},
+  {date:'2026-04-29',title:'미국 GDP 속보 (Q1)',type:'eco'},
+  {date:'2026-05-06',title:'FOMC 금리결정 (5월)',type:'eco'},
+];
+function loadCal(){
+  const today=new Date().toISOString().slice(0,10);
+  const D=['일','월','화','수','목','금','토'];
+  document.getElementById('cal-body').innerHTML=ECO.filter(e=>e.date>=today).slice(0,8).map(e=>{
+    const d=new Date(e.date+'T00:00:00');
+    const mm=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');
+    const isT=e.date===today;
+    return `<div class="cal-item${isT?' today':''}">
+      <div class="ci-dt">${mm}/${dd} ${D[d.getDay()]}${isT?`<br><span class="ci-today">TODAY</span>`:''}</div>
+      <div class="ci-title">${e.title}</div>
+      <span class="ci-tag ${e.type}">${{eco:'경제',kr:'한국',earn:'실적'}[e.type]}</span>
+    </div>`;
+  }).join('');
+}
+
+function toggleKis(){
+  const p=document.getElementById('kis-panel');
+  p.style.display=(p.style.display==='none'||!p.style.display)?'block':'none';
+  if(p.style.display==='block'){
+    document.getElementById('kp-key').value=localStorage.getItem('kis_appkey')||'';
+    document.getElementById('kp-sec').value=localStorage.getItem('kis_appsecret')||'';
+    document.getElementById('kp-acc').value=localStorage.getItem('kis_accno')||'';
+  }
+}
+async function saveKis(){
+  const k=document.getElementById('kp-key').value.trim(),s=document.getElementById('kp-sec').value.trim(),a=document.getElementById('kp-acc').value.trim();
+  const st=document.getElementById('kp-st');
+  if(!k||!s){st.textContent='Key와 Secret을 입력하세요';st.style.color='var(--red)';return;}
+  localStorage.setItem('kis_appkey',k);localStorage.setItem('kis_appsecret',s);if(a)localStorage.setItem('kis_accno',a);
+  if(window.KIS){
+    KIS.saveKeys(k,s,a);
+    KIS.onStatus((msg,type)=>{const c={ok:'var(--green)',err:'var(--red)',load:'var(--t3)'}[type]||'var(--t3)';st.textContent=msg;st.style.color=c;});
+    const ok=await KIS.getToken(true);
+    if(ok){document.getElementById('kis-btn').textContent='KIS ✓';document.getElementById('kis-btn').classList.add('active');setTimeout(()=>document.getElementById('kis-panel').style.display='none',800);}
+  } else {
+    st.textContent='저장됨';st.style.color='var(--t3)';
+  }
+}
+
+async function loadAll(){
+  await Promise.all([
+    loadIndices(),
+    loadList(LISTS.fx,'fx-list'),
+    loadList(LISTS.rate,'rate-list'),
+    loadList(LISTS.cmd,'cmd-list'),
+    loadList(LISTS.global,'global-list'),
+    loadList(LISTS.vol,'vol-list'),
+  ]);
+}
+
+loadCal();
+loadAll();
+setInterval(loadAll,5*60*1000);
+if(window.KIS&&KIS.isTokenValid()){document.getElementById('kis-btn').textContent='KIS ✓';document.getElementById('kis-btn').classList.add('active');}
+</script>
+</body>
+</html>
