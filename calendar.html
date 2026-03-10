@@ -6,6 +6,130 @@
 <title>OHAKS_Desk — 이벤트 캘린더</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+
+/* ═══ OHAKS_Desk Design System v2 ═══ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@300;400;500&display=swap');
+:root{
+  --bg:#08090C;
+  --s1:#0F1117;--s2:#161820;--s3:#1E2028;--s4:#252830;
+  --b1:#2E3240;--b2:#3D4255;--b3:#555C75;
+  --t1:#F0F2FF;--t2:#A0A8C0;--t3:#606880;
+  --green:#22C55E;--green-bg:rgba(34,197,94,.1);--green-border:rgba(34,197,94,.2);
+  --red:#EF4444;--red-bg:rgba(239,68,68,.1);--red-border:rgba(239,68,68,.2);
+  --blue:#6366F1;--blue-bg:rgba(99,102,241,.12);--blue-border:rgba(99,102,241,.25);
+  --amber:#F59E0B;--amber-bg:rgba(245,158,11,.1);
+  --cyan:#06B6D4;
+  --r8:8px;--r12:12px;--r16:16px;
+  --mono:'DM Mono',monospace;
+  --ui:'Inter',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{height:100%}
+body{background:var(--bg)!important;color:var(--t2)!important;font-family:var(--ui)!important;-webkit-font-smoothing:antialiased;min-height:100%}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--b1);border-radius:4px}
+/* topbar override */
+.ds-topbar{
+  position:sticky;top:0;z-index:200;
+  height:52px;
+  background:rgba(8,9,12,.85);
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(255,255,255,.05);
+  display:flex;align-items:center;padding:0 20px;gap:6px;
+}
+.ds-logo{
+  font-size:15px;font-weight:800;letter-spacing:-.03em;
+  white-space:nowrap;margin-right:16px;cursor:pointer;
+  background:linear-gradient(135deg,#fff 0%,rgba(255,255,255,.6) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.ds-logo em{background:linear-gradient(135deg,#6366F1 0%,#06B6D4 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-style:normal}
+.ds-nav{display:flex;gap:2px}
+.ds-nl{font-size:12px;font-weight:500;color:var(--t3);padding:6px 11px;border-radius:var(--r8);cursor:pointer;transition:all .15s;white-space:nowrap}
+.ds-nl:hover{color:var(--t2);background:var(--s3)}
+.ds-nl.act{color:var(--t1);background:var(--s3)}
+.ds-r{margin-left:auto;display:flex;align-items:center;gap:8px}
+.ds-chip{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:500;color:var(--t3);padding:4px 10px;border-radius:20px;background:var(--s2);border:1px solid var(--b1)}
+.ds-dot{width:5px;height:5px;border-radius:50%}
+.ds-dot.open{background:var(--green);box-shadow:0 0 5px var(--green);animation:ds-glow 2s infinite}
+.ds-dot.closed{background:var(--b2)}
+@keyframes ds-glow{0%,100%{opacity:1}50%{opacity:.5}}
+.ds-clk{font-family:var(--mono);font-size:11px;color:var(--t3);letter-spacing:.04em}
+.ds-kis{font-size:11px;font-weight:500;padding:5px 12px;border-radius:20px;border:1px solid var(--b1);background:var(--s2);cursor:pointer;color:var(--t3);transition:all .15s}
+.ds-kis:hover{border-color:var(--b2);color:var(--t2)}
+.ds-kis.active{border-color:var(--green-border);color:var(--green);background:var(--green-bg)}
+/* tape override */
+.ds-tape{height:28px;background:var(--s1);border-bottom:1px solid rgba(255,255,255,.04);overflow:hidden}
+.ds-tape-inner{display:inline-flex;white-space:nowrap;animation:ds-sc 90s linear infinite}
+.ds-tape-inner:hover{animation-play-state:paused}
+@keyframes ds-sc{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ds-ti{display:inline-flex;align-items:center;gap:7px;padding:0 16px;height:28px;border-right:1px solid rgba(255,255,255,.04)}
+.ds-ti-sym{font-size:9px;font-weight:600;letter-spacing:.06em;color:var(--t3);text-transform:uppercase}
+.ds-ti-val{font-family:var(--mono);font-size:11px;color:var(--t1)}
+.ds-ti-chg{font-size:9px;font-weight:500}
+.ds-ti-chg.up{color:var(--green)}.ds-ti-chg.dn{color:var(--red)}
+/* mobile nav */
+.ds-bnav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:999;background:rgba(15,17,23,.95);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.05);grid-template-columns:repeat(6,1fr);height:56px}
+.ds-bni{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:5px;transition:background .15s;border-right:1px solid rgba(255,255,255,.04)}
+.ds-bni:last-child{border-right:none}
+.ds-bni:hover,.ds-bni.act{background:var(--s2)}
+.ds-bni-icon{font-size:15px;line-height:1}
+.ds-bni-label{font-size:7.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--t3)}
+.ds-bni.act .ds-bni-label{color:var(--t1)}
+/* page wrapper */
+.ds-page{max-width:1400px;margin:0 auto;padding:20px 20px 80px}
+/* card base */
+.ds-card{background:var(--s1);border:1px solid rgba(255,255,255,.05);border-radius:var(--r16);overflow:hidden}
+/* section label */
+.ds-sec{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:8px;padding:0 2px}
+/* panel head */
+.ds-ph{height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid rgba(255,255,255,.05);background:rgba(255,255,255,.02)}
+.ds-ph-t{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t2)}
+.ds-ph-s{font-size:10px;color:var(--t3)}
+.ds-ph-link{font-size:11px;font-weight:500;color:var(--blue);cursor:pointer;transition:opacity .15s}
+.ds-ph-link:hover{opacity:.7}
+/* buttons */
+.ds-btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:8px 16px;border-radius:var(--r8);border:none;cursor:pointer;transition:all .15s;letter-spacing:.01em}
+.ds-btn-primary{background:linear-gradient(135deg,var(--blue),#4F46E5);color:#fff}
+.ds-btn-primary:hover{opacity:.85}
+.ds-btn-ghost{background:var(--s3);color:var(--t2);border:1px solid var(--b1)}
+.ds-btn-ghost:hover{border-color:var(--b2);color:var(--t1)}
+/* inputs */
+.ds-input{width:100%;padding:9px 12px;border:1px solid var(--b1);background:var(--s2);border-radius:var(--r8);font-family:var(--mono);font-size:12px;color:var(--t1);outline:none;transition:border-color .15s}
+.ds-input:focus{border-color:var(--blue)}
+/* tabs */
+.ds-tabs{display:flex;gap:2px;background:var(--s2);border-radius:var(--r8);padding:3px;width:fit-content}
+.ds-tab{font-size:11px;font-weight:600;padding:6px 14px;border-radius:6px;cursor:pointer;color:var(--t3);transition:all .15s;white-space:nowrap}
+.ds-tab:hover{color:var(--t2)}
+.ds-tab.act{background:var(--s3);color:var(--t1)}
+/* badge */
+.ds-badge{font-size:9.5px;font-weight:600;padding:3px 8px;border-radius:6px;letter-spacing:.02em;display:inline-flex;align-items:center}
+.ds-badge.up{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.ds-badge.dn{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.ds-badge.neu{background:var(--s3);color:var(--t3);border:1px solid var(--b1)}
+.ds-badge.blue{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)}
+/* table */
+.ds-table{width:100%;border-collapse:collapse}
+.ds-table th{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.05);text-align:left;white-space:nowrap}
+.ds-table td{font-size:12px;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);color:var(--t2)}
+.ds-table tr:last-child td{border-bottom:none}
+.ds-table tr:hover td{background:rgba(255,255,255,.02)}
+/* up/dn */
+.up{color:var(--green)!important}.dn{color:var(--red)!important}.neu{color:var(--t3)!important}
+/* skeleton */
+.sk{background:linear-gradient(90deg,var(--s2) 25%,var(--s3) 50%,var(--s2) 75%);background-size:200% 100%;animation:sk 1.5s infinite;color:transparent!important;border-radius:6px}
+@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+/* mobile */
+@media(max-width:960px){
+  .ds-bnav{display:grid!important}
+  body{padding-bottom:56px!important}
+  .ds-nav{display:none!important}
+  .ds-page{padding:12px 12px 70px}
+}
+
+/* ─── PAGE STYLES ─── */
 :root{
   --cream:#F7F4EE;--cream2:#F0ECE3;--cream3:#E8E2D6;
   --white:#FDFCFA;--rule:#DDD8CC;--rule2:#C8C2B4;
@@ -160,12 +284,133 @@ body{background:var(--cream);color:var(--body);font-family:var(--sans);font-size
 .note-ta:focus{border-color:var(--navy)}
 .note-save-btn{margin-top:4px;font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;background:var(--navy);color:#E8DFC8;border:none;cursor:pointer}
 </style>
+
+<style>
+/* ── MOBILE NAV BAR ── */
+.bottom-nav{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;z-index:999;
+  background:#0A0A0A;border-top:2px solid #333;
+  grid-template-columns:repeat(6,1fr);
+  height:56px;
+}
+.bn-item{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;cursor:pointer;padding:6px 2px;
+  border-right:1px solid #222;transition:background .15s;
+}
+.bn-item:last-child{border-right:none}
+.bn-item:hover,.bn-item.act{background:#1C1C1C}
+.bn-icon{font-size:16px;line-height:1}
+.bn-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.06em;text-transform:uppercase;color:rgba(249,247,242,.5);white-space:nowrap}
+.bn-item.act .bn-label{color:rgba(249,247,242,.9)}
+
+/* ── MOBILE RESPONSIVE ── */
+@media(max-width:768px){
+  .bottom-nav{display:grid!important}
+  body{padding-bottom:56px}
+  /* masthead */
+  .masthead{grid-template-columns:1fr!important;gap:8px!important;padding:10px 14px!important;text-align:center}
+  .mh-right,.mh-left{text-align:center!important}
+  .mh-nav{justify-content:center;display:none!important}
+  .brand-name{font-size:44px!important}
+  /* broadsheet → single column */
+  .broadsheet{grid-template-columns:1fr!important;padding:0 12px!important}
+  .col-rule{display:none!important}
+  .left-col,.center-col,.right-col{padding:12px 0!important}
+  .idx-val{font-size:28px!important}
+  /* bottom strip hide on mobile */
+  .bottom-strip{display:none!important}
+  /* tape smaller */
+  .tape-item{padding:0 10px!important}
+  /* dateline */
+  .dateline{padding:0 12px!important}
+  .dl-l span:not(:first-child){display:none}
+  /* KIS panel full width */
+  #kis-float{width:100%!important}
+  /* page padding */
+  .page{padding:12px 10px 70px!important}
+  /* tables scroll */
+  table{font-size:10px!important}
+  .pos-table th,.pos-table td{padding:6px 4px!important;font-size:9px!important}
+  /* cards */
+  .main-grid{grid-template-columns:1fr!important}
+  .kpi-ribbon{grid-template-columns:repeat(2,1fr)!important}
+  /* chart page */
+  .chart-layout{grid-template-columns:1fr!important}
+  /* research */
+  .research-grid{grid-template-columns:1fr!important}
+  /* macro */
+  .macro-layout{grid-template-columns:1fr!important}
+}
+@media(min-width:769px){
+  .bottom-nav{display:none!important}
+}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
+<!-- DS TOPBAR -->
+<div class="ds-topbar">
+  <div class="ds-logo" onclick="location.href='index.html'">OHAKS<em>_</em>Desk</div>
+  <div class="ds-nav">
+    <div class="ds-nl" onclick="location.href='index.html'">홈</div>
+    <div class="ds-nl" onclick="location.href='chart.html'">차트</div>
+    <div class="ds-nl" onclick="location.href='macro.html'">매크로</div>
+    <div class="ds-nl" onclick="location.href='research.html'">리서치</div>
+    <div class="ds-nl" onclick="location.href='quant.html'">퀀트</div>
+    <div class="ds-nl" onclick="location.href='portfolio.html'">포트폴리오</div>
+    <div class="ds-nl  act" onclick="location.href='calendar.html'">캘린더</div>
+  </div>
+  <div class="ds-r">
+    <div class="ds-chip"><div class="ds-dot" id="ds-kr-dot"></div><span id="ds-kr-st">KRX</span></div>
+    <div class="ds-chip"><div class="ds-dot" id="ds-us-dot"></div><span id="ds-us-st">NYSE</span></div>
+    <div class="ds-clk" id="ds-clk">—</div>
+    <button class="ds-kis" id="ds-kis-btn" onclick="typeof toggleKis==='function'&&toggleKis()">⚙ KIS</button>
+  </div>
+</div>
+<!-- DS TAPE -->
+<div class="ds-tape"><div class="ds-tape-inner" id="ds-tape">
+  <div class="ds-ti"><span class="ds-ti-sym">OHAKS_Desk</span><span class="ds-ti-val">이벤트 캘린더</span><span class="ds-ti-chg neu">로딩 중...</span></div>
+</div></div>
+<!-- DS MOBILE NAV -->
+<div class="ds-bnav">
+  <div class="ds-bni" onclick="location.href='index.html'"><div class="ds-bni-icon">🏠</div><div class="ds-bni-label">홈</div></div>
+  <div class="ds-bni" onclick="location.href='chart.html'"><div class="ds-bni-icon">📈</div><div class="ds-bni-label">차트</div></div>
+  <div class="ds-bni" onclick="location.href='macro.html'"><div class="ds-bni-icon">🌐</div><div class="ds-bni-label">매크로</div></div>
+  <div class="ds-bni" onclick="location.href='research.html'"><div class="ds-bni-icon">🔍</div><div class="ds-bni-label">리서치</div></div>
+  <div class="ds-bni" onclick="location.href='quant.html'"><div class="ds-bni-icon">⚡</div><div class="ds-bni-label">퀀트</div></div>
+  <div class="ds-bni  act" onclick="location.href='calendar.html'"><div class="ds-bni-icon">📅</div><div class="ds-bni-label">캘린더</div></div>
+</div>
+<!-- DS CLOCK SCRIPT -->
+<script>
+(function(){
+  function dsTick(){
+    const now=new Date(),kst=new Date(now.toLocaleString('en-US',{timeZone:'Asia/Seoul'})),et=new Date(now.toLocaleString('en-US',{timeZone:'America/New_York'}));
+    const p=n=>String(n).padStart(2,'0');
+    const el=document.getElementById('ds-clk');
+    if(el) el.textContent=p(kst.getHours())+':'+p(kst.getMinutes())+':'+p(kst.getSeconds());
+    const kH=kst.getHours()*60+kst.getMinutes(),kD=kst.getDay(),kO=kD>=1&&kD<=5&&kH>=540&&kH<930;
+    const kd=document.getElementById('ds-kr-dot'),ks=document.getElementById('ds-kr-st');
+    if(kd) kd.className='ds-dot '+(kO?'open':'closed');
+    if(ks) ks.textContent='KRX '+(kO?'OPEN':'CLOSED');
+    const uH=et.getHours()*60+et.getMinutes(),uD=et.getDay(),uO=uD>=1&&uD<=5&&uH>=570&&uH<960;
+    const ud=document.getElementById('ds-us-dot'),us=document.getElementById('ds-us-st');
+    if(ud) ud.className='ds-dot '+(uO?'open':'closed');
+    if(us) us.textContent='NYSE '+(uO?'OPEN':'CLOSED');
+    setTimeout(dsTick,1000);
+  }
+  dsTick();
+  // KIS badge
+  if(window.KIS&&typeof KIS.isTokenValid==='function'&&KIS.isTokenValid()){
+    const b=document.getElementById('ds-kis-btn');
+    if(b){b.textContent='KIS ✓';b.classList.add('active');}
+  }
+})();
+</script>
 
-<!-- TOPBAR -->
-<div class="topbar">
-  <div class="logo">OHAKS_Desk<div class="logo-sep"></div><div class="logo-sub">이벤트 캘린더</div></div>
+
+<div class="logo-sub">이벤트 캘린더</div></div>
   <div class="topbar-right">
     <div id="clk"><div id="ct">—</div><div id="clkd">—</div></div>
   </div>
@@ -1321,5 +1566,7 @@ document.querySelectorAll('.nl').forEach(l=>{
   });
 });
 </script>
+
+
 </body>
 </html>
