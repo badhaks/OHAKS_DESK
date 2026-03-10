@@ -3,1425 +3,446 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OHAKS_Desk — 퀀트 시그널</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>OHAKS_Desk — 퀀트</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-
-/* ═══ OHAKS_Desk Design System v2 ═══ */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@300;400;500&display=swap');
 :root{
-  --bg:#08090C;
-  --s1:#0F1117;--s2:#161820;--s3:#1E2028;--s4:#252830;
-  --b1:#2E3240;--b2:#3D4255;--b3:#555C75;
+  --bg:#08090C;--s1:#0F1117;--s2:#161820;--s3:#1E2028;
+  --b1:#2E3240;--b2:#3D4255;
   --t1:#F0F2FF;--t2:#A0A8C0;--t3:#606880;
   --green:#22C55E;--green-bg:rgba(34,197,94,.1);--green-border:rgba(34,197,94,.2);
   --red:#EF4444;--red-bg:rgba(239,68,68,.1);--red-border:rgba(239,68,68,.2);
   --blue:#6366F1;--blue-bg:rgba(99,102,241,.12);--blue-border:rgba(99,102,241,.25);
-  --amber:#F59E0B;--amber-bg:rgba(245,158,11,.1);
-  --cyan:#06B6D4;
+  --amber:#F59E0B;--amber-bg:rgba(245,158,11,.1);--amber-border:rgba(245,158,11,.25);
+  --ui:'Inter',sans-serif;--mono:'DM Mono',monospace;
   --r8:8px;--r12:12px;--r16:16px;
-  --mono:'DM Mono',monospace;
-  --ui:'Inter',sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{height:100%}
-body{background:var(--bg)!important;color:var(--t2)!important;font-family:var(--ui)!important;-webkit-font-smoothing:antialiased;min-height:100%}
-::-webkit-scrollbar{width:4px;height:4px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--b1);border-radius:4px}
-/* topbar override */
-.ds-topbar{
-  position:sticky;top:0;z-index:200;
-  height:52px;
-  background:rgba(8,9,12,.85);
-  backdrop-filter:blur(24px);
-  -webkit-backdrop-filter:blur(24px);
-  border-bottom:1px solid rgba(255,255,255,.05);
-  display:flex;align-items:center;padding:0 20px;gap:6px;
-}
-.ds-logo{
-  font-size:15px;font-weight:800;letter-spacing:-.03em;
-  white-space:nowrap;margin-right:16px;cursor:pointer;
-  background:linear-gradient(135deg,#fff 0%,rgba(255,255,255,.6) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
-.ds-logo em{background:linear-gradient(135deg,#6366F1 0%,#06B6D4 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-style:normal}
-.ds-nav{display:flex;gap:2px}
-.ds-nl{font-size:12px;font-weight:500;color:var(--t3);padding:6px 11px;border-radius:var(--r8);cursor:pointer;transition:all .15s;white-space:nowrap}
-.ds-nl:hover{color:var(--t2);background:var(--s3)}
-.ds-nl.act{color:var(--t1);background:var(--s3)}
-.ds-r{margin-left:auto;display:flex;align-items:center;gap:8px}
-.ds-chip{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:500;color:var(--t3);padding:4px 10px;border-radius:20px;background:var(--s2);border:1px solid var(--b1)}
-.ds-dot{width:5px;height:5px;border-radius:50%}
-.ds-dot.open{background:var(--green);box-shadow:0 0 5px var(--green);animation:ds-glow 2s infinite}
-.ds-dot.closed{background:var(--b2)}
-@keyframes ds-glow{0%,100%{opacity:1}50%{opacity:.5}}
-.ds-clk{font-family:var(--mono);font-size:11px;color:var(--t3);letter-spacing:.04em}
-.ds-kis{font-size:11px;font-weight:500;padding:5px 12px;border-radius:20px;border:1px solid var(--b1);background:var(--s2);cursor:pointer;color:var(--t3);transition:all .15s}
-.ds-kis:hover{border-color:var(--b2);color:var(--t2)}
-.ds-kis.active{border-color:var(--green-border);color:var(--green);background:var(--green-bg)}
-/* tape override */
-.ds-tape{height:28px;background:var(--s1);border-bottom:1px solid rgba(255,255,255,.04);overflow:hidden}
-.ds-tape-inner{display:inline-flex;white-space:nowrap;animation:ds-sc 90s linear infinite}
-.ds-tape-inner:hover{animation-play-state:paused}
-@keyframes ds-sc{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.ds-ti{display:inline-flex;align-items:center;gap:7px;padding:0 16px;height:28px;border-right:1px solid rgba(255,255,255,.04)}
-.ds-ti-sym{font-size:9px;font-weight:600;letter-spacing:.06em;color:var(--t3);text-transform:uppercase}
-.ds-ti-val{font-family:var(--mono);font-size:11px;color:var(--t1)}
-.ds-ti-chg{font-size:9px;font-weight:500}
-.ds-ti-chg.up{color:var(--green)}.ds-ti-chg.dn{color:var(--red)}
-/* mobile nav */
-.ds-bnav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:999;background:rgba(15,17,23,.95);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.05);grid-template-columns:repeat(6,1fr);height:56px}
-.ds-bni{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:5px;transition:background .15s;border-right:1px solid rgba(255,255,255,.04)}
-.ds-bni:last-child{border-right:none}
-.ds-bni:hover,.ds-bni.act{background:var(--s2)}
-.ds-bni-icon{font-size:15px;line-height:1}
-.ds-bni-label{font-size:7.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--t3)}
-.ds-bni.act .ds-bni-label{color:var(--t1)}
-/* page wrapper */
-.ds-page{max-width:1400px;margin:0 auto;padding:20px 20px 80px}
-/* card base */
-.ds-card{background:var(--s1);border:1px solid rgba(255,255,255,.05);border-radius:var(--r16);overflow:hidden}
-/* section label */
-.ds-sec{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:8px;padding:0 2px}
-/* panel head */
-.ds-ph{height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid rgba(255,255,255,.05);background:rgba(255,255,255,.02)}
-.ds-ph-t{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t2)}
-.ds-ph-s{font-size:10px;color:var(--t3)}
-.ds-ph-link{font-size:11px;font-weight:500;color:var(--blue);cursor:pointer;transition:opacity .15s}
-.ds-ph-link:hover{opacity:.7}
-/* buttons */
-.ds-btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:8px 16px;border-radius:var(--r8);border:none;cursor:pointer;transition:all .15s;letter-spacing:.01em}
-.ds-btn-primary{background:linear-gradient(135deg,var(--blue),#4F46E5);color:#fff}
-.ds-btn-primary:hover{opacity:.85}
-.ds-btn-ghost{background:var(--s3);color:var(--t2);border:1px solid var(--b1)}
-.ds-btn-ghost:hover{border-color:var(--b2);color:var(--t1)}
-/* inputs */
-.ds-input{width:100%;padding:9px 12px;border:1px solid var(--b1);background:var(--s2);border-radius:var(--r8);font-family:var(--mono);font-size:12px;color:var(--t1);outline:none;transition:border-color .15s}
-.ds-input:focus{border-color:var(--blue)}
-/* tabs */
-.ds-tabs{display:flex;gap:2px;background:var(--s2);border-radius:var(--r8);padding:3px;width:fit-content}
+html,body{min-height:100%;background:var(--bg);color:var(--t2);font-family:var(--ui);font-size:13px;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:var(--b1);border-radius:4px}
+.up{color:var(--green)!important}.dn{color:var(--red)!important}.neu{color:var(--t3)!important}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:200;height:52px;background:rgba(8,9,12,.85);backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;padding:0 20px;gap:6px}
+.logo{font-size:15px;font-weight:800;letter-spacing:-.03em;white-space:nowrap;margin-right:16px;cursor:pointer;background:linear-gradient(135deg,#fff,rgba(255,255,255,.6));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.logo em{background:linear-gradient(135deg,#6366F1,#06B6D4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-style:normal}
+.nav-links{display:flex;gap:2px}
+.nl{font-size:12px;font-weight:500;color:var(--t3);padding:6px 11px;border-radius:var(--r8);cursor:pointer;transition:all .15s;white-space:nowrap}
+.nl:hover{color:var(--t2);background:var(--s3)}.nl.act{color:var(--t1);background:var(--s3)}
+.tb-r{margin-left:auto;display:flex;align-items:center;gap:8px}
+.chip{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:500;color:var(--t3);padding:4px 10px;border-radius:20px;background:var(--s2);border:1px solid var(--b1)}
+.c-dot{width:5px;height:5px;border-radius:50%}.c-dot.open{background:var(--green);box-shadow:0 0 5px var(--green);animation:glow 2s infinite}.c-dot.closed{background:var(--b2)}
+@keyframes glow{0%,100%{opacity:1}50%{opacity:.5}}
+.clk{font-family:var(--mono);font-size:11px;color:var(--t3);letter-spacing:.04em}
+.kis-pill{font-size:11px;font-weight:500;padding:5px 12px;border-radius:20px;border:1px solid var(--b1);background:var(--s2);cursor:pointer;color:var(--t3);transition:all .15s}
+.kis-pill:hover{border-color:var(--b2);color:var(--t2)}.kis-pill.active{border-color:var(--green-border);color:var(--green);background:var(--green-bg)}
+
+/* TAPE */
+.tape{height:28px;background:var(--s1);border-bottom:1px solid rgba(255,255,255,.04);overflow:hidden}
+.tape-inner{display:inline-flex;white-space:nowrap;animation:sc 90s linear infinite}
+@keyframes sc{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ti{display:inline-flex;align-items:center;gap:7px;padding:0 16px;height:28px;border-right:1px solid rgba(255,255,255,.04)}
+.ti-sym{font-size:9px;font-weight:600;letter-spacing:.06em;color:var(--t3);text-transform:uppercase}
+.ti-val{font-family:var(--mono);font-size:11px;color:var(--t1)}
+.ti-chg{font-size:9px;font-weight:500}.ti-chg.up{color:var(--green)}.ti-chg.dn{color:var(--red)}.ti-chg.neu{color:var(--t3)}
+
+/* PAGE */
+.page{max-width:1400px;margin:0 auto;padding:20px 20px 80px;display:flex;flex-direction:column;gap:12px}
+.sec-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
+.row{display:grid;gap:10px}
+.row-3{grid-template-columns:repeat(3,1fr)}
+.row-2-1{grid-template-columns:2fr 1fr}
+
+/* CARD */
+.card{background:var(--s1);border:1px solid rgba(255,255,255,.05);border-radius:var(--r16);overflow:hidden}
+.card-head{height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid rgba(255,255,255,.05);background:rgba(255,255,255,.02)}
+.ch-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t2)}
+.ch-sub{font-size:10px;color:var(--t3)}
+
+/* HEATMAP */
+.heatmap{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;padding:14px}
+.hm-cell{border-radius:var(--r8);padding:12px 10px;border:1px solid;text-align:center;transition:all .15s;cursor:default}
+.hm-cell:hover{transform:translateY(-1px)}
+.hm-icon{font-size:18px;margin-bottom:4px}
+.hm-sym{font-size:10px;font-weight:700;color:var(--t1);letter-spacing:.04em}
+.hm-name{font-size:9px;color:var(--t3);margin:2px 0}
+.hm-val{font-family:var(--mono);font-size:13px;font-weight:500}
+.hm-chg{font-size:11px;font-weight:600;margin-top:2px}
+
+/* TABS */
+.ds-tabs{display:flex;gap:2px;background:var(--s2);border-radius:var(--r8);padding:3px}
 .ds-tab{font-size:11px;font-weight:600;padding:6px 14px;border-radius:6px;cursor:pointer;color:var(--t3);transition:all .15s;white-space:nowrap}
-.ds-tab:hover{color:var(--t2)}
-.ds-tab.act{background:var(--s3);color:var(--t1)}
-/* badge */
-.ds-badge{font-size:9.5px;font-weight:600;padding:3px 8px;border-radius:6px;letter-spacing:.02em;display:inline-flex;align-items:center}
-.ds-badge.up{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
-.ds-badge.dn{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
-.ds-badge.neu{background:var(--s3);color:var(--t3);border:1px solid var(--b1)}
-.ds-badge.blue{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)}
-/* table */
+.ds-tab:hover{color:var(--t2)}.ds-tab.act{background:var(--s3);color:var(--t1)}
+
+/* TABLE */
 .ds-table{width:100%;border-collapse:collapse}
-.ds-table th{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.05);text-align:left;white-space:nowrap}
-.ds-table td{font-size:12px;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);color:var(--t2)}
+.ds-table th{font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);text-align:left;white-space:nowrap}
+.ds-table td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);color:var(--t2);font-size:12px}
 .ds-table tr:last-child td{border-bottom:none}
 .ds-table tr:hover td{background:rgba(255,255,255,.02)}
-/* up/dn */
-.up{color:var(--green)!important}.dn{color:var(--red)!important}.neu{color:var(--t3)!important}
-/* skeleton */
-.sk{background:linear-gradient(90deg,var(--s2) 25%,var(--s3) 50%,var(--s2) 75%);background-size:200% 100%;animation:sk 1.5s infinite;color:transparent!important;border-radius:6px}
-@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
-/* mobile */
-@media(max-width:960px){
-  .ds-bnav{display:grid!important}
-  body{padding-bottom:56px!important}
-  .ds-nav{display:none!important}
-  .ds-page{padding:12px 12px 70px}
-}
+.mono{font-family:var(--mono)}
+.badge{font-size:9px;font-weight:600;padding:3px 8px;border-radius:6px;display:inline-flex;white-space:nowrap}
+.badge.up{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.badge.dn{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.badge.neu{background:var(--s3);color:var(--t3);border:1px solid var(--b1)}
+.badge.amber{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
 
-/* ─── PAGE STYLES ─── */
-:root{
-  --cream:#F7F4EE;--cream2:#F0ECE3;--cream3:#E8E2D6;
-  --white:#FDFCFA;--rule:#DDD8CC;--rule2:#C8C2B4;
-  --muted:#9E9585;--body:#3D3830;--head:#1A1610;
-  --navy:#0B2B52;--navy2:#163D72;--gold:#8C6D2F;--gold2:#B8922E;
-  --green:#1A6640;--red:#B83232;--blue:#1B5EA0;
-  --s1:#2ECC71;--s2:#E74C3C;--s3:#3498DB;--s4:#F39C12;
-  --serif:'Cormorant Garamond',Georgia,serif;
-  --sans:'DM Sans',sans-serif;
-  --mono:'DM Mono','Courier New',monospace;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--cream);color:var(--body);font-family:var(--sans);font-size:13px;line-height:1.6;-webkit-font-smoothing:antialiased}
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--cream2)}::-webkit-scrollbar-thumb{background:var(--rule2)}
-.up{color:var(--green)}.dn{color:var(--red)}.neu{color:var(--muted)}
+/* RSI BAR */
+.rsi-wrap{height:6px;background:var(--s3);border-radius:3px;overflow:hidden;position:relative;margin-top:3px}
+.rsi-bar{height:100%;border-radius:3px}
+.rsi-ob{position:absolute;left:70%;top:0;width:1px;height:100%;background:rgba(239,68,68,.4)}
+.rsi-os{position:absolute;left:30%;top:0;width:1px;height:100%;background:rgba(34,197,94,.4)}
 
-/* ── TOPBAR ── */
-.topbar{position:sticky;top:0;z-index:300;height:44px;background:var(--navy);display:flex;align-items:center;padding:0 24px;gap:14px}
-.logo{font-family:var(--serif);font-size:15px;font-weight:600;letter-spacing:.06em;color:#E8DFC8;display:flex;align-items:center;gap:10px;white-space:nowrap;flex-shrink:0}
-.logo-sep{width:1px;height:16px;background:rgba(255,255,255,.2)}
-.logo-sub{font-family:var(--mono);font-size:8px;letter-spacing:.14em;color:rgba(232,223,200,.4);text-transform:uppercase}
-.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
-#clk{font-family:var(--mono);font-size:10.5px;color:rgba(232,223,200,.7);line-height:1.3;text-align:right}
-#clkd{font-size:9px;color:rgba(232,223,200,.32)}
+/* 52W BAR */
+.w52-wrap{display:flex;align-items:center;gap:6px}
+.w52-bar-bg{flex:1;height:4px;background:var(--s3);border-radius:2px;overflow:hidden}
+.w52-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--red),var(--amber),var(--green))}
 
-/* ── NAVBAR ── */
-.nav{background:var(--white);border-bottom:2px solid var(--navy);display:flex;align-items:stretch;height:36px;padding:0 24px;position:sticky;top:44px;z-index:200}
-.nl{font-family:var(--sans);font-size:11px;font-weight:500;letter-spacing:.05em;color:var(--muted);padding:0 14px;display:flex;align-items:center;border-bottom:2px solid transparent;margin-bottom:-2px;cursor:pointer;transition:all .15s;text-transform:uppercase;white-space:nowrap}
-.nl:hover{color:var(--navy)}.nl.act{color:var(--navy);border-bottom-color:var(--gold2)}
-.nav-r{margin-left:auto;display:flex;align-items:center;gap:8px}
-.nav-ts{font-family:var(--mono);font-size:9px;color:var(--muted)}
+/* FACTOR CARD */
+.factor-list{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.factor-item{display:flex;flex-direction:column;gap:5px}
+.fi-top{display:flex;align-items:center;justify-content:space-between}
+.fi-name{font-size:11px;font-weight:600;color:var(--t2)}
+.fi-score{font-family:var(--mono);font-size:13px;font-weight:500}
+.fi-bar-bg{height:5px;background:var(--s3);border-radius:3px;overflow:hidden}
+.fi-bar{height:100%;border-radius:3px;transition:width .8s ease}
+.fi-sub{font-size:10px;color:var(--t3)}
 
-/* ── PAGE ── */
-.page{max-width:1440px;margin:0 auto;padding:24px 24px 80px}
+/* KIS PANEL */
+#kis-panel{display:none;position:fixed;top:0;right:0;width:300px;height:100vh;background:var(--s1);border-left:1px solid rgba(255,255,255,.06);z-index:999;padding:22px 18px;overflow-y:auto;box-shadow:-20px 0 60px rgba(0,0,0,.6)}
+.kp-close{font-size:11px;color:var(--t3);cursor:pointer;margin-bottom:18px;display:block;font-weight:500}.kp-close:hover{color:var(--t1)}
+.kp-title{font-size:20px;font-weight:800;color:var(--t1);margin-bottom:3px}
+.kp-sub{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06)}
+.kp-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin:12px 0 4px}
+.kp-in{width:100%;padding:9px 12px;border:1px solid var(--b1);background:var(--s2);border-radius:var(--r8);font-family:var(--mono);font-size:12px;color:var(--t1);outline:none;transition:border-color .15s}.kp-in:focus{border-color:var(--blue)}
+.kp-save{width:100%;padding:11px;background:linear-gradient(135deg,var(--blue),#4F46E5);color:#fff;border:none;cursor:pointer;margin-top:14px;border-radius:var(--r8);font-size:12px;font-weight:600}
 
-/* ── PAGE HEADER ── */
-.page-hd{margin-bottom:24px;display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid var(--rule);padding-bottom:16px}
-.page-title{font-family:var(--serif);font-size:38px;font-weight:400;color:var(--head);line-height:1}
-.page-title em{font-style:italic;color:var(--navy)}
-.page-sub{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:4px}
-.hd-right{display:flex;align-items:center;gap:10px}
-.universe-sel{font-family:var(--mono);font-size:10px;padding:5px 10px;border:1px solid var(--rule2);background:var(--cream);color:var(--body);cursor:pointer;outline:none}
-.run-btn{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:7px 16px;background:var(--navy);color:#E8DFC8;border:none;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity .2s}
-.run-btn:hover{opacity:.85}.run-btn.running{opacity:.6;pointer-events:none}
-.spin{animation:spin .7s linear infinite;display:inline-block}
-@keyframes spin{to{transform:rotate(360deg)}}
+/* MOBILE NAV */
+.bnav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:999;background:rgba(15,17,23,.95);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.05);grid-template-columns:repeat(6,1fr);height:56px}
+.bni{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:5px;transition:background .15s;border-right:1px solid rgba(255,255,255,.04)}
+.bni:last-child{border-right:none}.bni:hover,.bni.act{background:var(--s2)}
+.bni-icon{font-size:15px;line-height:1}.bni-label{font-size:7.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--t3)}.bni.act .bni-label{color:var(--t1)}
 
-/* ── SIGNAL RIBBON ── */
-.sig-ribbon{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);margin-bottom:24px}
-.sr-cell{background:var(--white);padding:12px 14px;position:relative;overflow:hidden}
-.sr-cell::after{content:'';position:absolute;bottom:0;left:0;height:3px;width:var(--fill,50%);transition:width .6s ease}
-.sr-cell.bull::after{background:var(--green)}.sr-cell.bear::after{background:var(--red)}.sr-cell.neu2::after{background:var(--muted)}
-.sr-l{font-family:var(--mono);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
-.sr-v{font-family:var(--mono);font-size:20px;font-weight:500;line-height:1}
-.sr-c{font-family:var(--mono);font-size:9.5px;margin-top:3px}
-.sr-bar{height:3px;background:var(--cream3);margin-top:6px;border-radius:1px;overflow:hidden}
-.sr-fill{height:100%;border-radius:1px;transition:width .8s ease}
-
-/* ── LAYOUT ── */
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:24px}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px}
-.g21{display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-bottom:24px}
-.g12{display:grid;grid-template-columns:1fr 2fr;gap:20px;margin-bottom:24px}
-
-/* ── CARD ── */
-.card{background:var(--white);border:1px solid var(--rule)}
-.card-hd{padding:10px 14px 8px;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;gap:10px}
-.card-t{font-family:var(--serif);font-size:15px;font-weight:400;color:var(--head);white-space:nowrap}
-.card-t em{font-style:italic;color:var(--navy)}
-.card-s{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:right}
-.card-body{padding:12px 14px}
-
-/* ── FACTOR HEATMAP ── */
-.factor-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
-.fg-cell{padding:10px 8px;text-align:center;border-radius:1px;transition:all .3s;cursor:default}
-.fg-cell:hover{filter:brightness(1.05)}
-.fgc-sym{font-family:var(--mono);font-size:10px;font-weight:500;color:var(--head);margin-bottom:3px}
-.fgc-val{font-family:var(--mono);font-size:13px;font-weight:500}
-.fgc-lbl{font-family:var(--mono);font-size:7.5px;letter-spacing:.08em;text-transform:uppercase;color:rgba(0,0,0,.35);margin-top:2px}
-
-/* ── MOMENTUM TABLE ── */
-.mom-table{width:100%;border-collapse:collapse}
-.mom-table th{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:5px 8px;text-align:right;border-bottom:2px solid var(--rule);background:var(--cream2)}
-.mom-table th:first-child,.mom-table th:nth-child(2){text-align:left}
-.mom-table td{padding:8px 8px;font-family:var(--mono);font-size:11px;border-bottom:1px solid rgba(221,216,204,.4);text-align:right}
-.mom-table td:first-child{text-align:left;font-weight:500}
-.mom-table td:nth-child(2){text-align:left;color:var(--muted);font-size:10px}
-.mom-table tr:last-child td{border-bottom:none}
-.mom-table tr:hover td{background:var(--cream2)}
-.mom-rank{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;font-family:var(--mono);font-size:9px;font-weight:500}
-.rank-top{background:rgba(26,102,64,.15);color:var(--green)}
-.rank-bot{background:rgba(184,50,50,.1);color:var(--red)}
-.rank-mid{background:var(--cream3);color:var(--muted)}
-
-/* score bar inline */
-.score-bar{display:flex;align-items:center;gap:5px}
-.sb-track{width:60px;height:5px;background:var(--cream3);border-radius:2px;overflow:hidden;flex-shrink:0}
-.sb-fill{height:100%;border-radius:2px;transition:width .6s ease}
-
-/* ── FACTOR EXPOSURE RADAR ── */
-.radar-wrap{position:relative;display:flex;justify-content:center;align-items:center;padding:10px 0}
-#radar-svg{overflow:visible}
-.factor-legend{display:grid;grid-template-columns:1fr 1fr;gap:5px 14px;margin-top:10px}
-.fl-item{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9.5px}
-.fl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-
-/* ── SIGNAL CARDS (individual) ── */
-.signal-list{display:flex;flex-direction:column;gap:0}
-.sig-item{display:flex;align-items:center;padding:9px 0;border-bottom:1px solid rgba(221,216,204,.4);gap:10px}
-.sig-item:last-child{border-bottom:none}
-.si-sym{font-family:var(--mono);font-size:11.5px;font-weight:500;width:80px;flex-shrink:0}
-.si-name{font-family:var(--sans);font-size:10.5px;color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.si-signal{font-family:var(--mono);font-size:9px;letter-spacing:.08em;padding:2px 8px;text-transform:uppercase;flex-shrink:0}
-.si-signal.buy{background:rgba(26,102,64,.1);color:var(--green);border:1px solid rgba(26,102,64,.2)}
-.si-signal.sell{background:rgba(184,50,50,.08);color:var(--red);border:1px solid rgba(184,50,50,.2)}
-.si-signal.hold{background:var(--cream3);color:var(--muted);border:1px solid var(--rule2)}
-.si-score{font-family:var(--mono);font-size:11px;width:36px;text-align:right;flex-shrink:0}
-
-/* ── CROSS-SECTIONAL ── */
-.xs-bar-wrap{display:flex;flex-direction:column;gap:6px;padding:4px 0}
-.xs-row{display:flex;align-items:center;gap:8px}
-.xs-sym{font-family:var(--mono);font-size:10px;width:68px;flex-shrink:0;text-align:right;color:var(--head);font-weight:500}
-.xs-track{flex:1;height:8px;background:var(--cream3);border-radius:2px;position:relative;overflow:visible}
-.xs-fill{height:100%;border-radius:2px;transition:width .7s ease;min-width:2px}
-.xs-val{font-family:var(--mono);font-size:10px;width:38px;text-align:right;flex-shrink:0}
-.xs-sep{width:100%;height:1px;background:var(--rule);margin:6px 0;position:relative}
-.xs-sep::after{content:'0';position:absolute;left:calc(var(--zero,50%) );top:-7px;font-family:var(--mono);font-size:8px;color:var(--muted);transform:translateX(-50%)}
-
-/* ── COMPOSITE SCORE GAUGE ── */
-.gauge-wrap{display:flex;flex-direction:column;align-items:center;padding:16px 0 8px}
-#gauge-svg{overflow:visible}
-.gauge-score{font-family:var(--serif);font-size:42px;font-weight:400;text-align:center;margin-top:8px;line-height:1}
-.gauge-score em{font-style:italic;color:var(--navy)}
-.gauge-label{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-align:center;margin-top:4px}
-
-/* ── REGIME SIGNAL ── */
-.regime-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
-.reg-pill{font-family:var(--mono);font-size:9px;letter-spacing:.08em;padding:4px 12px;border:1px solid var(--rule2);text-transform:uppercase;color:var(--muted)}
-.reg-pill.on-bull{border-color:var(--green);color:var(--green);background:rgba(26,102,64,.06)}
-.reg-pill.on-bear{border-color:var(--red);color:var(--red);background:rgba(184,50,50,.05)}
-.reg-pill.on-neu{border-color:var(--gold2);color:var(--gold2);background:rgba(184,146,46,.06)}
-
-/* ── ANNOTATION ── */
-.anno{font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:8px;line-height:1.6;padding-top:8px;border-top:1px solid var(--rule)}
-
-/* ── DIVIDER ── */
-.divider{border:none;border-top:1px solid var(--rule);margin:24px 0}
-
-/* ── TABS ── */
-.tabs{display:flex;gap:0;border-bottom:2px solid var(--rule);margin-bottom:20px}
-.tab{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:7px 14px;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
-.tab:hover{color:var(--navy)}.tab.on{color:var(--navy);border-bottom-color:var(--navy);font-weight:500}
-.tab-panel{display:none}.tab-panel.on{display:block}
-
-/* ── SECTOR HEATMAP ── */
-.sector-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
-.sec-cell{padding:12px 10px;text-align:center}
-.sec-name{font-family:var(--sans);font-size:10px;color:var(--body);margin-bottom:4px}
-.sec-ret{font-family:var(--mono);font-size:14px;font-weight:500}
-.sec-bar{height:3px;margin-top:5px;border-radius:1px}
-
-/* ── LOADING ── */
-.sk{background:linear-gradient(90deg,var(--cream3) 25%,var(--cream2) 50%,var(--cream3) 75%);background-size:200% 100%;animation:sksh 1.5s infinite;border-radius:2px;display:inline-block;height:1em;vertical-align:middle}
-@keyframes sksh{0%{background-position:200% 0}100%{background-position:-200% 0}}
-
-/* status */
-#status-bar{font-family:var(--mono);font-size:9px;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:14px}
-.status-dot{width:6px;height:6px;border-radius:50%;background:var(--muted)}
-.status-dot.live{background:var(--green);animation:pulse 1.5s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@media(max-width:960px){.bnav{display:grid!important}.nav-links{display:none!important}body{padding-bottom:56px}.heatmap{grid-template-columns:repeat(4,1fr)!important}.row-3{grid-template-columns:1fr 1fr!important}.row-2-1{grid-template-columns:1fr!important}.page{padding:12px 12px 70px}}
+@media(max-width:600px){.heatmap{grid-template-columns:repeat(3,1fr)!important}}
 </style>
-<script src="kis.js"></script>
-
-<style>
-/* ── MOBILE NAV BAR ── */
-.bottom-nav{
-  display:none;
-  position:fixed;bottom:0;left:0;right:0;z-index:999;
-  background:#0A0A0A;border-top:2px solid #333;
-  grid-template-columns:repeat(6,1fr);
-  height:56px;
-}
-.bn-item{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:3px;cursor:pointer;padding:6px 2px;
-  border-right:1px solid #222;transition:background .15s;
-}
-.bn-item:last-child{border-right:none}
-.bn-item:hover,.bn-item.act{background:#1C1C1C}
-.bn-icon{font-size:16px;line-height:1}
-.bn-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.06em;text-transform:uppercase;color:rgba(249,247,242,.5);white-space:nowrap}
-.bn-item.act .bn-label{color:rgba(249,247,242,.9)}
-
-/* ── MOBILE RESPONSIVE ── */
-@media(max-width:768px){
-  .bottom-nav{display:grid!important}
-  body{padding-bottom:56px}
-  /* masthead */
-  .masthead{grid-template-columns:1fr!important;gap:8px!important;padding:10px 14px!important;text-align:center}
-  .mh-right,.mh-left{text-align:center!important}
-  .mh-nav{justify-content:center;display:none!important}
-  .brand-name{font-size:44px!important}
-  /* broadsheet → single column */
-  .broadsheet{grid-template-columns:1fr!important;padding:0 12px!important}
-  .col-rule{display:none!important}
-  .left-col,.center-col,.right-col{padding:12px 0!important}
-  .idx-val{font-size:28px!important}
-  /* bottom strip hide on mobile */
-  .bottom-strip{display:none!important}
-  /* tape smaller */
-  .tape-item{padding:0 10px!important}
-  /* dateline */
-  .dateline{padding:0 12px!important}
-  .dl-l span:not(:first-child){display:none}
-  /* KIS panel full width */
-  #kis-float{width:100%!important}
-  /* page padding */
-  .page{padding:12px 10px 70px!important}
-  /* tables scroll */
-  table{font-size:10px!important}
-  .pos-table th,.pos-table td{padding:6px 4px!important;font-size:9px!important}
-  /* cards */
-  .main-grid{grid-template-columns:1fr!important}
-  .kpi-ribbon{grid-template-columns:repeat(2,1fr)!important}
-  /* chart page */
-  .chart-layout{grid-template-columns:1fr!important}
-  /* research */
-  .research-grid{grid-template-columns:1fr!important}
-  /* macro */
-  .macro-layout{grid-template-columns:1fr!important}
-}
-@media(min-width:769px){
-  .bottom-nav{display:none!important}
-}
-</style>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-<!-- DS TOPBAR -->
-<div class="ds-topbar">
-  <div class="ds-logo" onclick="location.href='index.html'">OHAKS<em>_</em>Desk</div>
-  <div class="ds-nav">
-    <div class="ds-nl" onclick="location.href='index.html'">홈</div>
-    <div class="ds-nl" onclick="location.href='chart.html'">차트</div>
-    <div class="ds-nl" onclick="location.href='macro.html'">매크로</div>
-    <div class="ds-nl" onclick="location.href='research.html'">리서치</div>
-    <div class="ds-nl  act" onclick="location.href='quant.html'">퀀트</div>
-    <div class="ds-nl" onclick="location.href='portfolio.html'">포트폴리오</div>
-    <div class="ds-nl" onclick="location.href='calendar.html'">캘린더</div>
+
+<div class="topbar">
+  <div class="logo" onclick="location.href='index.html'">OHAKS<em>_</em>Desk</div>
+  <div class="nav-links">
+    <div class="nl" onclick="location.href='index.html'">홈</div>
+    <div class="nl" onclick="location.href='chart.html'">차트</div>
+    <div class="nl" onclick="location.href='macro.html'">매크로</div>
+    <div class="nl" onclick="location.href='research.html'">리서치</div>
+    <div class="nl act">퀀트</div>
+    <div class="nl" onclick="location.href='portfolio.html'">포트폴리오</div>
+    <div class="nl" onclick="location.href='calendar.html'">캘린더</div>
   </div>
-  <div class="ds-r">
-    <div class="ds-chip"><div class="ds-dot" id="ds-kr-dot"></div><span id="ds-kr-st">KRX</span></div>
-    <div class="ds-chip"><div class="ds-dot" id="ds-us-dot"></div><span id="ds-us-st">NYSE</span></div>
-    <div class="ds-clk" id="ds-clk">—</div>
-    <button class="ds-kis" id="ds-kis-btn" onclick="typeof toggleKis==='function'&&toggleKis()">⚙ KIS</button>
+  <div class="tb-r">
+    <div class="chip"><div class="c-dot" id="kr-dot"></div><span id="kr-st">KRX</span></div>
+    <div class="chip"><div class="c-dot" id="us-dot"></div><span id="us-st">NYSE</span></div>
+    <div class="clk" id="clk">—</div>
+    <button class="kis-pill" id="kis-btn" onclick="toggleKis()">⚙ KIS</button>
   </div>
 </div>
-<!-- DS TAPE -->
-<div class="ds-tape"><div class="ds-tape-inner" id="ds-tape">
-  <div class="ds-ti"><span class="ds-ti-sym">OHAKS_Desk</span><span class="ds-ti-val">퀀트 시그널</span><span class="ds-ti-chg neu">로딩 중...</span></div>
+<div class="tape"><div class="tape-inner" id="tape">
+  <div class="ti"><span class="ti-sym">OHAKS_Desk</span><span class="ti-val">퀀트 시그널</span><span class="ti-chg neu">로딩 중...</span></div>
 </div></div>
-<!-- DS MOBILE NAV -->
-<div class="ds-bnav">
-  <div class="ds-bni" onclick="location.href='index.html'"><div class="ds-bni-icon">🏠</div><div class="ds-bni-label">홈</div></div>
-  <div class="ds-bni" onclick="location.href='chart.html'"><div class="ds-bni-icon">📈</div><div class="ds-bni-label">차트</div></div>
-  <div class="ds-bni" onclick="location.href='macro.html'"><div class="ds-bni-icon">🌐</div><div class="ds-bni-label">매크로</div></div>
-  <div class="ds-bni" onclick="location.href='research.html'"><div class="ds-bni-icon">🔍</div><div class="ds-bni-label">리서치</div></div>
-  <div class="ds-bni  act" onclick="location.href='quant.html'"><div class="ds-bni-icon">⚡</div><div class="ds-bni-label">퀀트</div></div>
-  <div class="ds-bni" onclick="location.href='calendar.html'"><div class="ds-bni-icon">📅</div><div class="ds-bni-label">캘린더</div></div>
-</div>
-<!-- DS CLOCK SCRIPT -->
-<script>
-(function(){
-  function dsTick(){
-    const now=new Date(),kst=new Date(now.toLocaleString('en-US',{timeZone:'Asia/Seoul'})),et=new Date(now.toLocaleString('en-US',{timeZone:'America/New_York'}));
-    const p=n=>String(n).padStart(2,'0');
-    const el=document.getElementById('ds-clk');
-    if(el) el.textContent=p(kst.getHours())+':'+p(kst.getMinutes())+':'+p(kst.getSeconds());
-    const kH=kst.getHours()*60+kst.getMinutes(),kD=kst.getDay(),kO=kD>=1&&kD<=5&&kH>=540&&kH<930;
-    const kd=document.getElementById('ds-kr-dot'),ks=document.getElementById('ds-kr-st');
-    if(kd) kd.className='ds-dot '+(kO?'open':'closed');
-    if(ks) ks.textContent='KRX '+(kO?'OPEN':'CLOSED');
-    const uH=et.getHours()*60+et.getMinutes(),uD=et.getDay(),uO=uD>=1&&uD<=5&&uH>=570&&uH<960;
-    const ud=document.getElementById('ds-us-dot'),us=document.getElementById('ds-us-st');
-    if(ud) ud.className='ds-dot '+(uO?'open':'closed');
-    if(us) us.textContent='NYSE '+(uO?'OPEN':'CLOSED');
-    setTimeout(dsTick,1000);
-  }
-  dsTick();
-  // KIS badge
-  if(window.KIS&&typeof KIS.isTokenValid==='function'&&KIS.isTokenValid()){
-    const b=document.getElementById('ds-kis-btn');
-    if(b){b.textContent='KIS ✓';b.classList.add('active');}
-  }
-})();
-</script>
-
-
-<div class="logo-sub">퀀트 시그널</div></div>
-  <div class="topbar-right">
-    <div id="clk"><div id="ct">—</div><div id="clkd">—</div></div>
-  </div>
-</div>
-
-<!-- NAVBAR -->
-<nav class="nav">
-  <div class="nl" onclick="location.href='chart.html'">차트</div>
-  <div class="nl" onclick="location.href='macro.html'">매크로</div>
-  <div class="nl" onclick="location.href='research.html'">리서치</div>
-  <div class="nl act">퀀트</div>
-  <div class="nl">포트폴리오</div>
-  <div class="nav-r">
-    <span id="kis-badge" class="kis-badge-btn" onclick="toggleKisFloat()">⚙ KIS 설정</span>
-    <span class="nav-ts" id="nav-ts">—</span>
-  </div>
-</nav>
-<style>
-#kis-float{position:fixed;top:88px;right:16px;z-index:9999;background:#FDFCFA;border:1px solid #C8C2B4;padding:20px 22px;width:360px;box-shadow:0 8px 32px rgba(0,0,0,.18);display:none}
-.kis-badge-btn{cursor:pointer;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.06em;padding:4px 12px;border:1px solid #B8922E;color:#B8922E;background:rgba(184,146,46,.08);font-weight:500;white-space:nowrap;animation:kisblink 1.5s infinite}
-.kis-badge-btn.active{animation:none!important;border-color:#1A6640!important;color:#1A6640!important;background:rgba(26,102,64,.06)!important}
-@keyframes kisblink{0%,100%{opacity:1}50%{opacity:.4}}
-</style>
-<div id="kis-float"><div id="kis-panel-inner"></div></div>
-
 
 <div class="page">
 
-  <!-- PAGE HEADER -->
-  <div class="page-hd">
-    <div>
-      <div class="page-title">퀀트 <em>시그널</em> 대시보드</div>
-      <div class="page-sub">Factor Exposure · Momentum · Cross-Sectional Ranking · Regime</div>
+  <!-- HEATMAP -->
+  <div class="sec-label">섹터 ETF 히트맵 (US)</div>
+  <div class="card">
+    <div class="card-head">
+      <div class="ch-title">미국 섹터 ETF</div>
+      <div class="ch-sub" id="hm-ts">로딩 중...</div>
     </div>
-    <div class="hd-right">
-      <select class="universe-sel" id="universe-sel" onchange="runQuant()">
-        <option value="us_mega">🇺🇸 US Mega Cap</option>
-        <option value="kr_large">🇰🇷 KR Large Cap</option>
-        <option value="semis">반도체 유니버스</option>
-        <option value="mixed">US+KR 혼합</option>
-      </select>
-      <button class="run-btn" id="run-btn" onclick="runQuant()">
-        <span id="run-icon">▶</span> 시그널 실행
-      </button>
+    <div class="heatmap" id="heatmap">
+      <div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--t3)">데이터 로딩 중...</div>
     </div>
   </div>
 
-  <!-- STATUS -->
-  <div id="status-bar">
-    <div class="status-dot" id="sdot"></div>
-    <span id="status-msg">준비 중...</span>
+  <!-- SCREENER -->
+  <div class="sec-label">모멘텀 · 기술적 시그널</div>
+  <div class="card">
+    <div class="card-head">
+      <div class="ch-title">시그널 스크리너</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div class="ds-tabs">
+          <div class="ds-tab act" id="univ-us" onclick="switchUniv('us')">🇺🇸 US</div>
+          <div class="ds-tab" id="univ-kr" onclick="switchUniv('kr')">🇰🇷 KR</div>
+          <div class="ds-tab" id="univ-semi" onclick="switchUniv('semi')">🔬 반도체</div>
+        </div>
+        <div class="ch-sub" id="scrn-ts">—</div>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="ds-table" id="scrn-table">
+        <thead><tr>
+          <th>종목</th><th>섹터</th><th>현재가</th><th>1일</th><th>1주</th><th>1개월</th>
+          <th>RSI(추정)</th><th>52W 위치</th><th>시그널</th>
+        </tr></thead>
+        <tbody id="scrn-body"><tr><td colspan="9" style="text-align:center;padding:24px;color:var(--t3)">로딩 중...</td></tr></tbody>
+      </table>
+    </div>
   </div>
 
-  <!-- SIGNAL RIBBON -->
-  <div class="sig-ribbon" id="sig-ribbon">
-    <div class="sr-cell" id="sr-mom"><div class="sr-l">모멘텀 스코어</div><div class="sr-v" id="sr-mom-v">—</div><div class="sr-c" id="sr-mom-c">—</div><div class="sr-bar"><div class="sr-fill" id="sr-mom-f" style="width:0%"></div></div></div>
-    <div class="sr-cell" id="sr-val"><div class="sr-l">밸류 스코어</div><div class="sr-v" id="sr-val-v">—</div><div class="sr-c" id="sr-val-c">—</div><div class="sr-bar"><div class="sr-fill" id="sr-val-f" style="width:0%"></div></div></div>
-    <div class="sr-cell" id="sr-qual"><div class="sr-l">퀄리티 스코어</div><div class="sr-v" id="sr-qual-v">—</div><div class="sr-c" id="sr-qual-c">—</div><div class="sr-bar"><div class="sr-fill" id="sr-qual-f" style="width:0%"></div></div></div>
-    <div class="sr-cell" id="sr-vol"><div class="sr-l">변동성 (30D)</div><div class="sr-v" id="sr-vol-v">—</div><div class="sr-c" id="sr-vol-c">—</div><div class="sr-bar"><div class="sr-fill" id="sr-vol-f" style="width:0%"></div></div></div>
-    <div class="sr-cell" id="sr-breadth"><div class="sr-l">시장 폭 (Breadth)</div><div class="sr-v" id="sr-breadth-v">—</div><div class="sr-c" id="sr-breadth-c">—</div><div class="sr-bar"><div class="sr-fill" id="sr-breadth-f" style="width:0%"></div></div></div>
-    <div class="sr-cell" id="sr-regime"><div class="sr-l">레짐 신호</div><div class="sr-v" id="sr-regime-v">—</div><div class="sr-c" id="sr-regime-c">—</div><div class="sr-bar"><div class="sr-fill" id="sr-regime-f" style="width:0%"></div></div></div>
-  </div>
-
-  <!-- ROW 1: Cross-sectional ranking + Composite gauge -->
-  <div class="g21">
-
-    <!-- CROSS-SECTIONAL RANKING TABLE -->
+  <!-- FACTOR SCORES + 팩터 -->
+  <div class="row row-3">
     <div class="card">
-      <div class="card-hd">
-        <div class="card-t"><em>크로스섹셔널</em> 팩터 랭킹</div>
-        <div class="card-s" id="xs-ts">Yahoo Finance 기반</div>
-      </div>
-      <div class="card-body" style="padding:0">
-        <table class="mom-table" id="rank-table">
-          <thead>
-            <tr>
-              <th style="text-align:left;width:28px">#</th>
-              <th style="text-align:left">종목</th>
-              <th>1M 수익률</th>
-              <th>3M 수익률</th>
-              <th>6M 수익률</th>
-              <th>변동성</th>
-              <th>샤프</th>
-              <th>모멘텀 스코어</th>
-              <th>시그널</th>
-            </tr>
-          </thead>
-          <tbody id="rank-body">
-            <tr><td colspan="9" style="text-align:center;color:var(--muted);padding:20px;font-family:var(--mono);font-size:11px">▶ 시그널 실행을 클릭하세요</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div style="padding:8px 14px">
-        <div class="anno">모멘텀 스코어 = 1M(30%) + 3M(40%) + 6M(30%) 가중 수익률. 변동성 조정 샤프 기준 상위 30% = BUY.</div>
+      <div class="card-head"><div class="ch-title">모멘텀 팩터</div><div class="ch-sub">12M-1M</div></div>
+      <div class="factor-list" id="mom-list">
+        <div style="color:var(--t3);font-size:11px">로딩 중...</div>
       </div>
     </div>
-
-    <!-- COMPOSITE GAUGE + REGIME -->
-    <div style="display:flex;flex-direction:column;gap:20px">
-      <div class="card">
-        <div class="card-hd"><div class="card-t"><em>종합</em> 시그널 게이지</div></div>
-        <div class="card-body">
-          <div class="gauge-wrap">
-            <svg id="gauge-svg" width="180" height="100" viewBox="0 0 180 100"></svg>
-            <div class="gauge-score"><span id="gauge-num">—</span></div>
-            <div class="gauge-label" id="gauge-label">시그널 실행 대기</div>
-          </div>
-          <div style="display:flex;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--rule)">
-            <div style="text-align:center">
-              <div style="font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">BUY</div>
-              <div style="font-family:var(--mono);font-size:16px;font-weight:500;color:var(--green)" id="g-buy">—</div>
-            </div>
-            <div style="text-align:center">
-              <div style="font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">HOLD</div>
-              <div style="font-family:var(--mono);font-size:16px;font-weight:500;color:var(--muted)" id="g-hold">—</div>
-            </div>
-            <div style="text-align:center">
-              <div style="font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">SELL</div>
-              <div style="font-family:var(--mono);font-size:16px;font-weight:500;color:var(--red)" id="g-sell">—</div>
-            </div>
-          </div>
-        </div>
+    <div class="card">
+      <div class="card-head"><div class="ch-title">변동성 팩터</div><div class="ch-sub">30D Realized Vol</div></div>
+      <div class="factor-list" id="vol-list">
+        <div style="color:var(--t3);font-size:11px">로딩 중...</div>
       </div>
-
-      <!-- REGIME -->
-      <div class="card">
-        <div class="card-hd"><div class="card-t"><em>레짐</em> 신호</div><div class="card-s">Market Regime</div></div>
-        <div class="card-body">
-          <div class="regime-row" id="regime-pills"></div>
-          <div style="display:flex;flex-direction:column;gap:5px" id="regime-details"></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div class="ch-title">매크로 레짐</div><div class="ch-sub">현재 시장 환경</div></div>
+      <div class="factor-list">
+        <div class="factor-item">
+          <div class="fi-top"><span class="fi-name">성장 (GDP)</span><span class="fi-score up">확장</span></div>
+          <div class="fi-bar-bg"><div class="fi-bar" style="width:72%;background:var(--green)"></div></div>
+          <div class="fi-sub">GDP 2.5% 성장 유지</div>
+        </div>
+        <div class="factor-item">
+          <div class="fi-top"><span class="fi-name">인플레이션</span><span class="fi-score" style="color:var(--amber)">고착</span></div>
+          <div class="fi-bar-bg"><div class="fi-bar" style="width:60%;background:var(--amber)"></div></div>
+          <div class="fi-sub">CPI 3.1% 예상 상회</div>
+        </div>
+        <div class="factor-item">
+          <div class="fi-top"><span class="fi-name">통화정책</span><span class="fi-score dn">제한적</span></div>
+          <div class="fi-bar-bg"><div class="fi-bar" style="width:80%;background:var(--red)"></div></div>
+          <div class="fi-sub">FFR 5.25% 고금리 유지</div>
+        </div>
+        <div class="factor-item">
+          <div class="fi-top"><span class="fi-name">리스크 심리 (VIX)</span><span class="fi-score" id="vix-regime">—</span></div>
+          <div class="fi-bar-bg"><div class="fi-bar" id="vix-bar" style="width:40%;background:var(--green)"></div></div>
+          <div class="fi-sub" id="vix-sub">VIX 로딩 중...</div>
+        </div>
+        <div class="factor-item">
+          <div class="fi-top"><span class="fi-name">추천 전략</span><span class="fi-score" style="color:var(--blue)">Quality</span></div>
+          <div class="fi-bar-bg"><div class="fi-bar" style="width:65%;background:var(--blue)"></div></div>
+          <div class="fi-sub">후기 사이클 — Quality + Low Beta 유리</div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- TABS for detail views -->
-  <div class="tabs">
-    <div class="tab on" onclick="switchTab('momentum')">모멘텀</div>
-    <div class="tab" onclick="switchTab('factor')">팩터 익스포저</div>
-    <div class="tab" onclick="switchTab('sector')">섹터 히트맵</div>
-    <div class="tab" onclick="switchTab('technical')">기술적 시그널</div>
-  </div>
+</div>
 
-  <!-- TAB: MOMENTUM -->
-  <div class="tab-panel on" id="panel-momentum">
-    <div class="g2">
-      <!-- Return heatmap by period -->
-      <div class="card">
-        <div class="card-hd"><div class="card-t"><em>수익률</em> 히트맵</div><div class="card-s">기간별 수익률 비교</div></div>
-        <div class="card-body">
-          <div id="ret-heatmap" class="factor-grid"></div>
-          <div class="anno">색상: 진초록(상위), 진빨강(하위). 기간별 수익률 정규화 기준.</div>
-        </div>
-      </div>
-      <!-- 52W position -->
-      <div class="card">
-        <div class="card-hd"><div class="card-t"><em>52주</em> 가격 위치</div><div class="card-s">현재가 vs 52W H/L</div></div>
-        <div class="card-body">
-          <div id="fw-bars" class="xs-bar-wrap"></div>
-          <div class="anno">바 위치: 52주 저점(0%) ~ 고점(100%). 80%+ = 강세 모멘텀.</div>
-        </div>
-      </div>
-    </div>
-  </div>
+<!-- MOBILE NAV -->
+<div class="bnav">
+  <div class="bni" onclick="location.href='index.html'"><div class="bni-icon">🏠</div><div class="bni-label">홈</div></div>
+  <div class="bni" onclick="location.href='chart.html'"><div class="bni-icon">📈</div><div class="bni-label">차트</div></div>
+  <div class="bni" onclick="location.href='macro.html'"><div class="bni-icon">🌐</div><div class="bni-label">매크로</div></div>
+  <div class="bni" onclick="location.href='research.html'"><div class="bni-icon">🔍</div><div class="bni-label">리서치</div></div>
+  <div class="bni act"><div class="bni-icon">⚡</div><div class="bni-label">퀀트</div></div>
+  <div class="bni" onclick="location.href='calendar.html'"><div class="bni-icon">📅</div><div class="bni-label">캘린더</div></div>
+</div>
 
-  <!-- TAB: FACTOR EXPOSURE -->
-  <div class="tab-panel" id="panel-factor">
-    <div class="g2">
-      <div class="card">
-        <div class="card-hd"><div class="card-t"><em>팩터</em> 익스포저 — 종목 선택</div><div class="card-s">Z-Score 기준</div></div>
-        <div class="card-body">
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px" id="factor-sym-btns"></div>
-          <div class="radar-wrap">
-            <svg id="radar-svg" width="220" height="220" viewBox="0 0 220 220"></svg>
-          </div>
-          <div class="factor-legend" id="factor-legend"></div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-hd"><div class="card-t"><em>팩터</em> Z-Score 바</div></div>
-        <div class="card-body">
-          <div id="factor-zbars"></div>
-          <div class="anno">Z-Score: 유니버스 내 표준화 점수. +1.5 이상 = 강한 양적 노출.</div>
-        </div>
-      </div>
-    </div>
-  </div>
+<div id="kis-panel">
+  <span class="kp-close" onclick="toggleKis()">← 닫기</span>
+  <div class="kp-title">KIS API</div><div class="kp-sub">한국투자증권 OpenAPI</div>
+  <div class="kp-lbl">App Key</div><input class="kp-in" id="kp-key" type="text" placeholder="App Key" spellcheck="false">
+  <div class="kp-lbl">App Secret</div><input class="kp-in" id="kp-sec" type="password" placeholder="App Secret">
+  <div class="kp-lbl">계좌번호 앞 8자리</div><input class="kp-in" id="kp-acc" type="text" maxlength="8">
+  <button class="kp-save" onclick="saveKis()">저장</button><div id="kp-st"></div>
+</div>
 
-  <!-- TAB: SECTOR HEATMAP -->
-  <div class="tab-panel" id="panel-sector">
-    <div class="card" style="margin-bottom:20px">
-      <div class="card-hd"><div class="card-t"><em>섹터</em> 수익률 히트맵</div><div class="card-s">ETF 기반 1M 수익률</div></div>
-      <div class="card-body">
-        <div class="sector-grid" id="sector-grid"></div>
-        <div class="anno">섹터 ETF 1개월 수익률 기준. XLK/XLF/XLE/XLV 등 SPDR 섹터 ETF.</div>
-      </div>
-    </div>
-    <div class="g2">
-      <div class="card">
-        <div class="card-hd"><div class="card-t"><em>섹터</em> 로테이션</div><div class="card-s">상대강도 기준</div></div>
-        <div class="card-body">
-          <div id="sector-rotation"></div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-hd"><div class="card-t"><em>한국</em> 섹터</div><div class="card-s">KRX 섹터 지수</div></div>
-        <div class="card-body">
-          <div id="kr-sector"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- TAB: TECHNICAL SIGNALS -->
-  <div class="tab-panel" id="panel-technical">
-    <div class="g2">
-      <div class="card">
-        <div class="card-hd"><div class="card-t"><em>기술적</em> 시그널</div><div class="card-s">MA · RSI · MACD</div></div>
-        <div class="card-body" style="padding:0">
-          <div class="signal-list" id="tech-signals"></div>
-        </div>
-        <div style="padding:8px 14px">
-          <div class="anno">MA: 20/50/200일 크로스. RSI &gt; 70 = 과매수, &lt; 30 = 과매도.</div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-hd"><div class="card-t"><em>크로스</em> 시그널</div><div class="card-s">골든/데드 크로스</div></div>
-        <div class="card-body" style="padding:0">
-          <div class="signal-list" id="cross-signals"></div>
-        </div>
-        <div style="padding:8px 14px">
-          <div class="anno">골든크로스: MA50 > MA200 돌파. 데드크로스: MA50 < MA200 하향.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div><!-- /page -->
-
+<script src="kis.js"></script>
 <script>
-// ═══════════════════════════════════════
-// CLOCK
-// ═══════════════════════════════════════
-(function tick(){
-  const kst=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Seoul'}));
+function tick(){
+  const now=new Date(),kst=new Date(now.toLocaleString('en-US',{timeZone:'Asia/Seoul'})),et=new Date(now.toLocaleString('en-US',{timeZone:'America/New_York'}));
   const p=n=>String(n).padStart(2,'0');
-  const days=['SUN','MON','TUE','WED','THU','FRI','SAT'];
-  document.getElementById('ct').textContent=`${p(kst.getHours())}:${p(kst.getMinutes())}:${p(kst.getSeconds())} KST`;
-  document.getElementById('clkd').textContent=`${kst.getFullYear()}.${p(kst.getMonth()+1)}.${p(kst.getDate())} ${days[kst.getDay()]}`;
+  document.getElementById('clk').textContent=`${p(kst.getHours())}:${p(kst.getMinutes())}:${p(kst.getSeconds())}`;
+  const kH=kst.getHours()*60+kst.getMinutes(),kD=kst.getDay(),kO=kD>=1&&kD<=5&&kH>=540&&kH<930;
+  document.getElementById('kr-dot').className='c-dot '+(kO?'open':'closed');document.getElementById('kr-st').textContent='KRX '+(kO?'OPEN':'CLOSED');
+  const uH=et.getHours()*60+et.getMinutes(),uD=et.getDay(),uO=uD>=1&&uD<=5&&uH>=570&&uH<960;
+  document.getElementById('us-dot').className='c-dot '+(uO?'open':'closed');document.getElementById('us-st').textContent='NYSE '+(uO?'OPEN':'CLOSED');
   setTimeout(tick,1000);
-})();
+}
+tick();
 
-// ═══════════════════════════════════════
-// UNIVERSES
-// ═══════════════════════════════════════
-const UNIVERSES = {
-  us_mega: [
-    {sym:'NVDA', name:'NVIDIA',    sec:'반도체'},
-    {sym:'MSFT', name:'Microsoft', sec:'소프트웨어'},
-    {sym:'AAPL', name:'Apple',     sec:'IT HW'},
-    {sym:'AMZN', name:'Amazon',    sec:'클라우드'},
-    {sym:'META', name:'Meta',      sec:'소셜미디어'},
-    {sym:'GOOGL',name:'Alphabet',  sec:'검색'},
-    {sym:'TSLA', name:'Tesla',     sec:'전기차'},
-    {sym:'AMD',  name:'AMD',       sec:'반도체'},
-    {sym:'AVGO', name:'Broadcom',  sec:'반도체'},
-    {sym:'TSM',  name:'TSMC',      sec:'파운드리'},
-  ],
-  kr_large: [
-    {sym:'005930.KS',name:'삼성전자',    sec:'반도체'},
-    {sym:'000660.KS',name:'SK하이닉스',  sec:'반도체'},
-    {sym:'035420.KS',name:'NAVER',       sec:'인터넷'},
-    {sym:'035720.KS',name:'카카오',      sec:'플랫폼'},
-    {sym:'005380.KS',name:'현대차',      sec:'자동차'},
-    {sym:'000270.KS',name:'기아',        sec:'자동차'},
-    {sym:'051910.KS',name:'LG화학',      sec:'화학'},
-    {sym:'068270.KS',name:'셀트리온',    sec:'바이오'},
-    {sym:'373220.KS',name:'LG에너지솔루션',sec:'배터리'},
-    {sym:'207940.KS',name:'삼성바이오',  sec:'바이오'},
-  ],
-  semis: [
-    {sym:'NVDA', name:'NVIDIA',    sec:'GPU'},
-    {sym:'AMD',  name:'AMD',       sec:'CPU/GPU'},
-    {sym:'AVGO', name:'Broadcom',  sec:'Networking'},
-    {sym:'TSM',  name:'TSMC ADR',  sec:'파운드리'},
-    {sym:'INTC', name:'Intel',     sec:'CPU'},
-    {sym:'QCOM', name:'Qualcomm',  sec:'모바일'},
-    {sym:'MU',   name:'Micron',    sec:'메모리'},
-    {sym:'005930.KS',name:'삼성전자',sec:'메모리'},
-    {sym:'000660.KS',name:'SK하이닉스',sec:'HBM'},
-  ],
-  mixed: [
-    {sym:'NVDA', name:'NVIDIA',    sec:'US'},
-    {sym:'MSFT', name:'Microsoft', sec:'US'},
-    {sym:'AAPL', name:'Apple',     sec:'US'},
-    {sym:'META', name:'Meta',      sec:'US'},
-    {sym:'005930.KS',name:'삼성전자',sec:'KR'},
-    {sym:'000660.KS',name:'SK하이닉스',sec:'KR'},
-    {sym:'035420.KS',name:'NAVER',  sec:'KR'},
-    {sym:'TSLA', name:'Tesla',     sec:'US'},
-    {sym:'AMD',  name:'AMD',       sec:'US'},
-    {sym:'005380.KS',name:'현대차', sec:'KR'},
-  ],
-};
-
-const SECTOR_ETFS = [
-  {sym:'XLK', name:'Tech',        emoji:'💻'},
-  {sym:'XLF', name:'금융 Financials', emoji:'🏦'},
-  {sym:'XLE', name:'Energy',      emoji:'⛽'},
-  {sym:'XLV', name:'Healthcare',  emoji:'💊'},
-  {sym:'XLI', name:'Industrials', emoji:'🏭'},
-  {sym:'XLY', name:'Consumer Disc',emoji:'🛍'},
-  {sym:'XLP', name:'Consumer Sta',emoji:'🛒'},
-  {sym:'XLU', name:'Utilities',   emoji:'⚡'},
-  {sym:'XLB', name:'Materials',   emoji:'🪨'},
-  {sym:'XLRE',name:'Real Estate', emoji:'🏢'},
-  {sym:'XLC', name:'Comm Svcs',   emoji:'📡'},
-  {sym:'GLD', name:'Gold',        emoji:'🥇'},
-];
-
-// ═══════════════════════════════════════
-// FORMAT
-// ═══════════════════════════════════════
 const f=(v,d=2)=>v==null||isNaN(v)?'—':Number(v).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
 const fp=v=>v==null||isNaN(v)?'—':(v>=0?'+':'')+Number(v).toFixed(2)+'%';
 const cl=v=>v>0?'up':v<0?'dn':'neu';
-const clamp=(v,mn,mx)=>Math.max(mn,Math.min(mx,v));
 
-function setStatus(msg, live=false){
-  document.getElementById('status-msg').textContent = msg;
-  const dot = document.getElementById('sdot');
-  dot.className = 'status-dot' + (live?' live':'');
-}
-
-// ═══════════════════════════════════════
-// YAHOO FETCH
-// ═══════════════════════════════════════
-async function yahooFetch(sym, range='3mo', interval='1d'){
-  const url=`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=${interval}&range=${range}`;
-  const proxy=`https://corsproxy.io/?${encodeURIComponent(url)}`;
-  for(const u of [url, proxy]){
-    try{
-      const r=await fetch(u,{headers:{Accept:'application/json'}});
-      if(!r.ok) continue;
-      const j=await r.json();
-      const res=j?.chart?.result?.[0];
-      if(!res) continue;
-      return res;
-    }catch(_){}
-  }
-  return null;
-}
-
-async function getReturns(sym){
-  // Fetch 6M+ daily data to compute 1M, 3M, 6M returns + vol
-  const res = await yahooFetch(sym, '1y', '1d');
-  if(!res?.timestamp) return null;
-  const closes = res.indicators.quote[0].close.filter(v=>v!=null);
-  const ts = res.timestamp;
-  if(closes.length < 2) return null;
-
-  const last = closes[closes.length-1];
-  const meta = res.meta;
-
-  // Helper: price N trading days ago
-  const ago = (days) => {
-    const idx = Math.max(0, closes.length - 1 - days);
-    return closes[idx];
-  };
-
-  const r1m  = (last - ago(21))  / ago(21)  * 100;
-  const r3m  = (last - ago(63))  / ago(63)  * 100;
-  const r6m  = (last - ago(126)) / ago(126) * 100;
-  const r1y  = (last - ago(252)) / ago(252) * 100;
-
-  // 30D realized vol (annualized)
-  const window = closes.slice(-31);
-  const rets = window.slice(1).map((c,i)=>Math.log(c/window[i]));
-  const mean = rets.reduce((a,b)=>a+b,0)/rets.length;
-  const variance = rets.reduce((a,b)=>a+(b-mean)**2,0)/rets.length;
-  const vol30 = Math.sqrt(variance*252)*100;
-
-  // Sharpe (annualized, rf=4.5%)
-  const annRet = r1y;
-  const sharpe = (annRet - 4.5) / vol30;
-
-  // 52W position
-  const hi52 = meta.fiftyTwoWeekHigh || Math.max(...closes.slice(-252));
-  const lo52  = meta.fiftyTwoWeekLow  || Math.min(...closes.slice(-252));
-  const pos52 = hi52>lo52 ? (last-lo52)/(hi52-lo52)*100 : 50;
-
-  // Momentum score: 1M*0.3 + 3M*0.4 + 6M*0.3
-  const momScore = r1m*0.3 + r3m*0.4 + r6m*0.3;
-
-  // RSI-14
-  const rsiPeriod = 14;
-  const rsiCloses = closes.slice(-rsiPeriod-1);
-  let gains=0, losses=0;
-  for(let i=1;i<rsiCloses.length;i++){
-    const d = rsiCloses[i]-rsiCloses[i-1];
-    if(d>0) gains+=d; else losses+=-d;
-  }
-  const avgGain=gains/rsiPeriod, avgLoss=losses/rsiPeriod;
-  const rsi = avgLoss===0 ? 100 : 100-(100/(1+avgGain/avgLoss));
-
-  // MA20, MA50, MA200
-  const ma = n => closes.slice(-n).reduce((a,b)=>a+b,0)/n;
-  const ma20  = closes.length>=20  ? ma(20)  : null;
-  const ma50  = closes.length>=50  ? ma(50)  : null;
-  const ma200 = closes.length>=200 ? ma(200) : null;
-
-  const maSignal = ma50&&ma200 ? (ma50>ma200?'golden':'dead') : 'none';
-  const priceVsMa50  = ma50  ? (last-ma50)/ma50*100  : null;
-  const priceVsMa200 = ma200 ? (last-ma200)/ma200*100 : null;
-
-  return {sym, last, r1m, r3m, r6m, r1y, vol30, sharpe, pos52,
-          momScore, rsi, ma20, ma50, ma200, maSignal, priceVsMa50, priceVsMa200,
-          hi52, lo52};
-}
-
-// ═══════════════════════════════════════
-// QUANT ENGINE
-// ═══════════════════════════════════════
-let lastResults = [];
-let selectedFactorSym = '';
-
-async function runQuant(){
-  const univKey = document.getElementById('universe-sel').value;
-  const universe = UNIVERSES[univKey];
-  const btn = document.getElementById('run-btn');
-  const icon = document.getElementById('run-icon');
-
-  btn.classList.add('running');
-  icon.className='spin'; icon.textContent='↻';
-  setStatus('데이터 로딩 중...');
-
-  const results = [];
-  for(const stock of universe){
-    setStatus(`${stock.sym} 분석 중... (${results.length+1}/${universe.length})`);
-    const r = await getReturns(stock.sym);
-    if(r) results.push({...stock, ...r});
-    await new Promise(res=>setTimeout(res,120));
-  }
-
-  if(!results.length){
-    setStatus('데이터 로드 실패. 네트워크 확인 후 재시도.');
-    btn.classList.remove('running');
-    icon.className=''; icon.textContent='▶';
-    return;
-  }
-
-  lastResults = results;
-  selectedFactorSym = results[0].sym;
-
-  // Z-score normalize across universe
-  const normalize = (arr, key) => {
-    const vals = arr.map(r=>r[key]).filter(v=>v!=null&&!isNaN(v));
-    if(!vals.length) return arr;
-    const mean = vals.reduce((a,b)=>a+b,0)/vals.length;
-    const std  = Math.sqrt(vals.reduce((a,b)=>a+(b-mean)**2,0)/vals.length)||1;
-    return arr.map(r=>({...r, [key+'_z']: r[key]!=null ? (r[key]-mean)/std : 0}));
-  };
-
-  let rs = results;
-  rs = normalize(rs,'momScore');
-  rs = normalize(rs,'r1m');
-  rs = normalize(rs,'r3m');
-  rs = normalize(rs,'r6m');
-  rs = normalize(rs,'sharpe');
-  rs = normalize(rs,'vol30');  // lower vol = better, so invert
-  rs = normalize(rs,'pos52');
-
-  // composite score
-  rs = rs.map(r=>({...r,
-    compositeScore: clamp((r.momScore_z||0)*0.4 + (r.sharpe_z||0)*0.3 + (r.pos52_z||0)*0.2 - (r.vol30_z||0)*0.1, -3, 3)
-  }));
-
-  // Sort by composite score descending
-  rs.sort((a,b)=>b.compositeScore-a.compositeScore);
-  lastResults = rs;
-
-  // Assign signals
-  const n = rs.length;
-  rs.forEach((r,i)=>{
-    const pct = i/n;
-    r.signal = pct < 0.3 ? 'BUY' : pct > 0.7 ? 'SELL' : 'HOLD';
-    r.rank = i+1;
-  });
-
-  // Render all sections
-  renderRibbon(rs);
-  renderRankTable(rs);
-  renderGauge(rs);
-  renderRegime(rs);
-  renderMomentumTab(rs);
-  renderFactorTab(rs);
-  renderSectorTab();
-  renderTechnicalTab(rs);
-
-  btn.classList.remove('running');
-  icon.className=''; icon.textContent='✓';
-  setStatus(`${rs.length}개 종목 분석 완료`, true);
-  document.getElementById('nav-ts').textContent = new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
-  document.getElementById('xs-ts').textContent = `${rs.length}개 종목 · ${new Date().toLocaleTimeString('ko-KR')}`;
-}
-
-// ═══════════════════════════════════════
-// RENDER: RIBBON
-// ═══════════════════════════════════════
-function renderRibbon(rs){
-  const momAvg  = rs.reduce((a,b)=>a+(b.momScore||0),0)/rs.length;
-  const volAvg  = rs.reduce((a,b)=>a+(b.vol30||0),0)/rs.length;
-  const shrpAvg = rs.reduce((a,b)=>a+(b.sharpe||0),0)/rs.length;
-  const buyPct  = rs.filter(r=>r.signal==='BUY').length/rs.length*100;
-  const pos52Avg= rs.reduce((a,b)=>a+(b.pos52||0),0)/rs.length;
-
-  const regime = buyPct >= 60 ? 'BULL' : buyPct <= 40 ? 'BEAR' : 'NEUTRAL';
-  const regScore = buyPct >= 60 ? clamp(buyPct,0,100) : 100-buyPct;
-
-  const setCell=(id,v,c,fill,cls)=>{
-    document.getElementById(id+'-v').textContent=v;
-    document.getElementById(id+'-c').textContent=c;
-    document.getElementById(id+'-c').className='sr-c '+(cls||'');
-    document.getElementById(id+'-f').style.width=clamp(fill,0,100)+'%';
-    document.getElementById(id+'-f').style.background=cls==='up'?'var(--green)':cls==='dn'?'var(--red)':'var(--muted)';
-    document.getElementById('sr-'+id.replace('sr-','')).className='sr-cell '+(cls==='up'?'bull':cls==='dn'?'bear':'neu2');
-  };
-
-  const momNorm = clamp((momAvg+20)/40*100,0,100);
-  document.getElementById('sr-mom-v').textContent = momAvg.toFixed(1);
-  document.getElementById('sr-mom-c').textContent = momAvg>0?'양적 모멘텀':'음적 모멘텀';
-  document.getElementById('sr-mom-c').className = 'sr-c '+(momAvg>0?'up':'dn');
-  document.getElementById('sr-mom-f').style.width = momNorm+'%';
-  document.getElementById('sr-mom-f').style.background = momAvg>0?'var(--green)':'var(--red)';
-
-  document.getElementById('sr-val-v').textContent = pos52Avg.toFixed(0)+'%';
-  document.getElementById('sr-val-c').textContent = pos52Avg>60?'52W 고점권':pos52Avg<40?'52W 저점권':'중간';
-  document.getElementById('sr-val-c').className = 'sr-c '+(pos52Avg>60?'up':pos52Avg<40?'dn':'neu');
-  document.getElementById('sr-val-f').style.width = pos52Avg+'%';
-  document.getElementById('sr-val-f').style.background = pos52Avg>60?'var(--green)':'var(--muted)';
-
-  document.getElementById('sr-qual-v').textContent = shrpAvg.toFixed(2);
-  document.getElementById('sr-qual-c').textContent = shrpAvg>0.5?'고샤프':shrpAvg>0?'보통':'저샤프';
-  document.getElementById('sr-qual-c').className = 'sr-c '+(shrpAvg>0.5?'up':shrpAvg>0?'neu':'dn');
-  document.getElementById('sr-qual-f').style.width = clamp((shrpAvg+1)/2*100,0,100)+'%';
-  document.getElementById('sr-qual-f').style.background = shrpAvg>0.5?'var(--green)':'var(--muted)';
-
-  document.getElementById('sr-vol-v').textContent = volAvg.toFixed(1)+'%';
-  document.getElementById('sr-vol-c').textContent = volAvg>40?'고변동성':volAvg>25?'보통':'저변동성';
-  document.getElementById('sr-vol-c').className = 'sr-c '+(volAvg>40?'dn':volAvg<25?'up':'neu');
-  document.getElementById('sr-vol-f').style.width = clamp(volAvg/60*100,0,100)+'%';
-  document.getElementById('sr-vol-f').style.background = volAvg>40?'var(--red)':'var(--muted)';
-
-  document.getElementById('sr-breadth-v').textContent = buyPct.toFixed(0)+'%';
-  document.getElementById('sr-breadth-c').textContent = `${rs.filter(r=>r.signal==='BUY').length}/${rs.length} BUY`;
-  document.getElementById('sr-breadth-c').className = 'sr-c '+(buyPct>=60?'up':buyPct<=40?'dn':'neu');
-  document.getElementById('sr-breadth-f').style.width = buyPct+'%';
-  document.getElementById('sr-breadth-f').style.background = buyPct>=60?'var(--green)':'var(--red)';
-
-  document.getElementById('sr-regime-v').textContent = regime;
-  document.getElementById('sr-regime-c').textContent = regime==='BULL'?'위험선호 우세':regime==='BEAR'?'위험회피 우세':'중립';
-  document.getElementById('sr-regime-c').className = 'sr-c '+(regime==='BULL'?'up':regime==='BEAR'?'dn':'neu');
-  document.getElementById('sr-regime-f').style.width = regScore+'%';
-  document.getElementById('sr-regime-f').style.background = regime==='BULL'?'var(--green)':'var(--red)';
-}
-
-// ═══════════════════════════════════════
-// RENDER: RANK TABLE
-// ═══════════════════════════════════════
-function renderRankTable(rs){
-  const tbody = document.getElementById('rank-body');
-  tbody.innerHTML = rs.map((r,i)=>{
-    const rankCls = i<rs.length*0.3?'rank-top':i>rs.length*0.7?'rank-bot':'rank-mid';
-    const sigCls  = r.signal==='BUY'?'buy':r.signal==='SELL'?'sell':'hold';
-    const scoreW  = clamp((r.compositeScore+3)/6*100,0,100);
-    const scoreColor = r.compositeScore>0?'var(--green)':'var(--red)';
-    const display = r.sym.replace('.KS','').replace('.KQ','');
-    return `<tr>
-      <td><span class="mom-rank ${rankCls}">${r.rank}</span></td>
-      <td><div style="font-family:var(--mono);font-size:11.5px;font-weight:600">${display}</div><div style="font-family:var(--sans);font-size:9.5px;color:var(--muted)">${r.name}</div></td>
-      <td class="${cl(r.r1m)}">${fp(r.r1m)}</td>
-      <td class="${cl(r.r3m)}">${fp(r.r3m)}</td>
-      <td class="${cl(r.r6m)}">${fp(r.r6m)}</td>
-      <td class="neu">${r.vol30.toFixed(1)}%</td>
-      <td class="${cl(r.sharpe)}">${r.sharpe.toFixed(2)}</td>
-      <td>
-        <div class="score-bar">
-          <div class="sb-track"><div class="sb-fill" style="width:${scoreW}%;background:${scoreColor}"></div></div>
-          <span style="font-size:10.5px;color:${scoreColor}">${r.compositeScore.toFixed(2)}</span>
-        </div>
-      </td>
-      <td><span class="si-signal ${sigCls}">${r.signal}</span></td>
-    </tr>`;
-  }).join('');
-}
-
-// ═══════════════════════════════════════
-// RENDER: GAUGE
-// ═══════════════════════════════════════
-function renderGauge(rs){
-  const buyN  = rs.filter(r=>r.signal==='BUY').length;
-  const holdN = rs.filter(r=>r.signal==='HOLD').length;
-  const sellN = rs.filter(r=>r.signal==='SELL').length;
-  const score = (buyN - sellN) / rs.length * 100;
-
-  document.getElementById('g-buy').textContent  = buyN;
-  document.getElementById('g-hold').textContent = holdN;
-  document.getElementById('g-sell').textContent = sellN;
-  document.getElementById('gauge-num').innerHTML = `<em>${score.toFixed(0)}</em>`;
-  document.getElementById('gauge-label').textContent =
-    score>30?'강한 BUY 시그널':score>10?'완만한 BUY':score>-10?'중립':score>-30?'완만한 SELL':'강한 SELL 시그널';
-
-  // Draw gauge arc
-  const svg = document.getElementById('gauge-svg');
-  const cx=90,cy=90,r=70,strokeW=14;
-  const toRad = deg => (deg-180)*Math.PI/180;
-  const arcX = (deg,rad=r) => cx + rad*Math.cos(toRad(deg));
-  const arcY = (deg,rad=r) => cy + rad*Math.sin(toRad(deg));
-  const arc  = (s,e,col,w=strokeW) => {
-    const large = (e-s)>180?1:0;
-    return `<path d="M${arcX(s)} ${arcY(s)} A${r} ${r} 0 ${large} 1 ${arcX(e)} ${arcY(e)}"
-      fill="none" stroke="${col}" stroke-width="${w}" stroke-linecap="round"/>`;
-  };
-
-  const fillDeg = clamp((score+100)/200*180, 0, 180);
-  const fillCol = score>20?'var(--green)':score<-20?'var(--red)':'var(--gold2)';
-  const needle  = fillDeg;
-  const nx = cx + (r-20)*Math.cos(toRad(needle));
-  const ny = cy + (r-20)*Math.sin(toRad(needle));
-
-  svg.innerHTML =
-    arc(0,180,'var(--cream3)',strokeW+4) +
-    arc(0,60,'rgba(26,102,64,.2)',strokeW) +
-    arc(60,120,'rgba(184,146,46,.2)',strokeW) +
-    arc(120,180,'rgba(184,50,50,.2)',strokeW) +
-    arc(0, fillDeg, fillCol, strokeW) +
-    `<line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="${fillCol}" stroke-width="2.5" stroke-linecap="round"/>` +
-    `<circle cx="${cx}" cy="${cy}" r="5" fill="${fillCol}"/>` +
-    `<text x="4"  y="${cy+18}" font-family="DM Mono" font-size="8" fill="var(--green)">BUY</text>` +
-    `<text x="${cx-10}" y="${cy-r-6}" font-family="DM Mono" font-size="8" fill="var(--gold2)">중립</text>` +
-    `<text x="${cx*2-24}" y="${cy+18}" font-family="DM Mono" font-size="8" fill="var(--red)">SELL</text>`;
-}
-
-// ═══════════════════════════════════════
-// RENDER: REGIME
-// ═══════════════════════════════════════
-function renderRegime(rs){
-  const buyPct = rs.filter(r=>r.signal==='BUY').length/rs.length*100;
-  const momAvg = rs.reduce((a,b)=>a+(b.momScore||0),0)/rs.length;
-  const volAvg = rs.reduce((a,b)=>a+(b.vol30||0),0)/rs.length;
-  const goldens= rs.filter(r=>r.maSignal==='golden').length;
-
-  const regime = buyPct>=60?'BULL':buyPct<=35?'BEAR':'NEUTRAL';
-  const pills = [
-    {label:`레짐: ${regime}`, cls: regime==='BULL'?'on-bull':regime==='BEAR'?'on-bear':'on-neu'},
-    {label:`모멘텀: ${momAvg>5?'강세':momAvg>0?'약세':'역모멘텀'}`, cls:momAvg>5?'on-bull':momAvg>0?'on-neu':'on-bear'},
-    {label:`변동성: ${volAvg>40?'HIGH':volAvg>25?'MED':'LOW'}`, cls:volAvg>40?'on-bear':volAvg<20?'on-bull':'on-neu'},
-    {label:`골든크로스 ${goldens}/${rs.length}`, cls:goldens/rs.length>0.5?'on-bull':'on-neu'},
-  ];
-  document.getElementById('regime-pills').innerHTML = pills.map(p=>`<span class="reg-pill ${p.cls}">${p.label}</span>`).join('');
-
-  const details = [
-    {l:'BUY 비중',     v:`${buyPct.toFixed(0)}%`, c:buyPct>=50?'up':'dn'},
-    {l:'평균 모멘텀',  v:`${momAvg.toFixed(1)}%`, c:cl(momAvg)},
-    {l:'평균 변동성',  v:`${volAvg.toFixed(1)}%`, c:volAvg>35?'dn':'neu'},
-    {l:'골든크로스',   v:`${goldens}개 종목`,      c:goldens>rs.length/2?'up':'dn'},
-    {l:'상위 종목',    v:rs[0]?.name||'—',        c:'neu'},
-    {l:'하위 종목',    v:rs[rs.length-1]?.name||'—',c:'neu'},
-  ];
-  document.getElementById('regime-details').innerHTML = details.map(d=>
-    `<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;padding:5px 0;border-bottom:1px solid rgba(221,216,204,.3)">
-      <span class="neu">${d.l}</span><span class="${d.c}">${d.v}</span>
-    </div>`).join('');
-}
-
-// ═══════════════════════════════════════
-// RENDER: MOMENTUM TAB
-// ═══════════════════════════════════════
-function renderMomentumTab(rs){
-  // Heatmap: rows = symbols, cols = 1M/3M/6M
-  const periods = ['1M','3M','6M'];
-  const keys    = ['r1m','r3m','r6m'];
-
-  // Color scale
-  const heatColor = v => {
-    const norm = clamp((v+30)/60, 0, 1);
-    if(norm>0.5){
-      const t=(norm-0.5)*2;
-      const r=Math.round(26+(t*(90-26))), g=Math.round(102+(t*(194-102))), b=Math.round(64+(t*(113-64)));
-      return `rgba(${r},${g},${b},${0.15+t*0.5})`;
-    } else {
-      const t=(0.5-norm)*2;
-      const r=Math.round(184+(t*(240-184))), g=Math.round(50+(t*(112-50))), b=50;
-      return `rgba(${r},${g},${b},${0.15+t*0.5})`;
-    }
-  };
-
-  const hm = document.getElementById('ret-heatmap');
-  // Column headers
-  let html='';
-  html+=`<div class="fg-cell" style="background:var(--cream2)"><div class="fgc-lbl" style="color:var(--muted)">종목</div></div>`;
-  periods.forEach(p=>html+=`<div class="fg-cell" style="background:var(--cream2)"><div class="fgc-lbl" style="color:var(--muted)">${p}</div></div>`);
-  // Spacer
-  html+=`<div class="fg-cell"></div>`;
-  rs.forEach(r=>{
-    html+=`<div class="fg-cell" style="background:var(--cream2)"><div class="fgc-sym">${r.sym.replace('.KS','').replace('.KQ','')}</div></div>`;
-    keys.forEach(k=>{
-      const v=r[k]||0;
-      html+=`<div class="fg-cell" style="background:${heatColor(v)}">
-        <div class="fgc-val ${cl(v)}">${v.toFixed(1)}%</div>
-      </div>`;
-    });
-    html+=`<div class="fg-cell"></div>`;
-  });
-  hm.innerHTML=html;
-  hm.style.gridTemplateColumns=`repeat(5,1fr)`;
-
-  // 52W bars
-  const fw = document.getElementById('fw-bars');
-  fw.innerHTML = rs.map(r=>{
-    const pct = clamp(r.pos52||0, 0, 100);
-    const col = pct>75?'var(--green)':pct<25?'var(--red)':'var(--gold2)';
-    return `<div class="xs-row">
-      <div class="xs-sym">${r.sym.replace('.KS','').replace('.KQ','')}</div>
-      <div class="xs-track">
-        <div class="xs-fill" style="width:${pct}%;background:${col}"></div>
-      </div>
-      <div class="xs-val ${cl(pct-50)}">${pct.toFixed(0)}%</div>
-    </div>`;
-  }).join('');
-}
-
-// ═══════════════════════════════════════
-// RENDER: FACTOR TAB
-// ═══════════════════════════════════════
-function renderFactorTab(rs){
-  // Symbol buttons
-  const btnsEl = document.getElementById('factor-sym-btns');
-  btnsEl.innerHTML = rs.map(r=>`
-    <button onclick="selectFactorSym('${r.sym}')"
-      style="font-family:var(--mono);font-size:9.5px;padding:3px 10px;cursor:pointer;background:${r.sym===selectedFactorSym?'var(--navy)':'var(--cream2)'};color:${r.sym===selectedFactorSym?'#E8DFC8':'var(--muted)'};border:1px solid var(--rule2);transition:all .15s">
-      ${r.sym.replace('.KS','').replace('.KQ','')}
-    </button>`).join('');
-
-  drawRadar(rs);
-  drawZBars(rs);
-}
-
-function selectFactorSym(sym){
-  selectedFactorSym = sym;
-  renderFactorTab(lastResults);
-}
-
-function drawRadar(rs){
-  const r = rs.find(s=>s.sym===selectedFactorSym)||rs[0];
-  if(!r) return;
-
-  const factors = [
-    {label:'모멘텀',    key:'momScore_z'},
-    {label:'샤프',      key:'sharpe_z'},
-    {label:'52W위치',   key:'pos52_z'},
-    {label:'저변동성',  key:'vol30_z', inv:true},
-    {label:'단기수익률',key:'r1m_z'},
-    {label:'중기수익률',key:'r3m_z'},
-  ];
-
-  const svg = document.getElementById('radar-svg');
-  const cx=110,cy=110,maxR=80,n=factors.length;
-  let html='';
-
-  // Grid circles
-  [0.25,0.5,0.75,1].forEach(t=>{
-    const rad=maxR*t;
-    html+=`<circle cx="${cx}" cy="${cy}" r="${rad}" fill="none" stroke="var(--rule)" stroke-width="0.5"/>`;
-  });
-
-  // Axes
-  factors.forEach((_,i)=>{
-    const angle = (i/n)*2*Math.PI - Math.PI/2;
-    const ex = cx+(maxR+16)*Math.cos(angle);
-    const ey = cy+(maxR+16)*Math.sin(angle);
-    const lx = cx+(maxR+24)*Math.cos(angle);
-    const ly = cy+(maxR+24)*Math.sin(angle);
-    html+=`<line x1="${cx}" y1="${cy}" x2="${ex}" y2="${ey}" stroke="var(--rule2)" stroke-width="0.8"/>`;
-    html+=`<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" font-family="DM Mono" font-size="8.5" fill="var(--muted)">${factors[i].label}</text>`;
-  });
-
-  // Plot all symbols (faint)
-  rs.forEach(s=>{
-    if(s.sym===selectedFactorSym) return;
-    const pts = factors.map((f,i)=>{
-      const angle=(i/n)*2*Math.PI-Math.PI/2;
-      const z = f.inv ? -(s[f.key]||0) : (s[f.key]||0);
-      const rad = clamp((z+2)/4, 0, 1)*maxR;
-      return [cx+rad*Math.cos(angle), cy+rad*Math.sin(angle)];
-    });
-    const d='M'+pts.map(p=>p.join(',')).join(' L')+' Z';
-    html+=`<path d="${d}" fill="rgba(11,43,82,.04)" stroke="rgba(11,43,82,.1)" stroke-width="0.8"/>`;
-  });
-
-  // Plot selected (highlighted)
-  const pts = factors.map((f,i)=>{
-    const angle=(i/n)*2*Math.PI-Math.PI/2;
-    const z = f.inv ? -(r[f.key]||0) : (r[f.key]||0);
-    const rad = clamp((z+2)/4, 0, 1)*maxR;
-    return [cx+rad*Math.cos(angle), cy+rad*Math.sin(angle)];
-  });
-  const d='M'+pts.map(p=>p.join(',')).join(' L')+' Z';
-  const fillCol = r.signal==='BUY'?'rgba(26,102,64,.25)':r.signal==='SELL'?'rgba(184,50,50,.2)':'rgba(11,43,82,.15)';
-  const strokeCol= r.signal==='BUY'?'var(--green)':r.signal==='SELL'?'var(--red)':'var(--navy)';
-  html+=`<path d="${d}" fill="${fillCol}" stroke="${strokeCol}" stroke-width="1.5"/>`;
-  pts.forEach(p=>html+=`<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="${strokeCol}"/>`);
-
-  // Label
-  html+=`<text x="${cx}" y="${cy+maxR+36}" text-anchor="middle" font-family="Cormorant Garamond" font-size="13" font-style="italic" fill="var(--navy)">${r.name||r.sym}</text>`;
-
-  svg.innerHTML=html;
-
-  // Legend
-  document.getElementById('factor-legend').innerHTML=factors.map(f=>`
-    <div class="fl-item"><div class="fl-dot" style="background:${strokeCol}"></div>${f.label}</div>`).join('');
-}
-
-function drawZBars(rs){
-  const r = rs.find(s=>s.sym===selectedFactorSym)||rs[0];
-  if(!r) return;
-
-  const factors=[
-    {label:'모멘텀',    z:r.momScore_z||0},
-    {label:'샤프 비율', z:r.sharpe_z||0},
-    {label:'52W 위치',  z:r.pos52_z||0},
-    {label:'저변동성',  z:-(r.vol30_z||0)},
-    {label:'1M 수익률', z:r.r1m_z||0},
-    {label:'3M 수익률', z:r.r3m_z||0},
-    {label:'6M 수익률', z:r.r6m_z||0},
-  ];
-
-  const el=document.getElementById('factor-zbars');
-  el.innerHTML=factors.map(f=>{
-    const pct = clamp((f.z+3)/6*100, 0, 100);
-    const col = f.z>1?'var(--green)':f.z<-1?'var(--red)':'var(--muted)';
-    const fmt = (f.z>=0?'+':'')+f.z.toFixed(2);
-    return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-      <div style="font-family:var(--mono);font-size:10px;color:var(--muted);width:80px;text-align:right;flex-shrink:0">${f.label}</div>
-      <div style="flex:1;height:6px;background:var(--cream3);border-radius:2px;overflow:hidden;position:relative">
-        <div style="position:absolute;left:50%;top:0;width:1px;height:100%;background:var(--rule2)"></div>
-        <div style="position:absolute;${f.z>=0?'left:50%':'right:'+(100-pct)+'%'};top:0;width:${Math.abs(f.z)/3*50}%;height:100%;background:${col};border-radius:2px"></div>
-      </div>
-      <div style="font-family:var(--mono);font-size:10.5px;color:${col};width:40px;text-align:right">${fmt}</div>
-    </div>`;
-  }).join('');
-}
-
-// ═══════════════════════════════════════
-// RENDER: SECTOR TAB
-// ═══════════════════════════════════════
-async function renderSectorTab(){
-  const sg = document.getElementById('sector-grid');
-  sg.innerHTML = SECTOR_ETFS.map(s=>`
-    <div class="sec-cell" style="background:var(--cream2)">
-      <div class="sec-name">${s.emoji} ${s.name}</div>
-      <div class="sec-ret neu" id="sec-${s.sym}">로딩...</div>
-      <div class="sec-bar" id="secbar-${s.sym}" style="background:var(--rule)"></div>
-    </div>`).join('');
-
-  for(const s of SECTOR_ETFS){
-    const res = await yahooFetch(s.sym,'1mo','1d');
-    if(res?.indicators?.quote?.[0]?.close){
-      const c = res.indicators.quote[0].close.filter(v=>v!=null);
-      const r = c.length>=2 ? (c[c.length-1]-c[0])/c[0]*100 : 0;
-      const el = document.getElementById('sec-'+s.sym);
-      const bar= document.getElementById('secbar-'+s.sym);
-      if(el){ el.textContent=fp(r); el.className='sec-ret '+(r>=0?'up':'dn'); }
-      if(bar){
-        const w=clamp(Math.abs(r)/10*100,2,100);
-        bar.style.width=w+'%'; bar.style.background=r>=0?'var(--green)':'var(--red)';
-      }
-      // update parent bg
-      const parent=el?.parentElement;
-      if(parent){
-        const norm=(r+5)/10; const t=clamp(norm,0,1);
-        if(r>0) parent.style.background=`rgba(26,102,64,${t*0.15})`;
-        else    parent.style.background=`rgba(184,50,50,${(1-t)*0.12})`;
-      }
-    }
-    await new Promise(res=>setTimeout(res,150));
-  }
-
-  // Sector rotation table
-  document.getElementById('sector-rotation').innerHTML=`
-    <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:8px">상대강도 순위 (SPY 대비)</div>
-    <div style="font-family:var(--mono);font-size:11px;color:var(--muted);padding:12px;text-align:center">섹터 ETF 로딩 완료 후 계산</div>`;
-  document.getElementById('kr-sector').innerHTML=`
-    <div style="font-family:var(--mono);font-size:10px;color:var(--muted);padding:12px">KRX 섹터: KOSPI 구성종목 분류 기반<br>반도체/자동차/바이오/금융 섹터 위주</div>`;
-}
-
-// ═══════════════════════════════════════
-// RENDER: TECHNICAL SIGNALS TAB
-// ═══════════════════════════════════════
-function renderTechnicalTab(rs){
-  const techEl = document.getElementById('tech-signals');
-  techEl.innerHTML = rs.map(r=>{
-    const rsiSig = r.rsi>70?'SELL':r.rsi<30?'BUY':'HOLD';
-    const maSig  = r.priceVsMa50!=null?(r.priceVsMa50>0?'위':'아래'):'—';
-    const sigCls = rsiSig==='BUY'?'buy':rsiSig==='SELL'?'sell':'hold';
-    return `<div class="sig-item">
-      <div class="si-sym">${r.sym.replace('.KS','').replace('.KQ','')}</div>
-      <div class="si-name">RSI ${r.rsi.toFixed(0)} · MA50 ${maSig}</div>
-      <div style="font-family:var(--mono);font-size:10px;color:var(--muted);flex:1">
-        ${r.priceVsMa200!=null?(r.priceVsMa200>=0?'▲':'▼')+' MA200 '+Math.abs(r.priceVsMa200).toFixed(1)+'%':'—'}
-      </div>
-      <span class="si-signal ${sigCls}">${rsiSig}</span>
-      <div class="si-score ${cl(r.rsi-50)}">${r.rsi.toFixed(0)}</div>
-    </div>`;
-  }).join('');
-
-  const crossEl = document.getElementById('cross-signals');
-  crossEl.innerHTML = rs.map(r=>{
-    const isgolden = r.maSignal==='golden';
-    return `<div class="sig-item">
-      <div class="si-sym">${r.sym.replace('.KS','').replace('.KQ','')}</div>
-      <div class="si-name">${r.name}</div>
-      <div style="flex:1"></div>
-      <span class="si-signal ${isgolden?'buy':'sell'}">
-        ${isgolden?'골든크로스':'데드크로스'}
-      </span>
-      <div class="si-score ${isgolden?'up':'dn'}">
-        ${r.priceVsMa200!=null?(r.priceVsMa200>=0?'+':'')+r.priceVsMa200.toFixed(1)+'%':'—'}
-      </div>
-    </div>`;
-  }).join('');
-}
-
-// ═══════════════════════════════════════
-// TABS
-// ═══════════════════════════════════════
-function switchTab(name){
-  const names=['momentum','factor','sector','technical'];
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('on',names[i]===name));
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('on',p.id==='panel-'+name));
-}
-
-// ═══════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════
-document.querySelectorAll('.nl').forEach(l=>{
-  l.addEventListener('click',()=>{
-    document.querySelectorAll('.nl').forEach(x=>x.classList.remove('act'));
-    l.classList.add('act');
-  });
-});
-setStatus('▶ 시그널 실행 버튼으로 분석 시작');
-</script>
-
-<script>
-// ── KIS Integration for quant.html ──
-function toggleKisFloat(){
-  const p=document.getElementById('kis-float');
-  const hidden=p.style.display==='none'||!p.style.display;
-  p.style.display=hidden?'block':'none';
-  if(hidden) KIS.renderKeyPanel('kis-panel-inner');
-}
-window.onKisReady = function(){
-  KIS.setBadge('kis-badge', true);
-  document.getElementById('kis-float').style.display='none';
-  console.log('[KIS quant] 연결됨 — 시그널 실행 시 KIS 데이터 사용');
+const SECTORS=[{s:'XLK',n:'Tech',e:'💻'},{s:'XLF',n:'금융',e:'🏦'},{s:'XLE',n:'Energy',e:'⛽'},{s:'XLV',n:'Healthcare',e:'💊'},{s:'XLI',n:'Industrials',e:'🏭'},{s:'XLY',n:'ConsDisc',e:'🛍'},{s:'XLP',n:'ConsStap',e:'🛒'},{s:'XLU',n:'Utilities',e:'⚡'},{s:'XLB',n:'Materials',e:'🪨'},{s:'XLRE',n:'Real Est.',e:'🏢'},{s:'XLC',n:'Comm',e:'📡'},{s:'GLD',n:'Gold',e:'🥇'}];
+const UNIVERSES={
+  us:[{s:'NVDA',n:'NVIDIA',sec:'반도체'},{s:'MSFT',n:'Microsoft',sec:'소프트웨어'},{s:'AAPL',n:'Apple',sec:'IT HW'},{s:'AMZN',n:'Amazon',sec:'클라우드'},{s:'META',n:'Meta',sec:'소셜'},{s:'GOOGL',n:'Alphabet',sec:'검색'},{s:'TSLA',n:'Tesla',sec:'전기차'},{s:'AMD',n:'AMD',sec:'반도체'},{s:'AVGO',n:'Broadcom',sec:'반도체'}],
+  kr:[{s:'005930.KS',n:'삼성전자',sec:'반도체'},{s:'000660.KS',n:'SK하이닉스',sec:'반도체'},{s:'035420.KS',n:'NAVER',sec:'인터넷'},{s:'035720.KS',n:'카카오',sec:'플랫폼'},{s:'005380.KS',n:'현대차',sec:'자동차'},{s:'000270.KS',n:'기아',sec:'자동차'},{s:'068270.KS',n:'셀트리온',sec:'바이오'}],
+  semi:[{s:'NVDA',n:'NVIDIA',sec:'GPU'},{s:'AMD',n:'AMD',sec:'CPU/GPU'},{s:'AVGO',n:'Broadcom',sec:'네트워킹'},{s:'TSM',n:'TSMC ADR',sec:'파운드리'},{s:'MU',n:'Micron',sec:'메모리'},{s:'005930.KS',n:'삼성전자',sec:'메모리'},{s:'000660.KS',n:'SK하이닉스',sec:'HBM'}]
 };
+let curUniv='us';
 
-// Override getReturns to use KIS for KR stocks
-const _origGetReturns = typeof getReturns === 'function' ? getReturns : null;
-async function getReturnsKIS(sym){
-  const isKR = sym.endsWith('.KS')||sym.endsWith('.KQ')||/^\d{6}$/.test(sym);
-  if(isKR && KIS.isConfigured()){
-    const q = await KIS.quoteKR(sym);
-    if(q){
-      // Build a minimal return object compatible with quant engine
-      return {
-        sym, cur:q.cur, prev:q.prev, chg:q.chg, chgPct:q.chgPct,
-        name:q.name, source:'KIS',
-        // Yahoo-compatible fields
-        ret1m: null, ret3m: null, ret6m: null, ret1y: null,
-        vol30: null, sharpe: null, pos52: q.chgPct/100,
-        rsi14: null, ma20:null, ma50:null, ma200:null,
-      };
-    }
-  }
-  return _origGetReturns ? await _origGetReturns(sym) : null;
+async function fetchY(sym){
+  const enc=encodeURIComponent(sym);
+  const urls=[
+    `https://corsproxy.io/?${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${enc}?interval=1d&range=1mo`)}`,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${enc}?interval=1d&range=1mo`)}`,
+  ];
+  for(const u of urls){
+    try{
+      const r=await fetch(u,{signal:AbortSignal.timeout(10000)});if(!r.ok)continue;
+      const j=await r.json();
+      const res=j?.chart?.result?.[0],meta=res?.meta;if(!meta?.regularMarketPrice)continue;
+      const cur=meta.regularMarketPrice;
+      const closes=(res?.indicators?.quote?.[0]?.close||[]).filter(v=>v!=null&&!isNaN(v));
+      const prev1=closes.length>=2?closes[closes.length-2]:meta.regularMarketPreviousClose||cur;
+      const prev5=closes.length>=6?closes[closes.length-6]:prev1;
+      const prev20=closes.length>=21?closes[closes.length-21]:prev1;
+      const w52h=meta.fiftyTwoWeekHigh||cur,w52l=meta.fiftyTwoWeekLow||cur;
+      // Estimate RSI(14) from closes
+      let rsi=50;
+      if(closes.length>=15){
+        const ch=closes.slice(-15);let gains=0,losses=0;
+        for(let i=1;i<ch.length;i++){const d=ch[i]-ch[i-1];if(d>0)gains+=d;else losses-=d;}
+        gains/=14;losses/=14;rsi=losses===0?100:100-100/(1+gains/losses);
+      }
+      return{c:cur,prev1,prev5,prev20,w52h,w52l,rsi,pos52:w52h>w52l?(cur-w52l)/(w52h-w52l)*100:50};
+    }catch(_){}
+  }return null;
 }
 
-if(KIS.isTokenValid()) KIS.setBadge('kis-badge', true);
+function heatColor(pct){
+  if(pct>3)return{bg:'rgba(34,197,94,.22)',bc:'rgba(34,197,94,.3)',tc:'#22C55E'};
+  if(pct>1)return{bg:'rgba(34,197,94,.10)',bc:'rgba(34,197,94,.18)',tc:'#86EFAC'};
+  if(pct>0)return{bg:'rgba(34,197,94,.04)',bc:'rgba(34,197,94,.1)',tc:'#86EFAC'};
+  if(pct>-1)return{bg:'rgba(239,68,68,.04)',bc:'rgba(239,68,68,.1)',tc:'#FCA5A5'};
+  if(pct>-3)return{bg:'rgba(239,68,68,.10)',bc:'rgba(239,68,68,.18)',tc:'#EF4444'};
+  return{bg:'rgba(239,68,68,.22)',bc:'rgba(239,68,68,.3)',tc:'#EF4444'};
+}
+
+async function loadHeatmap(){
+  const results=await Promise.all(SECTORS.map(s=>fetchY(s.s)));
+  let tapeD=[];
+  document.getElementById('heatmap').innerHTML=SECTORS.map((s,i)=>{
+    const q=results[i];
+    if(!q)return`<div class="hm-cell" style="background:var(--s2);border-color:var(--b1)"><div class="hm-icon">${s.e}</div><div class="hm-sym">${s.s}</div><div class="hm-name">${s.n}</div><div class="hm-val" style="color:var(--t3)">—</div><div class="hm-chg" style="color:var(--t3)">—</div></div>`;
+    const c=heatColor(q.prev1?(q.c-q.prev1)/q.prev1*100:0);
+    const chgPct=q.prev1?(q.c-q.prev1)/q.prev1*100:0;
+    tapeD.push({sym:s.s,val:q.c.toFixed(2),chg:(chgPct>=0?'+':'')+chgPct.toFixed(2)+'%',up:chgPct>=0});
+    return`<div class="hm-cell" style="background:${c.bg};border-color:${c.bc}">
+      <div class="hm-icon">${s.e}</div>
+      <div class="hm-sym" style="color:var(--t1)">${s.s}</div>
+      <div class="hm-name">${s.n}</div>
+      <div class="hm-val" style="color:${c.tc};font-family:var(--mono)">${q.c.toFixed(2)}</div>
+      <div class="hm-chg" style="color:${c.tc}">${(chgPct>=0?'+':'')+chgPct.toFixed(2)+'%'}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('hm-ts').textContent=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+' 업데이트';
+  // tape
+  const tape=document.getElementById('tape');
+  const items=[...tapeD,...tapeD].map(t=>`<div class="ti"><span class="ti-sym">${t.sym}</span><span class="ti-val">${t.val}</span><span class="ti-chg ${t.up?'up':'dn'}">${t.chg}</span></div>`).join('');
+  tape.innerHTML=items;
+
+  // VIX from results (last item if GLD was last, else fetch separately)
+  fetchY('^VIX').then(vix=>{
+    if(!vix)return;
+    const regime=vix.c<15?'저변동':vix.c<20?'보통':vix.c<30?'경계':'공포';
+    const c=vix.c<20?'up':vix.c<30?'amber':'dn';
+    const el=document.getElementById('vix-regime');if(el){el.textContent=regime+' ('+vix.c.toFixed(1)+')';el.className='fi-score '+c;}
+    const bar=document.getElementById('vix-bar');if(bar){const w=Math.min(vix.c/40*100,100);bar.style.width=w+'%';bar.style.background=vix.c<20?'var(--green)':vix.c<30?'var(--amber)':'var(--red)';}
+    const sub=document.getElementById('vix-sub');if(sub)sub.textContent=`VIX ${vix.c.toFixed(2)} — ${regime} 구간`;
+  });
+}
+
+function rsiColor(r){return r>70?'var(--red)':r<30?'var(--green)':'var(--amber)';}
+function rsiLabel(r){return r>70?'과매수':r<30?'과매도':'중립';}
+
+async function loadScreener(){
+  const items=UNIVERSES[curUniv];
+  document.getElementById('scrn-body').innerHTML=`<tr><td colspan="9" style="text-align:center;padding:20px;color:var(--t3)">로딩 중...</td></tr>`;
+  const results=await Promise.all(items.map(s=>fetchY(s.s)));
+  const rows=items.map((s,i)=>{
+    const q=results[i];if(!q)return'';
+    const isKR=s.s.includes('.KS')||s.s.includes('.KQ');
+    const fmtP=v=>isKR?'₩'+Math.round(v).toLocaleString('ko-KR'):'$'+v.toFixed(2);
+    const d1=q.prev1?(q.c-q.prev1)/q.prev1*100:0;
+    const d5=q.prev5?(q.c-q.prev5)/q.prev5*100:0;
+    const d20=q.prev20?(q.c-q.prev20)/q.prev20*100:0;
+    const rsi=q.rsi;
+    const pos52=q.pos52;
+    // Signal
+    let sig='중립',sigCls='neu';
+    if(d5>3&&rsi>50&&rsi<70){sig='강세';sigCls='up';}
+    else if(d5>5&&rsi>=70){sig='과매수';sigCls='amber';}
+    else if(d5<-3&&rsi<50&&rsi>30){sig='약세';sigCls='dn';}
+    else if(d5<-5&&rsi<=30){sig='과매도';sigCls='up';}// contrarian
+    return`<tr>
+      <td><strong style="color:var(--t1)">${s.n}</strong><br><span style="font-size:10px;color:var(--t3)">${s.s.replace('.KS','')}</span></td>
+      <td><span class="badge neu">${s.sec}</span></td>
+      <td class="mono">${fmtP(q.c)}</td>
+      <td class="mono ${cl(d1)}">${(d1>=0?'+':'')+d1.toFixed(2)}%</td>
+      <td class="mono ${cl(d5)}">${(d5>=0?'+':'')+d5.toFixed(2)}%</td>
+      <td class="mono ${cl(d20)}">${(d20>=0?'+':'')+d20.toFixed(2)}%</td>
+      <td><div style="font-family:var(--mono);font-size:11px;color:${rsiColor(rsi)}">${rsi.toFixed(1)}</div>
+          <div class="rsi-wrap"><div class="rsi-bar" style="width:${rsi}%;background:${rsiColor(rsi)}"></div><div class="rsi-ob"></div><div class="rsi-os"></div></div>
+          <div style="font-size:9px;color:var(--t3)">${rsiLabel(rsi)}</div></td>
+      <td><div class="w52-wrap"><span style="font-size:9px;color:var(--t3);min-width:28px">${pos52.toFixed(0)}%</span>
+          <div class="w52-bar-bg"><div class="w52-bar-fill" style="width:${pos52}%"></div></div></div></td>
+      <td><span class="badge ${sigCls}">${sig}</span></td>
+    </tr>`;
+  }).filter(Boolean);
+  document.getElementById('scrn-body').innerHTML=rows.join('');
+  document.getElementById('scrn-ts').textContent=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+
+  // Momentum factor list
+  const sorted=[...items.map((s,i)=>({s,q:results[i]})).filter(x=>x.q)].sort((a,b)=>{
+    const dA=a.q.prev20?(a.q.c-a.q.prev20)/a.q.prev20*100:0;
+    const dB=b.q.prev20?(b.q.c-b.q.prev20)/b.q.prev20*100:0;
+    return dB-dA;
+  });
+  document.getElementById('mom-list').innerHTML=sorted.slice(0,5).map(({s,q})=>{
+    const d20=q.prev20?(q.c-q.prev20)/q.prev20*100:0;
+    const w=Math.min(Math.abs(d20)*5+40,100);
+    return`<div class="factor-item">
+      <div class="fi-top"><span class="fi-name">${s.n}</span><span class="fi-score ${cl(d20)}">${(d20>=0?'+':'')+d20.toFixed(2)}%</span></div>
+      <div class="fi-bar-bg"><div class="fi-bar" style="width:${w}%;background:${d20>=0?'var(--green)':'var(--red)'}"></div></div>
+      <div class="fi-sub">1개월 모멘텀</div>
+    </div>`;
+  }).join('');
+
+  // Vol factor
+  const sortedVol=[...items.map((s,i)=>({s,q:results[i]})).filter(x=>x.q)].sort((a,b)=>Math.abs(a.q.prev1?(a.q.c-a.q.prev1)/a.q.prev1*100:0)-Math.abs(b.q.prev1?(b.q.c-b.q.prev1)/b.q.prev1*100:0));
+  document.getElementById('vol-list').innerHTML=sortedVol.slice(0,5).map(({s,q})=>{
+    const d1=Math.abs(q.prev1?(q.c-q.prev1)/q.prev1*100:0);
+    const w=Math.min(d1*20+20,100);
+    return`<div class="factor-item">
+      <div class="fi-top"><span class="fi-name">${s.n}</span><span class="fi-score ${d1<1?'up':'neu'}">${d1.toFixed(2)}%</span></div>
+      <div class="fi-bar-bg"><div class="fi-bar" style="width:${w}%;background:${d1<1?'var(--green)':d1<3?'var(--amber)':'var(--red)'}"></div></div>
+      <div class="fi-sub">${d1<1?'저변동 (로우볼)':d1<3?'보통 변동성':'고변동성'}</div>
+    </div>`;
+  }).join('');
+}
+
+function switchUniv(u){
+  curUniv=u;
+  ['us','kr','semi'].forEach(x=>document.getElementById('univ-'+x).classList.toggle('act',x===u));
+  loadScreener();
+}
+
+function toggleKis(){
+  const p=document.getElementById('kis-panel');
+  p.style.display=(p.style.display==='none'||!p.style.display)?'block':'none';
+}
+function saveKis(){
+  const k=document.getElementById('kp-key').value.trim(),s=document.getElementById('kp-sec').value.trim();
+  if(k&&s){localStorage.setItem('kis_appkey',k);localStorage.setItem('kis_appsecret',s);}
+}
+
+loadHeatmap();
+loadScreener();
+setInterval(()=>{loadHeatmap();loadScreener();},5*60*1000);
+if(window.KIS&&KIS.isTokenValid()){document.getElementById('kis-btn').textContent='KIS ✓';document.getElementById('kis-btn').classList.add('active');}
 </script>
-
-
 </body>
 </html>
