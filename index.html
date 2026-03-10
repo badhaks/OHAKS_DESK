@@ -81,7 +81,7 @@ body{background:var(--bg);color:var(--t2);font-family:var(--ui);font-size:13px;-
 .sec-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:4px;padding:0 2px}
 
 /* ─── INDEX ROW ─── */
-.idx-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.idx-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
 .idx-card{
   background:var(--s1);
   border:1px solid rgba(255,255,255,.05);
@@ -180,15 +180,18 @@ body{background:var(--bg);color:var(--t2);font-family:var(--ui);font-size:13px;-
 
 @media(max-width:1100px){
   .macro-row{grid-template-columns:repeat(3,1fr)}
+  .idx-row{grid-template-columns:repeat(3,1fr)}
 }
 @media(max-width:960px){
   .bnav{display:grid!important}
   body{padding-bottom:58px}
   .nav-links{display:none}
+  .idx-row{grid-template-columns:repeat(3,1fr)}
   .macro-row{grid-template-columns:1fr 1fr}
   #kis-panel{width:100%!important}
 }
 @media(max-width:600px){
+  .idx-row{grid-template-columns:1fr 1fr}
   .macro-row{grid-template-columns:1fr 1fr}
   .page{padding:12px}
 }
@@ -218,6 +221,46 @@ body{background:var(--bg);color:var(--t2);font-family:var(--ui);font-size:13px;-
 <div class="tape"><div class="tape-inner" id="tape"></div></div>
 
 <div class="page">
+
+  <!-- 지수 -->
+  <div class="sec-label">시장 지수</div>
+  <div class="idx-row">
+    <div class="idx-card" onclick="go('chart.html')">
+      <div class="ic-top"><div class="ic-flag">🇰🇷 KOSPI</div><div class="ic-badge" id="pb-kospi">—</div></div>
+      <div class="ic-name">Korea Composite</div>
+      <div class="ic-val sk" id="v-kospi">2600.00</div>
+      <div class="ic-sub" id="s-kospi">전일 —</div>
+      <div class="ic-bar-wrap"><div class="ic-bar" id="b-kospi" style="width:50%;background:var(--b2)"></div></div>
+    </div>
+    <div class="idx-card" onclick="go('chart.html')">
+      <div class="ic-top"><div class="ic-flag">🇰🇷 KOSDAQ</div><div class="ic-badge" id="pb-kosdaq">—</div></div>
+      <div class="ic-name">KOSDAQ</div>
+      <div class="ic-val sk" id="v-kosdaq">800.00</div>
+      <div class="ic-sub" id="s-kosdaq">전일 —</div>
+      <div class="ic-bar-wrap"><div class="ic-bar" id="b-kosdaq" style="width:50%;background:var(--b2)"></div></div>
+    </div>
+    <div class="idx-card" onclick="go('chart.html')">
+      <div class="ic-top"><div class="ic-flag">🇺🇸 S&amp;P 500</div><div class="ic-badge" id="pb-sp500">—</div></div>
+      <div class="ic-name">S&amp;P 500 Index</div>
+      <div class="ic-val sk" id="v-sp500">5600.00</div>
+      <div class="ic-sub" id="s-sp500">전일 —</div>
+      <div class="ic-bar-wrap"><div class="ic-bar" id="b-sp500" style="width:50%;background:var(--b2)"></div></div>
+    </div>
+    <div class="idx-card" onclick="go('chart.html')">
+      <div class="ic-top"><div class="ic-flag">🇺🇸 NASDAQ</div><div class="ic-badge" id="pb-nasdaq">—</div></div>
+      <div class="ic-name">NASDAQ Composite</div>
+      <div class="ic-val sk" id="v-nasdaq">18000.00</div>
+      <div class="ic-sub" id="s-nasdaq">전일 —</div>
+      <div class="ic-bar-wrap"><div class="ic-bar" id="b-nasdaq" style="width:50%;background:var(--b2)"></div></div>
+    </div>
+    <div class="idx-card" onclick="go('chart.html')">
+      <div class="ic-top"><div class="ic-flag">🇺🇸 Russell</div><div class="ic-badge" id="pb-russell">—</div></div>
+      <div class="ic-name">Russell 2000</div>
+      <div class="ic-val sk" id="v-russell">2000.00</div>
+      <div class="ic-sub" id="s-russell">전일 —</div>
+      <div class="ic-bar-wrap"><div class="ic-bar" id="b-russell" style="width:50%;background:var(--b2)"></div></div>
+    </div>
+  </div>
 
   <!-- 매크로 5열 -->
   <div class="sec-label">글로벌 매크로</div>
@@ -333,6 +376,7 @@ const IDXS=[
   {id:'kosdaq',sym:'^KQ11', fmt:v=>v.toFixed(2)},
   {id:'sp500', sym:'^GSPC', fmt:v=>v.toFixed(2)},
   {id:'nasdaq',sym:'^IXIC', fmt:v=>v.toFixed(2)},
+  {id:'russell',sym:'^RUT',  fmt:v=>v.toFixed(2)},
 ];
 async function loadIndices(){
   for(const idx of IDXS){
@@ -446,6 +490,7 @@ async function saveKis(){
 
 async function loadAll(){
   await Promise.all([
+    loadIndices(),
     loadList(LISTS.fx,'fx-list'),
     loadList(LISTS.rate,'rate-list'),
     loadList(LISTS.cmd,'cmd-list'),
