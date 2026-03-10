@@ -109,7 +109,7 @@ body{background:var(--bg);color:var(--t2);font-family:var(--ui);font-size:13px;-
 .ic-bar{height:100%;border-radius:2px;transition:width .8s ease}
 
 /* ─── MACRO ROW ─── */
-.macro-row{display:grid;grid-template-columns:2fr 2fr 3fr 5fr;gap:10px}
+.macro-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
 
 /* ─── PILL CARD ─── */
 .pill-card{
@@ -126,7 +126,6 @@ body{background:var(--bg);color:var(--t2);font-family:var(--ui);font-size:13px;-
 
 /* ─── CALENDAR CARD ─── */
 .cal-card{background:var(--s1);border:1px solid rgba(255,255,255,.05);border-radius:var(--r16);overflow:hidden}
-.cal-head{padding:16px 18px 12px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;justify-content:space-between}
 .cal-title{font-size:13px;font-weight:700;color:var(--t1)}
 .cal-link{font-size:11px;font-weight:500;color:var(--blue);cursor:pointer;transition:opacity .15s}
 .cal-link:hover{opacity:.7}
@@ -179,20 +178,18 @@ body{background:var(--bg);color:var(--t2);font-family:var(--ui);font-size:13px;-
 .bni-label{font-size:8px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--t3)}
 .bni.act .bni-label{color:var(--t1)}
 
+@media(max-width:1100px){
+  .macro-row{grid-template-columns:repeat(3,1fr)}
+}
 @media(max-width:960px){
   .bnav{display:grid!important}
   body{padding-bottom:58px}
   .nav-links{display:none}
-  .idx-row{grid-template-columns:1fr 1fr}
   .macro-row{grid-template-columns:1fr 1fr}
-  .bottom-row{grid-template-columns:1fr 1fr}
-  .ic-val{font-size:28px!important}
   #kis-panel{width:100%!important}
 }
 @media(max-width:600px){
-  .idx-row{grid-template-columns:1fr 1fr}
   .macro-row{grid-template-columns:1fr 1fr}
-  .bottom-row{grid-template-columns:1fr}
   .page{padding:12px}
 }
 </style>
@@ -222,53 +219,8 @@ body{background:var(--bg);color:var(--t2);font-family:var(--ui);font-size:13px;-
 
 <div class="page">
 
-  <!-- 지수 -->
-  <div class="sec-label">시장 지수</div>
-  <div class="idx-row">
-    <div class="idx-card" onclick="go('chart.html')">
-      <div class="ic-top">
-        <div class="ic-flag">🇰🇷 KOSPI</div>
-        <div class="ic-badge" id="pb-kospi">—</div>
-      </div>
-      <div class="ic-name">Korea Composite</div>
-      <div class="ic-val sk" id="v-kospi">2600.00</div>
-      <div class="ic-sub" id="s-kospi">전일 —</div>
-      <div class="ic-bar-wrap"><div class="ic-bar" id="b-kospi" style="width:50%;background:var(--b2)"></div></div>
-    </div>
-    <div class="idx-card" onclick="go('chart.html')">
-      <div class="ic-top">
-        <div class="ic-flag">🇰🇷 KOSDAQ</div>
-        <div class="ic-badge" id="pb-kosdaq">—</div>
-      </div>
-      <div class="ic-name">KOSDAQ</div>
-      <div class="ic-val sk" id="v-kosdaq">800.00</div>
-      <div class="ic-sub" id="s-kosdaq">전일 —</div>
-      <div class="ic-bar-wrap"><div class="ic-bar" id="b-kosdaq" style="width:50%;background:var(--b2)"></div></div>
-    </div>
-    <div class="idx-card" onclick="go('chart.html')">
-      <div class="ic-top">
-        <div class="ic-flag">🇺🇸 S&amp;P 500</div>
-        <div class="ic-badge" id="pb-sp500">—</div>
-      </div>
-      <div class="ic-name">S&amp;P 500 Index</div>
-      <div class="ic-val sk" id="v-sp500">5600.00</div>
-      <div class="ic-sub" id="s-sp500">전일 —</div>
-      <div class="ic-bar-wrap"><div class="ic-bar" id="b-sp500" style="width:50%;background:var(--b2)"></div></div>
-    </div>
-    <div class="idx-card" onclick="go('chart.html')">
-      <div class="ic-top">
-        <div class="ic-flag">🇺🇸 NASDAQ</div>
-        <div class="ic-badge" id="pb-nasdaq">—</div>
-      </div>
-      <div class="ic-name">NASDAQ Composite</div>
-      <div class="ic-val sk" id="v-nasdaq">18000.00</div>
-      <div class="ic-sub" id="s-nasdaq">전일 —</div>
-      <div class="ic-bar-wrap"><div class="ic-bar" id="b-nasdaq" style="width:50%;background:var(--b2)"></div></div>
-    </div>
-  </div>
-
-  <!-- 매크로 -->
-  <div class="sec-label" style="margin-top:4px">글로벌 매크로</div>
+  <!-- 매크로 5열 -->
+  <div class="sec-label">글로벌 매크로</div>
   <div class="macro-row">
     <div class="pill-card">
       <div class="pc-title">환율</div>
@@ -282,16 +234,6 @@ body{background:var(--bg);color:var(--t2);font-family:var(--ui);font-size:13px;-
       <div class="pc-title">원자재 · 글로벌</div>
       <div id="cmd-list"></div>
     </div>
-    <div class="brief-card">
-      <div class="bc-ts" id="brief-ts">마켓 브리프</div>
-      <div class="bc-hl" id="brief-hl">데이터 로딩 중...</div>
-      <div class="bc-kpis" id="brief-kpis"></div>
-    </div>
-  </div>
-
-  <!-- 하단 -->
-  <div class="sec-label" style="margin-top:4px">이벤트 · 글로벌</div>
-  <div class="bottom-row">
     <div class="pill-card">
       <div class="pc-title">글로벌 지수</div>
       <div id="global-list"></div>
@@ -300,13 +242,16 @@ body{background:var(--bg);color:var(--t2);font-family:var(--ui);font-size:13px;-
       <div class="pc-title">변동성 · 섹터</div>
       <div id="vol-list"></div>
     </div>
-    <div class="cal-card">
-      <div class="cal-head">
-        <div class="cal-title">이벤트 캘린더</div>
-        <span class="cal-link" onclick="go('calendar.html')">전체보기 →</span>
-      </div>
-      <div class="cal-body" id="cal-body"></div>
+  </div>
+
+  <!-- 캘린더 -->
+  <div class="sec-label" style="margin-top:4px">이벤트 캘린더</div>
+  <div class="cal-card">
+    <div class="cal-head">
+      <div class="cal-title">이벤트 캘린더</div>
+      <span class="cal-link" onclick="go('calendar.html')">전체보기 →</span>
     </div>
+    <div class="cal-body" id="cal-body"></div>
   </div>
 
 </div>
@@ -409,10 +354,10 @@ async function loadIndices(){
 
 const LISTS={
   fx:[{sym:'KRW=X',l:'USD / KRW',f:v=>v.toFixed(0)},{sym:'EURUSD=X',l:'EUR / USD',f:v=>v.toFixed(4)},{sym:'JPY=X',l:'USD / JPY',f:v=>v.toFixed(2)},{sym:'CNY=X',l:'USD / CNY',f:v=>v.toFixed(4)}],
-  rate:[{sym:'^IRX',l:'US 3M',f:v=>v.toFixed(3)+'%'},{sym:'^TNX',l:'US 10Y',f:v=>v.toFixed(3)+'%'},{sym:'^TYX',l:'US 30Y',f:v=>v.toFixed(3)+'%'}],
-  cmd:[{sym:'CL=F',l:'WTI Crude',f:v=>'$'+v.toFixed(2)},{sym:'GC=F',l:'Gold',f:v=>'$'+v.toFixed(0)},{sym:'SI=F',l:'Silver',f:v=>'$'+v.toFixed(3)},{sym:'NG=F',l:'Nat Gas',f:v=>'$'+v.toFixed(3)}],
-  global:[{sym:'^N225',l:'Nikkei 225',f:v=>v.toFixed(0)},{sym:'^HSI',l:'Hang Seng',f:v=>v.toFixed(0)},{sym:'^FTSE',l:'FTSE 100',f:v=>v.toFixed(2)},{sym:'^GDAXI',l:'DAX',f:v=>v.toFixed(2)}],
-  vol:[{sym:'^VIX',l:'VIX',f:v=>v.toFixed(2)},{sym:'^MOVE',l:'MOVE Index',f:v=>v.toFixed(2)},{sym:'DX-Y.NYB',l:'DXY',f:v=>v.toFixed(3)},{sym:'^VKOSPI',l:'VKOSPI',f:v=>v.toFixed(2)}],
+  rate:[{sym:'^IRX',l:'US 3M',f:v=>v.toFixed(3)+'%'},{sym:'^TU',l:'US 2Y',f:v=>v.toFixed(3)+'%'},{sym:'^FVX',l:'US 5Y',f:v=>v.toFixed(3)+'%'},{sym:'^TNX',l:'US 10Y',f:v=>v.toFixed(3)+'%'},{sym:'^TYX',l:'US 30Y',f:v=>v.toFixed(3)+'%'}],
+  cmd:[{sym:'CL=F',l:'WTI Crude',f:v=>'$'+v.toFixed(2)},{sym:'GC=F',l:'Gold',f:v=>'$'+v.toFixed(0)},{sym:'SI=F',l:'Silver',f:v=>'$'+v.toFixed(3)},{sym:'NG=F',l:'Nat Gas',f:v=>'$'+v.toFixed(3)},{sym:'HG=F',l:'Copper',f:v=>'$'+v.toFixed(4)}],
+  global:[{sym:'^N225',l:'Nikkei 225',f:v=>v.toFixed(0)},{sym:'^HSI',l:'Hang Seng',f:v=>v.toFixed(0)},{sym:'000001.SS',l:'상해종합',f:v=>v.toFixed(2)},{sym:'^TWII',l:'대만 가권',f:v=>v.toFixed(0)},{sym:'^FTSE',l:'FTSE 100',f:v=>v.toFixed(2)},{sym:'^GDAXI',l:'DAX',f:v=>v.toFixed(2)}],
+  vol:[{sym:'^VIX',l:'VIX',f:v=>v.toFixed(2)},{sym:'^VKOSPI',l:'VKOSPI',f:v=>v.toFixed(2)},{sym:'DX-Y.NYB',l:'DXY',f:v=>v.toFixed(3)},{sym:'BTC-USD',l:'BTC',f:v=>'$'+Math.round(v).toLocaleString()},{sym:'ETH-USD',l:'ETH',f:v=>'$'+v.toFixed(0)}],
 };
 function pillRow(l,v,chgPct){
   const up=chgPct>=0;
@@ -501,7 +446,6 @@ async function saveKis(){
 
 async function loadAll(){
   await Promise.all([
-    loadIndices(),
     loadList(LISTS.fx,'fx-list'),
     loadList(LISTS.rate,'rate-list'),
     loadList(LISTS.cmd,'cmd-list'),
