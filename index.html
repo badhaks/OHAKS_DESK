@@ -106,6 +106,7 @@ body{background:var(--bg);color:var(--t2);font-family:var(--ui);font-size:13px;-
 @keyframes flash{0%{color:var(--t1)}30%{color:var(--amber)}100%{color:var(--t1)}}
 .ic-val.flash{animation:flash .6s ease}
 .ic-ts{font-size:9px;color:var(--t3);margin-top:4px;font-family:var(--mono)}
+.delay-badge{font-size:8.5px;font-weight:600;padding:2px 6px;border-radius:4px;background:rgba(96,104,128,.15);border:1px solid rgba(96,104,128,.3);color:var(--t3);letter-spacing:.04em;margin-left:6px;vertical-align:middle}
 @keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .ic-sub{font-family:var(--mono);font-size:10.5px;color:var(--t3)}
 .ic-bar-wrap{margin-top:12px;height:3px;background:var(--s3);border-radius:2px;overflow:hidden}
@@ -230,7 +231,7 @@ body{background:var(--bg);color:var(--t2);font-family:var(--ui);font-size:13px;-
 <div class="page">
 
   <!-- 지수 -->
-  <div class="sec-label">시장 지수</div>
+  <div class="sec-label">시장 지수 <span class="delay-badge">지연 시세</span></div>
   <div class="idx-row">
     <div class="idx-card" onclick="go('chart.html')">
       <div class="ic-top"><div class="ic-flag">🇰🇷 KOSPI</div><div class="ic-badge" id="pb-kospi">—</div></div>
@@ -334,7 +335,15 @@ body{background:var(--bg);color:var(--t2);font-family:var(--ui);font-size:13px;-
   <input class="kp-in" id="kp-acc" type="text" placeholder="12345678" maxlength="8">
   <button class="kp-save" onclick="saveKis()">저장 + 토큰 발급</button>
   <div id="kp-st"></div>
-  <div class="kp-guide">apiportal.koreainvestment.com → 로그인 → 앱 등록 → App Key / Secret 복사<br><br>저장하면 모든 페이지에서 공유됩니다.</div>
+  <div class="kp-guide">
+    <b>실전투자 App Key (PO prefix)</b> 필요<br>
+    apiportal.koreainvestment.com → 로그인 → 앱 등록<br><br>
+    ⚠️ <b>GitHub Pages에서는 CORS 차단</b>으로 KIS 직접 연결 불가<br>
+    KIS 실시간 사용하려면:<br>
+    1. 로컬에서 <code>python kis_proxy.py</code> 실행<br>
+    2. <code>localhost</code>로 접속해서 사용<br><br>
+    키는 저장되니 로컬 실행 시 바로 연결됩니다.
+  </div>
 </div>
 
 <script src="kis.js"></script>
@@ -383,18 +392,10 @@ function pushTape(sym,val,chg,up){
   document.getElementById('tape').innerHTML=[...tD,...tD].map(t=>`<div class="ti"><span class="ti-sym">${t.sym}</span><span class="ti-val">${t.val}</span><span class="ti-chg ${t.up?'up':'dn'}">${t.chg}</span></div>`).join('');
 }
 
-// ── 지수 소스 표시 ──────────────────────────────────────
-function setIdxSource(src){
-  // 'KIS' 또는 'Yahoo' — 우상단 칩에 반영
-  const btn=document.getElementById('kis-btn');
-  if(btn&&src==='KIS') btn.textContent='KIS ✓ LIVE';
-}
-
-// ── 지수 카드 업데이트 (공통) ──────────────────────────
+// ── 지수 카드 업데이트 ──────────────────────────
 function applyIdx(id,cur,prev,chgPct,fmt){
   const up=chgPct>=0;
   const ve=document.getElementById('v-'+id);
-  // 값 바뀌면 flash 효과
   if(ve.textContent&&ve.textContent!==fmt(cur)){
     ve.classList.add('flash');
     setTimeout(()=>ve.classList.remove('flash'),600);
@@ -407,21 +408,19 @@ function applyIdx(id,cur,prev,chgPct,fmt){
   const bw=Math.min(Math.abs(chgPct)*15+50,100);
   const bar=document.getElementById('b-'+id);
   bar.style.width=bw+'%';bar.style.background=up?'var(--green)':'var(--red)';
-  // 타임스탬프
   const ts=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
   const tsEl=document.getElementById('ts-'+id);
-  if(tsEl)tsEl.textContent=ts;
+  if(tsEl)tsEl.textContent='업데이트 '+ts;
 }
 
 const IDXS=[
-  {id:'kospi', sym:'^KS11', kisCode:'0001', kr:true,  fmt:v=>v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})},
-  {id:'kosdaq',sym:'^KQ11', kisCode:'1001', kr:true,  fmt:v=>v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})},
-  {id:'sp500', sym:'^GSPC', kisCode:null,   kr:false, fmt:v=>v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})},
-  {id:'nasdaq',sym:'^IXIC', kisCode:null,   kr:false, fmt:v=>v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})},
-  {id:'russell',sym:'^RUT', kisCode:null,   kr:false, fmt:v=>v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})},
+  {id:'kospi', sym:'^KS11', fmt:v=>v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})},
+  {id:'kosdaq',sym:'^KQ11', fmt:v=>v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})},
+  {id:'sp500', sym:'^GSPC', fmt:v=>v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})},
+  {id:'nasdaq',sym:'^IXIC', fmt:v=>v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})},
+  {id:'russell',sym:'^RUT',  fmt:v=>v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})},
 ];
 
-// KST 기준 장중 여부
 function isKrxOpen(){
   const kst=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Seoul'}));
   const d=kst.getDay(),h=kst.getHours()*60+kst.getMinutes();
@@ -434,32 +433,11 @@ function isNyseOpen(){
 }
 
 async function loadIndices(){
-  const kisOk=window.KIS&&KIS.isTokenValid();
-  let usedKIS=false;
-
   for(const idx of IDXS){
-    let q=null;
-
-    // KR 지수 → KIS 우선
-    if(idx.kr&&kisOk&&idx.kisCode){
-      try{
-        const r=await KIS.getIndex(idx.kisCode);
-        if(r&&r.cur>0){
-          q={c:r.cur,prev:r.prev,chg:r.chg,chgPct:r.chgPct};
-          usedKIS=true;
-        }
-      }catch(_){}
-    }
-
-    // fallback → Yahoo
-    if(!q) q=await fetchY(idx.sym);
-    if(!q)continue;
-
+    const q=await fetchY(idx.sym);if(!q)continue;
     applyIdx(idx.id,q.c,q.prev,q.chgPct,idx.fmt);
     pushTape(idx.id.toUpperCase(),idx.fmt(q.c),(q.chgPct>=0?'+':'')+q.chgPct.toFixed(2)+'%',q.chgPct>=0);
   }
-
-  if(usedKIS)setIdxSource('KIS');
   updateBrief();
 }
 
@@ -514,23 +492,10 @@ async function loadRate(){
 }
 
 function updateBrief(){
-  const items=[
-    {l:'KOSPI', vid:'v-kospi', pid:'pb-kospi'},
-    {l:'NASDAQ',vid:'v-nasdaq',pid:'pb-nasdaq'},
-    {l:'S&P 500',vid:'v-sp500',pid:'pb-sp500'},
-    {l:'KOSDAQ',vid:'v-kosdaq',pid:'pb-kosdaq'},
-  ];
-  document.getElementById('brief-kpis').innerHTML=items.map(k=>{
-    const v=document.getElementById(k.vid)?.textContent||'—';
-    const p=document.getElementById(k.pid)?.textContent||'—';
-    const up=p.startsWith('+');
-    return `<div class="bck"><div class="bck-l">${k.l}</div><div class="bck-v">${v}</div><div class="bck-c ${up?'up':'dn'}">${p}</div></div>`;
-  }).join('');
+  // brief 카드 제거됨 — tape 업데이트만 유지
   const ts=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
-  document.getElementById('brief-ts').textContent=ts+' 업데이트';
-  const kv=document.getElementById('v-kospi')?.textContent||'';
-  const sv=document.getElementById('v-sp500')?.textContent||'';
-  if(kv&&sv) document.getElementById('brief-hl').textContent=`KOSPI ${kv} · S&P ${sv}`;
+  const tsEl=document.getElementById('tape-ts');
+  if(tsEl)tsEl.textContent=ts;
 }
 
 const ECO=[
@@ -574,13 +539,24 @@ async function saveKis(){
   const st=document.getElementById('kp-st');
   if(!k||!s){st.textContent='Key와 Secret을 입력하세요';st.style.color='var(--red)';return;}
   localStorage.setItem('kis_appkey',k);localStorage.setItem('kis_appsecret',s);if(a)localStorage.setItem('kis_accno',a);
+
+  // GitHub Pages에서는 CORS로 KIS 직접 호출 불가 → 안내
+  const isGH=location.hostname.includes('github.io');
+  if(isGH){
+    st.innerHTML='⚠️ GitHub Pages에서는 KIS API CORS 차단<br>로컬에서 <b>kis_proxy.py</b> 실행 후 접속하거나<br>localhost에서 사용하세요';
+    st.style.color='var(--amber)';
+    // 키는 저장됐으니 로컬 실행 시 바로 쓸 수 있음
+    setTimeout(()=>document.getElementById('kis-panel').style.display='none',4000);
+    return;
+  }
+
   if(window.KIS){
     KIS.saveKeys(k,s,a);
     KIS.onStatus((msg,type)=>{const c={ok:'var(--green)',err:'var(--red)',load:'var(--t3)'}[type]||'var(--t3)';st.textContent=msg;st.style.color=c;});
     const ok=await KIS.getToken(true);
     if(ok){document.getElementById('kis-btn').textContent='KIS ✓';document.getElementById('kis-btn').classList.add('active');setTimeout(()=>document.getElementById('kis-panel').style.display='none',800);}
   } else {
-    st.textContent='저장됨';st.style.color='var(--t3)';
+    st.textContent='저장됨 (kis.js 로드 필요)';st.style.color='var(--t3)';
   }
 }
 
@@ -598,18 +574,15 @@ async function loadAll(){
 loadCal();
 loadAll();
 
-// ── 스마트 폴링 ─────────────────────────────────────────
-// 지수: 장중 30초 / 장외 5분
-// 나머지(매크로): 3분 고정
+// 장중 2분 / 장외 5분 폴링
 let _idxTimer=null;
 function scheduleIdxPoll(){
   if(_idxTimer)clearTimeout(_idxTimer);
   const open=isKrxOpen()||isNyseOpen();
-  const delay=open?30*1000:5*60*1000;
   _idxTimer=setTimeout(async()=>{
     await loadIndices();
     scheduleIdxPoll();
-  },delay);
+  }, open ? 2*60*1000 : 5*60*1000);
 }
 scheduleIdxPoll();
 setInterval(()=>{
@@ -618,7 +591,7 @@ setInterval(()=>{
   loadList(LISTS.cmd,'cmd-list');
   loadList(LISTS.global,'global-list');
   loadList(LISTS.vol,'vol-list');
-},3*60*1000);
+}, 5*60*1000);
 
 if(window.KIS&&KIS.isTokenValid()){document.getElementById('kis-btn').textContent='KIS ✓';document.getElementById('kis-btn').classList.add('active');}
 </script>
