@@ -97,12 +97,15 @@ body{background:var(--bg);color:var(--t2);font-family:var(--ui);font-size:13px;-
 .idx-card:hover::before{opacity:1}
 .ic-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .ic-flag{font-size:11px;font-weight:600;color:var(--t3);letter-spacing:.04em;display:flex;align-items:center;gap:5px}
-.ic-badge{font-size:9.5px;font-weight:600;padding:3px 8px;border-radius:6px;letter-spacing:.02em}
+.ic-badge{font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;letter-spacing:.02em}
 .ic-badge.up{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
 .ic-badge.dn{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
 .ic-name{font-size:11px;font-weight:500;color:var(--t3);margin-bottom:6px}
 .ic-val{font-size:38px;font-weight:700;letter-spacing:-.03em;color:var(--t1);line-height:1;margin-bottom:6px}
 .ic-val.sk{background:linear-gradient(90deg,var(--s2) 25%,var(--s3) 50%,var(--s2) 75%);background-size:200% 100%;animation:sk 1.5s infinite;color:transparent!important;border-radius:6px;display:inline-block;width:70%}
+@keyframes flash{0%{color:var(--t1)}30%{color:var(--amber)}100%{color:var(--t1)}}
+.ic-val.flash{animation:flash .6s ease}
+.ic-ts{font-size:9px;color:var(--t3);margin-top:4px;font-family:var(--mono)}
 @keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .ic-sub{font-family:var(--mono);font-size:10.5px;color:var(--t3)}
 .ic-bar-wrap{margin-top:12px;height:3px;background:var(--s3);border-radius:2px;overflow:hidden}
@@ -123,6 +126,10 @@ body{background:var(--bg);color:var(--t2);font-family:var(--ui);font-size:13px;-
 .pc-v{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--t1);text-align:right}
 .pc-c{font-size:10.5px;font-weight:600;text-align:right;min-width:52px}
 .pc-c.up{color:var(--green)}.pc-c.dn{color:var(--red)}
+.pc-spread{display:flex;align-items:center;justify-content:space-between;padding:8px 0 2px;margin-top:6px;border-top:1px solid rgba(255,255,255,.07)}
+.pc-spread-l{font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3)}
+.pc-spread-v{font-family:var(--mono);font-size:13px;font-weight:600}
+.pc-spread-v.up{color:var(--green)}.pc-spread-v.dn{color:var(--red)}
 
 /* ─── CALENDAR CARD ─── */
 .cal-card{background:var(--s1);border:1px solid rgba(255,255,255,.05);border-radius:var(--r16);overflow:hidden}
@@ -231,6 +238,7 @@ body{background:var(--bg);color:var(--t2);font-family:var(--ui);font-size:13px;-
       <div class="ic-val sk" id="v-kospi">2600.00</div>
       <div class="ic-sub" id="s-kospi">전일 —</div>
       <div class="ic-bar-wrap"><div class="ic-bar" id="b-kospi" style="width:50%;background:var(--b2)"></div></div>
+      <div class="ic-ts" id="ts-kospi"></div>
     </div>
     <div class="idx-card" onclick="go('chart.html')">
       <div class="ic-top"><div class="ic-flag">🇰🇷 KOSDAQ</div><div class="ic-badge" id="pb-kosdaq">—</div></div>
@@ -238,6 +246,7 @@ body{background:var(--bg);color:var(--t2);font-family:var(--ui);font-size:13px;-
       <div class="ic-val sk" id="v-kosdaq">800.00</div>
       <div class="ic-sub" id="s-kosdaq">전일 —</div>
       <div class="ic-bar-wrap"><div class="ic-bar" id="b-kosdaq" style="width:50%;background:var(--b2)"></div></div>
+      <div class="ic-ts" id="ts-kosdaq"></div>
     </div>
     <div class="idx-card" onclick="go('chart.html')">
       <div class="ic-top"><div class="ic-flag">🇺🇸 S&amp;P 500</div><div class="ic-badge" id="pb-sp500">—</div></div>
@@ -245,6 +254,7 @@ body{background:var(--bg);color:var(--t2);font-family:var(--ui);font-size:13px;-
       <div class="ic-val sk" id="v-sp500">5600.00</div>
       <div class="ic-sub" id="s-sp500">전일 —</div>
       <div class="ic-bar-wrap"><div class="ic-bar" id="b-sp500" style="width:50%;background:var(--b2)"></div></div>
+      <div class="ic-ts" id="ts-sp500"></div>
     </div>
     <div class="idx-card" onclick="go('chart.html')">
       <div class="ic-top"><div class="ic-flag">🇺🇸 NASDAQ</div><div class="ic-badge" id="pb-nasdaq">—</div></div>
@@ -252,6 +262,7 @@ body{background:var(--bg);color:var(--t2);font-family:var(--ui);font-size:13px;-
       <div class="ic-val sk" id="v-nasdaq">18000.00</div>
       <div class="ic-sub" id="s-nasdaq">전일 —</div>
       <div class="ic-bar-wrap"><div class="ic-bar" id="b-nasdaq" style="width:50%;background:var(--b2)"></div></div>
+      <div class="ic-ts" id="ts-nasdaq"></div>
     </div>
     <div class="idx-card" onclick="go('chart.html')">
       <div class="ic-top"><div class="ic-flag">🇺🇸 Russell</div><div class="ic-badge" id="pb-russell">—</div></div>
@@ -259,6 +270,7 @@ body{background:var(--bg);color:var(--t2);font-family:var(--ui);font-size:13px;-
       <div class="ic-val sk" id="v-russell">2000.00</div>
       <div class="ic-sub" id="s-russell">전일 —</div>
       <div class="ic-bar-wrap"><div class="ic-bar" id="b-russell" style="width:50%;background:var(--b2)"></div></div>
+      <div class="ic-ts" id="ts-russell"></div>
     </div>
   </div>
 
@@ -371,37 +383,92 @@ function pushTape(sym,val,chg,up){
   document.getElementById('tape').innerHTML=[...tD,...tD].map(t=>`<div class="ti"><span class="ti-sym">${t.sym}</span><span class="ti-val">${t.val}</span><span class="ti-chg ${t.up?'up':'dn'}">${t.chg}</span></div>`).join('');
 }
 
-const IDXS=[
-  {id:'kospi', sym:'^KS11', fmt:v=>v.toFixed(2)},
-  {id:'kosdaq',sym:'^KQ11', fmt:v=>v.toFixed(2)},
-  {id:'sp500', sym:'^GSPC', fmt:v=>v.toFixed(2)},
-  {id:'nasdaq',sym:'^IXIC', fmt:v=>v.toFixed(2)},
-  {id:'russell',sym:'^RUT',  fmt:v=>v.toFixed(2)},
-];
-async function loadIndices(){
-  for(const idx of IDXS){
-    const q=await fetchY(idx.sym);if(!q)continue;
-    const up=q.chg>=0;
-    const ve=document.getElementById('v-'+idx.id);
-    ve.textContent=idx.fmt(q.c);ve.classList.remove('sk');
-    const pb=document.getElementById('pb-'+idx.id);
-    pb.textContent=(up?'+':'')+q.chgPct.toFixed(2)+'%';
-    pb.className='ic-badge '+(up?'up':'dn');
-    document.getElementById('s-'+idx.id).textContent='전일 '+idx.fmt(q.prev);
-    const bw=Math.min(Math.abs(q.chgPct)*15+50,100);
-    const bar=document.getElementById('b-'+idx.id);
-    bar.style.width=bw+'%';bar.style.background=up?'var(--green)':'var(--red)';
-    pushTape(idx.id.toUpperCase(),idx.fmt(q.c),(up?'+':'')+q.chgPct.toFixed(2)+'%',up);
+// ── 지수 소스 표시 ──────────────────────────────────────
+function setIdxSource(src){
+  // 'KIS' 또는 'Yahoo' — 우상단 칩에 반영
+  const btn=document.getElementById('kis-btn');
+  if(btn&&src==='KIS') btn.textContent='KIS ✓ LIVE';
+}
+
+// ── 지수 카드 업데이트 (공통) ──────────────────────────
+function applyIdx(id,cur,prev,chgPct,fmt){
+  const up=chgPct>=0;
+  const ve=document.getElementById('v-'+id);
+  // 값 바뀌면 flash 효과
+  if(ve.textContent&&ve.textContent!==fmt(cur)){
+    ve.classList.add('flash');
+    setTimeout(()=>ve.classList.remove('flash'),600);
   }
+  ve.textContent=fmt(cur);ve.classList.remove('sk');
+  const pb=document.getElementById('pb-'+id);
+  pb.textContent=(up?'+':'')+chgPct.toFixed(2)+'%';
+  pb.className='ic-badge '+(up?'up':'dn');
+  document.getElementById('s-'+id).textContent='전일 '+fmt(prev);
+  const bw=Math.min(Math.abs(chgPct)*15+50,100);
+  const bar=document.getElementById('b-'+id);
+  bar.style.width=bw+'%';bar.style.background=up?'var(--green)':'var(--red)';
+  // 타임스탬프
+  const ts=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const tsEl=document.getElementById('ts-'+id);
+  if(tsEl)tsEl.textContent=ts;
+}
+
+const IDXS=[
+  {id:'kospi', sym:'^KS11', kisCode:'0001', kr:true,  fmt:v=>v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})},
+  {id:'kosdaq',sym:'^KQ11', kisCode:'1001', kr:true,  fmt:v=>v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})},
+  {id:'sp500', sym:'^GSPC', kisCode:null,   kr:false, fmt:v=>v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})},
+  {id:'nasdaq',sym:'^IXIC', kisCode:null,   kr:false, fmt:v=>v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})},
+  {id:'russell',sym:'^RUT', kisCode:null,   kr:false, fmt:v=>v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})},
+];
+
+// KST 기준 장중 여부
+function isKrxOpen(){
+  const kst=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Seoul'}));
+  const d=kst.getDay(),h=kst.getHours()*60+kst.getMinutes();
+  return d>=1&&d<=5&&h>=540&&h<930;
+}
+function isNyseOpen(){
+  const et=new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}));
+  const d=et.getDay(),h=et.getHours()*60+et.getMinutes();
+  return d>=1&&d<=5&&h>=570&&h<960;
+}
+
+async function loadIndices(){
+  const kisOk=window.KIS&&KIS.isTokenValid();
+  let usedKIS=false;
+
+  for(const idx of IDXS){
+    let q=null;
+
+    // KR 지수 → KIS 우선
+    if(idx.kr&&kisOk&&idx.kisCode){
+      try{
+        const r=await KIS.getIndex(idx.kisCode);
+        if(r&&r.cur>0){
+          q={c:r.cur,prev:r.prev,chg:r.chg,chgPct:r.chgPct};
+          usedKIS=true;
+        }
+      }catch(_){}
+    }
+
+    // fallback → Yahoo
+    if(!q) q=await fetchY(idx.sym);
+    if(!q)continue;
+
+    applyIdx(idx.id,q.c,q.prev,q.chgPct,idx.fmt);
+    pushTape(idx.id.toUpperCase(),idx.fmt(q.c),(q.chgPct>=0?'+':'')+q.chgPct.toFixed(2)+'%',q.chgPct>=0);
+  }
+
+  if(usedKIS)setIdxSource('KIS');
   updateBrief();
 }
 
 const LISTS={
-  fx:[{sym:'KRW=X',l:'USD / KRW',f:v=>v.toFixed(0)},{sym:'EURUSD=X',l:'EUR / USD',f:v=>v.toFixed(4)},{sym:'JPY=X',l:'USD / JPY',f:v=>v.toFixed(2)},{sym:'CNY=X',l:'USD / CNY',f:v=>v.toFixed(4)}],
-  rate:[{sym:'^IRX',l:'US 3M',f:v=>v.toFixed(3)+'%'},{sym:'^TU',l:'US 2Y',f:v=>v.toFixed(3)+'%'},{sym:'^FVX',l:'US 5Y',f:v=>v.toFixed(3)+'%'},{sym:'^TNX',l:'US 10Y',f:v=>v.toFixed(3)+'%'},{sym:'^TYX',l:'US 30Y',f:v=>v.toFixed(3)+'%'}],
-  cmd:[{sym:'CL=F',l:'WTI Crude',f:v=>'$'+v.toFixed(2)},{sym:'GC=F',l:'Gold',f:v=>'$'+v.toFixed(0)},{sym:'SI=F',l:'Silver',f:v=>'$'+v.toFixed(3)},{sym:'NG=F',l:'Nat Gas',f:v=>'$'+v.toFixed(3)},{sym:'HG=F',l:'Copper',f:v=>'$'+v.toFixed(4)}],
-  global:[{sym:'^N225',l:'Nikkei 225',f:v=>v.toFixed(0)},{sym:'^HSI',l:'Hang Seng',f:v=>v.toFixed(0)},{sym:'000001.SS',l:'상해종합',f:v=>v.toFixed(2)},{sym:'^TWII',l:'대만 가권',f:v=>v.toFixed(0)},{sym:'^FTSE',l:'FTSE 100',f:v=>v.toFixed(2)},{sym:'^GDAXI',l:'DAX',f:v=>v.toFixed(2)}],
-  vol:[{sym:'^VIX',l:'VIX',f:v=>v.toFixed(2)},{sym:'^VKOSPI',l:'VKOSPI',f:v=>v.toFixed(2)},{sym:'DX-Y.NYB',l:'DXY',f:v=>v.toFixed(3)},{sym:'BTC-USD',l:'BTC',f:v=>'$'+Math.round(v).toLocaleString()},{sym:'ETH-USD',l:'ETH',f:v=>'$'+v.toFixed(0)}],
+  fx:[{sym:'KRW=X',l:'USD / KRW',f:v=>v.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0})},{sym:'EURUSD=X',l:'EUR / USD',f:v=>v.toFixed(4)},{sym:'JPY=X',l:'USD / JPY',f:v=>v.toFixed(2)},{sym:'CNY=X',l:'USD / CNY',f:v=>v.toFixed(4)}],
+  rate:[{sym:'^IRX',l:'US 3M',f:v=>v.toFixed(3)+'%'},{sym:'^FVX',l:'US 5Y',f:v=>v.toFixed(3)+'%'},{sym:'^TNX',l:'US 10Y',f:v=>v.toFixed(3)+'%'},{sym:'^TYX',l:'US 30Y',f:v=>v.toFixed(3)+'%'}],
+  cmd:[{sym:'CL=F',l:'WTI Crude',f:v=>'$'+v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})},{sym:'GC=F',l:'Gold',f:v=>'$'+v.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0})},{sym:'SI=F',l:'Silver',f:v=>'$'+v.toFixed(3)},{sym:'NG=F',l:'Nat Gas',f:v=>'$'+v.toFixed(3)},{sym:'HG=F',l:'Copper',f:v=>'$'+v.toFixed(4)}],
+  global:[{sym:'^N225',l:'Nikkei 225',f:v=>v.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0})},{sym:'^HSI',l:'Hang Seng',f:v=>v.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0})},{sym:'000001.SS',l:'상해종합',f:v=>v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})},{sym:'^TWII',l:'대만 가권',f:v=>v.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0})},{sym:'^FTSE',l:'FTSE 100',f:v=>v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})},{sym:'^GDAXI',l:'DAX',f:v=>v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}],
+  vol:[{sym:'^VIX',l:'VIX',f:v=>v.toFixed(2)},{sym:'^VKOSPI',l:'VKOSPI',f:v=>v.toFixed(2)},{sym:'DX-Y.NYB',l:'DXY',f:v=>v.toFixed(3)},{sym:'BTC-USD',l:'BTC',f:v=>'$'+Math.round(v).toLocaleString('en-US')},{sym:'ETH-USD',l:'ETH',f:v=>'$'+v.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0})}],
 };
 function pillRow(l,v,chgPct){
   const up=chgPct>=0;
@@ -415,6 +482,35 @@ async function loadList(items,id){
     pushTape(m.l.replace(' ',''),m.f(q.c),(q.chgPct>=0?'+':'')+q.chgPct.toFixed(2)+'%',q.chgPct>=0);
   }
   document.getElementById(id).innerHTML=rows.join('');
+}
+
+async function loadRate(){
+  const items=LISTS.rate;
+  const rows=[];
+  let y2=null,y10=null;
+  // 2Y 별도 fetch (스프레드용)
+  const q2=await fetchY('^TWO');
+  if(q2&&q2.c>0.5&&q2.c<15) y2=q2.c;
+  for(const m of items){
+    const q=await fetchY(m.sym);if(!q)continue;
+    rows.push(pillRow(m.l,q.c.toFixed(3)+'%',q.chgPct));
+    pushTape(m.l,q.c.toFixed(3)+'%',(q.chgPct>=0?'+':'')+q.chgPct.toFixed(2)+'%',q.chgPct>=0);
+    if(m.sym==='^TNX') y10=q.c;
+  }
+  // 2Y-10Y 스프레드
+  let spreadHtml='';
+  if(y2!==null&&y10!==null){
+    const spr=y10-y2;
+    const up=spr>=0;
+    spreadHtml=`<div class="pc-spread">
+      <span class="pc-spread-l">2Y–10Y 스프레드</span>
+      <span class="pc-spread-v ${up?'up':'dn'}">${up?'+':''}${spr.toFixed(3)}%&nbsp;&nbsp;${up?'정상':'역전'}</span>
+    </div>`;
+  } else if(y10!==null){
+    // 2Y fetch 실패 시 표시만 안 함
+    spreadHtml='';
+  }
+  document.getElementById('rate-list').innerHTML=rows.join('')+spreadHtml;
 }
 
 function updateBrief(){
@@ -492,7 +588,7 @@ async function loadAll(){
   await Promise.all([
     loadIndices(),
     loadList(LISTS.fx,'fx-list'),
-    loadList(LISTS.rate,'rate-list'),
+    loadRate(),
     loadList(LISTS.cmd,'cmd-list'),
     loadList(LISTS.global,'global-list'),
     loadList(LISTS.vol,'vol-list'),
@@ -501,7 +597,29 @@ async function loadAll(){
 
 loadCal();
 loadAll();
-setInterval(loadAll,5*60*1000);
+
+// ── 스마트 폴링 ─────────────────────────────────────────
+// 지수: 장중 30초 / 장외 5분
+// 나머지(매크로): 3분 고정
+let _idxTimer=null;
+function scheduleIdxPoll(){
+  if(_idxTimer)clearTimeout(_idxTimer);
+  const open=isKrxOpen()||isNyseOpen();
+  const delay=open?30*1000:5*60*1000;
+  _idxTimer=setTimeout(async()=>{
+    await loadIndices();
+    scheduleIdxPoll();
+  },delay);
+}
+scheduleIdxPoll();
+setInterval(()=>{
+  loadList(LISTS.fx,'fx-list');
+  loadRate();
+  loadList(LISTS.cmd,'cmd-list');
+  loadList(LISTS.global,'global-list');
+  loadList(LISTS.vol,'vol-list');
+},3*60*1000);
+
 if(window.KIS&&KIS.isTokenValid()){document.getElementById('kis-btn').textContent='KIS ✓';document.getElementById('kis-btn').classList.add('active');}
 </script>
 </body>

@@ -126,6 +126,31 @@ const KIS = {
   // ═══════════════════════════════════════
   // 국내주식 현재가
   // ═══════════════════════════════════════
+  // ═══════════════════════════════════════
+  // 국내 지수 현재가 (KOSPI=0001, KOSDAQ=1001)
+  // ═══════════════════════════════════════
+  async getIndex(idxCode='0001'){
+    const j = await this._get(
+      '/uapi/domestic-stock/v1/quotations/inquire-index-price',
+      {FID_COND_MRKT_DIV_CODE:'U', FID_INPUT_ISCD:idxCode},
+      'FHPUP02100000'
+    );
+    if(!j?.output) return null;
+    const o = j.output;
+    const n = s => parseFloat((s||'0').replace(/,/g,''));
+    return {
+      cur:    n(o.bstp_nmix_prpr),   // 현재가
+      prev:   n(o.bstp_nmix_prdy_clpr), // 전일종가
+      chg:    n(o.bstp_nmix_prdy_vrss), // 전일대비
+      chgPct: n(o.prdy_ctrt),            // 등락률(%)
+      high:   n(o.bstp_nmix_hgpr),
+      low:    n(o.bstp_nmix_lwpr),
+      open:   n(o.bstp_nmix_oprc),
+      vol:    n(o.acml_vol),
+      source: 'KIS',
+    };
+  },
+
   async quoteKR(code){
     code = code.replace('.KS','').replace('.KQ','');
     const j = await this._get(
